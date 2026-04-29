@@ -1,0 +1,13 @@
+[project]
+name = "workflow-rag-agent"
+version = "0.1.0"
+description = "Agentic RAG workflow using LangChain"
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "bs4>=0.0.2",
+    "langchain-community>=0.4.1",
+    "langchain-text-splitters>=1.1.2",
+    "langchain[openai]>=1.2.15",
+    "langgraph>=1.1.10",
+]
