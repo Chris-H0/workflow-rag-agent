@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
 
-from agent.graph import build_graph
+from agent.graph import build_graph, save_graph_image
 from agent.tools import build_retriever_tool
 from rag.pipeline import build_retriever_from_documents
 from rag.sources import load_lilian_weng_documents
@@ -9,6 +9,7 @@ from rag.sources import load_lilian_weng_documents
 
 CONFIG_ID = "v0-tests"
 QUESTION = "What does Lilian Weng say about types of reward hacking?"
+SAVE_GRAPH = True
 
 
 def load_env():
@@ -43,4 +44,7 @@ def stream_agent_response(graph, question: str, config_id: str):
 
 if __name__ == "__main__":
     agent_graph = build_agent()
+    if SAVE_GRAPH:
+        save_graph_image(agent_graph)
+        
     stream_agent_response(agent_graph, QUESTION, CONFIG_ID)
