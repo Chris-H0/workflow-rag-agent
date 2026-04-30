@@ -8,10 +8,10 @@ wheels/
 
 # Environments
 .env
-.envrc
 .venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+
+# macOS
+.DS_Store
+
+# Data files
+**/raw/**
