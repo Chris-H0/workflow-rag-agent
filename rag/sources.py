@@ -1,13 +1,49 @@
-from langchain_community.document_loaders import WebBaseLoader
+from datasets import load_dataset
+from langchain_core.documents import Document
 
 
-LILIAN_WENG_URLS = [
-    "https://lilianweng.github.io/posts/2024-11-28-reward-hacking/",
-    "https://lilianweng.github.io/posts/2024-07-07-hallucination/",
-    "https://lilianweng.github.io/posts/2024-04-12-diffusion-video/",
-]
+HOTPOTQA_LIMIT = 50
 
 
-def load_lilian_weng_documents():
-    docs = [WebBaseLoader(url).load() for url in LILIAN_WENG_URLS]
-    return [item for sublist in docs for item in sublist]
+def load_hotpotqa_examples(limit: int = HOTPOTQA_LIMIT):
+    dataset = load_dataset("hotpotqa/hotpot_qa", "distractor", split="validation")
+    return list(dataset.select(range(min(limit, len(dataset)))))
+
+
+def hotpotqa_example_to_documents(example):
+    documents = []
+
+    for title, sentences in zip(
+        example["context"]["title"],
+        example["context"]["sentences"],
+    ):
+        documents.append(
+            Document(
+                page_content=f"{title}\n" + "\n".join(sentences),
+                metadata={
+                    "dataset": "hotpotqa",
+                    "subset": "distractor",
+                    "split": "validation",
+                    "hotpot_id": example["id"],
+                    "title": title,
+                },
+            )
+        )
+
+    return documents
+
+
+def build_hotpotqa_documents(examples):
+    documents = []
+    seen = set()
+
+    for example in examples:
+        for document in hotpotqa_example_to_documents(example):
+            key = (document.metadata["title"], document.page_content)
+            if key in seen:
+                continue
+
+            seen.add(key)
+            documents.append(document)
+
+    return documents
