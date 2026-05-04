@@ -503,7 +503,6 @@ def model_config_table(runs_df: pd.DataFrame):
                     "node": node_name,
                     "provider": node_config.get("provider"),
                     "model": node_config.get("model"),
-                    "temperature": node_config.get("temperature"),
                 }
             )
 
