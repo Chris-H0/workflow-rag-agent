@@ -24,10 +24,8 @@ GRAPH_FILES = [
     "latency_breakdown_by_run.png",
     "latency_breakdown_by_type.png",
     "latency_breakdown_by_node.png",
-    "correctness_summary.png",
     "correctness_vs_latency.png",
     "tokens_vs_latency.png",
-    "cost_by_run.png",
 ]
 
 
@@ -435,29 +433,6 @@ def plot_latency_breakdown_by_node(components_df: pd.DataFrame, output_dir: Path
     save_figure(output_dir / "latency_breakdown_by_node.png")
 
 
-def plot_correctness_summary(runs_df: pd.DataFrame, output_dir: Path):
-    metric_columns = [
-        "exact_match",
-        "contains_gold_answer",
-        "contains_partial_gold_answer",
-        "supporting_title_hit",
-        "supporting_title_recall",
-    ]
-    values = []
-    labels = []
-    for column in metric_columns:
-        if column in runs_df:
-            values.append(metric_average(pd.to_numeric(runs_df[column], errors="coerce")) or 0)
-            labels.append(column)
-    plt.figure(figsize=(10, 4.8))
-    plt.bar(labels, values, color=["#2ca02c", "#17becf", "#bcbd22", "#9467bd", "#8c564b"])
-    plt.ylim(0, 1.05)
-    plt.ylabel("Average score")
-    plt.title("Correctness metrics")
-    plt.xticks(rotation=20, ha="right")
-    save_figure(output_dir / "correctness_summary.png")
-
-
 def plot_correctness_vs_latency(runs_df: pd.DataFrame, output_dir: Path):
     colours = runs_df["is_correct"].map({True: "#2ca02c", False: "#d62728"}).tolist()
     plt.figure(figsize=(8, 5))
@@ -478,27 +453,14 @@ def plot_tokens_vs_latency(runs_df: pd.DataFrame, output_dir: Path):
     save_figure(output_dir / "tokens_vs_latency.png")
 
 
-def plot_cost_by_run(runs_df: pd.DataFrame, output_dir: Path):
-    data = runs_df.sort_values("total_cost", ascending=False).reset_index(drop=True)
-    plt.figure(figsize=(11, 5))
-    plt.bar(short_run_labels(data), data["total_cost"], color="#9467bd")
-    plt.ylabel("Cost")
-    plt.xlabel("Example / repeat")
-    plt.title("Cost by run")
-    plt.xticks(rotation=45, ha="right")
-    save_figure(output_dir / "cost_by_run.png")
-
-
 def create_plots(runs_df: pd.DataFrame, components_df: pd.DataFrame, output_dir: Path):
     top_nodes_df = top_level_node_components(components_df)
     plot_latency_by_run(runs_df, output_dir)
     plot_latency_breakdown_by_run(runs_df, top_nodes_df, output_dir)
     plot_latency_breakdown_by_type(components_df, output_dir)
     plot_latency_breakdown_by_node(components_df, output_dir)
-    plot_correctness_summary(runs_df, output_dir)
     plot_correctness_vs_latency(runs_df, output_dir)
     plot_tokens_vs_latency(runs_df, output_dir)
-    plot_cost_by_run(runs_df, output_dir)
 
 
 def dataframe_table(df: pd.DataFrame, columns, max_rows=20):
@@ -593,12 +555,33 @@ def create_report(
     components_df: pd.DataFrame,
     summary,
 ):
-    slow_incorrect = runs_df[
-        (runs_df["is_correct"] == False) & runs_df["total_latency_s"].notna()
+    correct_runs = runs_df[runs_df["exact_match"] == True].sort_values(
+        "total_latency_s", ascending=False
+    )
+    partially_correct_runs = runs_df[
+        (runs_df["exact_match"] == False)
+        & (
+            (runs_df["contains_gold_answer"] == True)
+            | (runs_df["contains_partial_gold_answer"] == True)
+        )
     ].sort_values("total_latency_s", ascending=False)
-    fast_correct = runs_df[
-        (runs_df["is_correct"] == True) & runs_df["total_latency_s"].notna()
-    ].sort_values("total_latency_s", ascending=True)
+    fully_incorrect_runs = runs_df[
+        (runs_df["exact_match"] == False)
+        & (runs_df["contains_gold_answer"] == False)
+        & (runs_df["contains_partial_gold_answer"] == False)
+    ].sort_values("total_latency_s", ascending=False)
+    run_result_columns = [
+        "example_id",
+        "repeat",
+        "total_latency_s",
+        "exact_match",
+        "contains_gold_answer",
+        "contains_partial_gold_answer",
+        "supporting_title_recall",
+        "question",
+        "agent_answer",
+        "gold_answer",
+    ]
     llm_by_node = (
         components_df[components_df["run_type"] == "llm"]
         .assign(langgraph_node=lambda df: df["langgraph_node"].fillna("unknown"))
@@ -660,11 +643,14 @@ def create_report(
 
   {graph_html(output_dir)}
 
-  <h2>Slow Incorrect Runs</h2>
-  {dataframe_table(slow_incorrect, ["example_id", "repeat", "total_latency_s", "exact_match", "contains_gold_answer", "contains_partial_gold_answer", "supporting_title_recall", "question", "agent_answer", "gold_answer"])}
+  <h2>Correct Runs</h2>
+  {dataframe_table(correct_runs, run_result_columns, max_rows=50)}
 
-  <h2>Fast Correct Runs</h2>
-  {dataframe_table(fast_correct, ["example_id", "repeat", "total_latency_s", "exact_match", "contains_gold_answer", "contains_partial_gold_answer", "supporting_title_recall", "question", "agent_answer", "gold_answer"])}
+  <h2>Partially Correct Runs</h2>
+  {dataframe_table(partially_correct_runs, run_result_columns, max_rows=50)}
+
+  <h2>Fully Incorrect Runs</h2>
+  {dataframe_table(fully_incorrect_runs, run_result_columns, max_rows=50)}
 
   <h2>LLM Latency By Node</h2>
   {dataframe_table(llm_by_node, ["langgraph_node", "duration_s", "total_tokens", "total_cost"])}
