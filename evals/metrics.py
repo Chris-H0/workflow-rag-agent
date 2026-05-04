@@ -31,6 +31,7 @@ def score_result(agent_answer: str, gold_answer: str, retrieved_titles, supporti
     return {
         "exact_match": normalized_agent_answer == normalized_gold_answer,
         "contains_gold_answer": normalized_gold_answer in normalized_agent_answer,
+        "contains_partial_gold_answer": normalized_agent_answer in normalized_gold_answer,
         "supporting_title_hit": bool(matching_titles),
         "supporting_title_recall": len(matching_titles) / len(supporting_titles)
         if supporting_titles

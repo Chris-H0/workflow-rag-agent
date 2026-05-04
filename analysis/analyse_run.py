@@ -270,6 +270,7 @@ def join_runs(eval_df: pd.DataFrame, trace_df: pd.DataFrame, warnings):
     correctness_columns = [
         "exact_match",
         "contains_gold_answer",
+        "contains_partial_gold_answer",
         "supporting_title_hit",
         "supporting_title_recall",
     ]
@@ -303,6 +304,7 @@ def summarise(runs_df: pd.DataFrame, components_df: pd.DataFrame, warnings):
     metric_columns = [
         "exact_match",
         "contains_gold_answer",
+        "contains_partial_gold_answer",
         "supporting_title_hit",
         "supporting_title_recall",
     ]
@@ -437,6 +439,7 @@ def plot_correctness_summary(runs_df: pd.DataFrame, output_dir: Path):
     metric_columns = [
         "exact_match",
         "contains_gold_answer",
+        "contains_partial_gold_answer",
         "supporting_title_hit",
         "supporting_title_recall",
     ]
@@ -446,8 +449,8 @@ def plot_correctness_summary(runs_df: pd.DataFrame, output_dir: Path):
         if column in runs_df:
             values.append(metric_average(pd.to_numeric(runs_df[column], errors="coerce")) or 0)
             labels.append(column)
-    plt.figure(figsize=(9, 4.8))
-    plt.bar(labels, values, color=["#2ca02c", "#17becf", "#9467bd", "#8c564b"])
+    plt.figure(figsize=(10, 4.8))
+    plt.bar(labels, values, color=["#2ca02c", "#17becf", "#bcbd22", "#9467bd", "#8c564b"])
     plt.ylim(0, 1.05)
     plt.ylabel("Average score")
     plt.title("Correctness metrics")
@@ -658,10 +661,10 @@ def create_report(
   {graph_html(output_dir)}
 
   <h2>Slow Incorrect Runs</h2>
-  {dataframe_table(slow_incorrect, ["example_id", "repeat", "total_latency_s", "exact_match", "contains_gold_answer", "supporting_title_recall", "question", "agent_answer", "gold_answer"])}
+  {dataframe_table(slow_incorrect, ["example_id", "repeat", "total_latency_s", "exact_match", "contains_gold_answer", "contains_partial_gold_answer", "supporting_title_recall", "question", "agent_answer", "gold_answer"])}
 
   <h2>Fast Correct Runs</h2>
-  {dataframe_table(fast_correct, ["example_id", "repeat", "total_latency_s", "exact_match", "contains_gold_answer", "supporting_title_recall", "question", "agent_answer", "gold_answer"])}
+  {dataframe_table(fast_correct, ["example_id", "repeat", "total_latency_s", "exact_match", "contains_gold_answer", "contains_partial_gold_answer", "supporting_title_recall", "question", "agent_answer", "gold_answer"])}
 
   <h2>LLM Latency By Node</h2>
   {dataframe_table(llm_by_node, ["langgraph_node", "duration_s", "total_tokens", "total_cost"])}
@@ -670,7 +673,7 @@ def create_report(
   {dataframe_table(retriever_tool, ["run_id", "run_type", "name", "langgraph_node", "duration_s", "status", "error"], max_rows=30)}
 
   <h2>All Runs</h2>
-  {dataframe_table(runs_df.sort_values("total_latency_s", ascending=False), ["example_id", "repeat", "total_latency_s", "total_tokens", "total_cost", "exact_match", "contains_gold_answer", "supporting_title_recall", "retrieval_rounds", "nodes"], max_rows=50)}
+  {dataframe_table(runs_df.sort_values("total_latency_s", ascending=False), ["example_id", "repeat", "total_latency_s", "total_tokens", "total_cost", "exact_match", "contains_gold_answer", "contains_partial_gold_answer", "supporting_title_recall", "retrieval_rounds", "nodes"], max_rows=50)}
 </body>
 </html>
 """
