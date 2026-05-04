@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from langsmith import Client
 
 
-CONFIG_ID = "v0-tests-gpt-5.5"
+CONFIG_ID = "v0-tests-opus-4-7"
 LIMIT = 75
 
 
@@ -57,6 +57,7 @@ def download_traces(config_id: str, limit: int):
                     "runs": [run.model_dump(mode="json") for run in trace_runs],
                 },
             )
+            print(f"Saved trace to {output_path}")
             count += 1
 
         print(f"Downloaded {count} traces for config ID: {config_id} to {output_dir}.")

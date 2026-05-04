@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-CONFIG_ID = "v0-tests-gpt-5.5"
+CONFIG_ID = "v0-tests-opus-4-7"
 ANALYSIS_ROOT = "analysis"
 OVERWRITE = True
 
