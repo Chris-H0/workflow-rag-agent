@@ -1,0 +1,36 @@
+{
+  "config_id": "v0-tests-haiku-4-5",
+  "run_count": 50,
+  "eval_count": 50,
+  "trace_count": 50,
+  "component_count": 911,
+  "latency_s": {
+    "mean": 4.12490394,
+    "median": 3.3184015000000002,
+    "min": 2.269575,
+    "max": 13.127972,
+    "p90": 6.157435500000001,
+    "p95": 8.016122349999998
+  },
+  "correctness": {
+    "exact_match": 0.5,
+    "contains_gold_answer": 0.72,
+    "contains_partial_gold_answer": 0.8,
+    "supporting_title_hit": 1.0,
+    "supporting_title_recall": 0.88
+  },
+  "root_status_counts": {
+    "success": 50
+  },
+  "component_run_type_counts": {
+    "chain": 472,
+    "llm": 188,
+    "tool": 92,
+    "retriever": 92,
+    "parser": 67
+  },
+  "model_config_counts": {
+    "{\"decide_after_retrieval\": {\"model\": \"claude-haiku-4-5\", \"provider\": \"anthropic\"}, \"generate_answer\": {\"model\": \"claude-haiku-4-5\", \"provider\": \"anthropic\"}, \"generate_query_or_respond\": {\"model\": \"claude-haiku-4-5\", \"provider\": \"anthropic\"}, \"rewrite_question\": {\"model\": \"claude-haiku-4-5\", \"provider\": \"anthropic\"}}": 50
+  },
+  "warnings": []
+}

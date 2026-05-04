@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-CONFIG_ID = "v0-tests-opus-4-7"
+CONFIG_ID = "v0-tests-haiku-4-5"
 ANALYSIS_ROOT = "analysis"
 OVERWRITE = True
 

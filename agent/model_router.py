@@ -25,19 +25,19 @@ from langchain.chat_models import init_chat_model
 NODE_MODEL_CONFIG = {
     "generate_query_or_respond": {
         "provider": "anthropic",
-        "model": "claude-opus-4-7",
+        "model": "claude-haiku-4-5",
     },
     "decide_after_retrieval": {
         "provider": "anthropic",
-        "model": "claude-opus-4-7",
+        "model": "claude-haiku-4-5",
     },
     "rewrite_question": {
         "provider": "anthropic",
-        "model": "claude-opus-4-7",
+        "model": "claude-haiku-4-5",
     },
     "generate_answer": {
         "provider": "anthropic",
-        "model": "claude-opus-4-7",
+        "model": "claude-haiku-4-5",
     },
 }
 
