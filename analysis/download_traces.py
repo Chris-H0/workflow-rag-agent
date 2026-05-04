@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 from langsmith import Client
 
 
-CONFIG_ID = "v0-tests"
-LIMIT = 10
+CONFIG_ID = "v1-tests"
+LIMIT = 50
 
 
 def write_json(path: Path, data):
@@ -25,7 +25,7 @@ def download_traces(config_id: str, limit: int):
     try:
         client = Client()
         analysis_dir = Path(__file__).resolve().parent
-        output_dir = analysis_dir / config_id / "raw"
+        output_dir = analysis_dir / config_id / "traces"
         output_dir.mkdir(parents=True, exist_ok=True)
 
         root_run_kwargs = {
