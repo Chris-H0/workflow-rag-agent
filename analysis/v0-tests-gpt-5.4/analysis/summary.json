@@ -1,0 +1,35 @@
+{
+  "config_id": "v0-tests-gpt-5.4",
+  "run_count": 50,
+  "eval_count": 50,
+  "trace_count": 50,
+  "component_count": 736,
+  "latency_s": {
+    "mean": 3.93588106,
+    "median": 3.322454,
+    "min": 0.928629,
+    "max": 11.120322,
+    "p90": 5.872059800000001,
+    "p95": 7.5436924999999935
+  },
+  "correctness": {
+    "exact_match": 0.56,
+    "contains_gold_answer": 0.7,
+    "contains_partial_gold_answer": 0.58,
+    "supporting_title_hit": 0.88,
+    "supporting_title_recall": 0.78
+  },
+  "root_status_counts": {
+    "success": 50
+  },
+  "component_run_type_counts": {
+    "chain": 446,
+    "llm": 158,
+    "tool": 66,
+    "retriever": 66
+  },
+  "model_config_counts": {
+    "{\"decide_after_retrieval\": {\"model\": \"gpt-5.4\", \"provider\": \"openai\", \"temperature\": 0}, \"generate_answer\": {\"model\": \"gpt-5.4\", \"provider\": \"openai\", \"temperature\": 0}, \"generate_query_or_respond\": {\"model\": \"gpt-5.4\", \"provider\": \"openai\", \"temperature\": 0}, \"rewrite_question\": {\"model\": \"gpt-5.4\", \"provider\": \"openai\", \"temperature\": 0}}": 50
+  },
+  "warnings": []
+}
