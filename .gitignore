@@ -16,3 +16,4 @@ wheels/
 # Data files
 analysis/**/evals
 analysis/**/traces
+analysis/**/analysis/*.png
