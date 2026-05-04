@@ -7,7 +7,7 @@ from langsmith import Client
 
 
 CONFIG_ID = "v0-tests-gpt-5.4"
-LIMIT = 50
+LIMIT = 75
 
 
 def write_json(path: Path, data):
@@ -35,6 +35,7 @@ def download_traces(config_id: str, limit: int):
             "project_name": project_name,
         }
 
+        count = 0
         for root_run in client.list_runs(**root_run_kwargs):
             trace_id = root_run.trace_id
             output_path = output_dir / f"{trace_id}.json"
@@ -56,8 +57,9 @@ def download_traces(config_id: str, limit: int):
                     "runs": [run.model_dump(mode="json") for run in trace_runs],
                 },
             )
+            count += 1
 
-        print(f"Downloaded traces for config ID: {config_id} to {output_dir}.")
+        print(f"Downloaded {count} traces for config ID: {config_id} to {output_dir}.")
     except Exception as error:
         raise RuntimeError(f"Failed to download traces for config ID: {config_id}") from error
 
