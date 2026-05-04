@@ -8,7 +8,7 @@ from rag.pipeline import build_retriever_from_documents
 from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
-CONFIG_ID = "v0-tests-gpt-4.1-mini"
+CONFIG_ID = "v0-tests-gpt-5.5"
 QUESTION_LIMIT = 50
 REPEATS = 1
 SAVE_GRAPH = False

@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from langsmith import Client
 
 
-CONFIG_ID = "v0-tests-gpt-4.1-mini"
+CONFIG_ID = "v0-tests-gpt-5.5"
 LIMIT = 75
 
 
