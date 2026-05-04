@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
-from langchain.chat_models import init_chat_model
 
 from agent.graph import build_graph, save_graph_image
+from agent.model_router import ModelRouter
 from agent.tools import build_retriever_tool
 from evals.runner import run_eval_loop
 from rag.pipeline import build_retriever_from_documents
@@ -19,17 +19,10 @@ def load_env():
     load_dotenv(".env", override=True)
 
 
-def build_response_model():
-    return init_chat_model("gpt-5.4", temperature=0)
-
-
-def build_agent(documents):
+def build_agent(documents, model_router):
     retriever = build_retriever_from_documents(documents)
     retriever_tool = build_retriever_tool(retriever)
-    response_model = build_response_model()
-    decision_model = build_response_model()
-
-    return build_graph(response_model, decision_model, retriever_tool)
+    return build_graph(model_router, retriever_tool)
 
 
 if __name__ == "__main__":
@@ -38,9 +31,17 @@ if __name__ == "__main__":
     examples = load_hotpotqa_examples()
     documents = build_hotpotqa_documents(examples)
     eval_examples = examples[:QUESTION_LIMIT]
+    model_router = ModelRouter()
 
-    agent_graph = build_agent(documents)
+    agent_graph = build_agent(documents, model_router)
     if SAVE_GRAPH:
         save_graph_image(agent_graph)
 
-    run_eval_loop(agent_graph, eval_examples, CONFIG_ID, REPEATS, PRINT_UPDATES)
+    run_eval_loop(
+        agent_graph,
+        eval_examples,
+        CONFIG_ID,
+        REPEATS,
+        PRINT_UPDATES,
+        model_router.model_config,
+    )

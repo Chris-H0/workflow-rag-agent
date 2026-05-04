@@ -15,15 +15,12 @@ from agent.nodes import (
 ROOT_DIR = Path(__file__).resolve().parents[1]
 
 
-def build_graph(response_model, decision_model, retriever_tool):
-    generate_query_or_respond = build_generate_query_or_respond(
-        response_model,
-        retriever_tool,
-    )
-    decide_after_retrieval = build_decide_after_retrieval(decision_model)
-    rewrite_question = build_rewrite_question(response_model)
+def build_graph(model_router, retriever_tool):
+    generate_query_or_respond = build_generate_query_or_respond(model_router.get_model("generate_query_or_respond"),retriever_tool,)
+    decide_after_retrieval = build_decide_after_retrieval(model_router.get_model("decide_after_retrieval"))
+    rewrite_question = build_rewrite_question(model_router.get_model("rewrite_question"))
     generate_followup_query = build_generate_followup_query()
-    generate_answer = build_generate_answer(response_model)
+    generate_answer = build_generate_answer(model_router.get_model("generate_answer"))
 
     workflow = StateGraph(MessagesState)
     workflow.add_node(generate_query_or_respond)

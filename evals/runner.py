@@ -24,6 +24,7 @@ def run_eval_example(
     config_id: str,
     repeat: int,
     print_updates: bool,
+    model_config: dict,
 ):
     example_id = example["id"]
     question = example["question"]
@@ -82,6 +83,7 @@ def run_eval_example(
         "supporting_titles": supporting_titles,
         "retrieved_titles": retrieved_titles,
         "retrieval_rounds": nodes.count("retrieve"),
+        "model_config": model_config,
         "metrics": score_result(
             agent_answer,
             gold_answer,
@@ -98,7 +100,14 @@ def run_eval_example(
     return result
 
 
-def run_eval_loop(graph, examples, config_id: str, repeats: int, print_updates: bool):
+def run_eval_loop(
+    graph,
+    examples,
+    config_id: str,
+    repeats: int,
+    print_updates: bool,
+    model_config: dict,
+):
     for repeat in range(repeats):
         for example in examples:
             run_eval_example(
@@ -107,4 +116,5 @@ def run_eval_loop(graph, examples, config_id: str, repeats: int, print_updates: 
                 config_id,
                 repeat,
                 print_updates,
+                model_config,
             )
