@@ -9,7 +9,7 @@ from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
 CONFIG_ID = "v0-tests"
-QUESTION_LIMIT = 5
+QUESTION_LIMIT = 1
 REPEATS = 1
 SAVE_GRAPH = False
 PRINT_UPDATES = True
@@ -27,9 +27,9 @@ def build_agent(documents):
     retriever = build_retriever_from_documents(documents)
     retriever_tool = build_retriever_tool(retriever)
     response_model = build_response_model()
-    grader_model = build_response_model()
+    decision_model = build_response_model()
 
-    return build_graph(response_model, grader_model, retriever_tool)
+    return build_graph(response_model, decision_model, retriever_tool)
 
 
 if __name__ == "__main__":

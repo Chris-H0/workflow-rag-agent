@@ -1,18 +1,38 @@
 from typing import Literal
 
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, ToolMessage
 from langgraph.graph import MessagesState
 from pydantic import BaseModel, Field
 
-from agent.prompts import GENERATE_PROMPT, GRADE_PROMPT, REWRITE_PROMPT
+from agent.prompts import (
+    FOLLOWUP_QUERY_PROMPT,
+    GENERATE_PROMPT,
+    RETRIEVAL_DECISION_PROMPT,
+    REWRITE_PROMPT,
+)
 
 
-class GradeDocuments(BaseModel):
-    """Grade documents using a binary score for relevance check."""
+MAX_RETRIEVAL_ROUNDS = 3
 
-    binary_score: Literal["yes", "no"] = Field(
-        description="Relevance score: 'yes' if relevant, or 'no' if not relevant"
+
+class RetrievalDecision(BaseModel):
+    """Decide whether to answer, retrieve more, or rewrite the question."""
+
+    decision: Literal["answer", "retrieve_more", "rewrite"] = Field(
+        description="Next action after retrieval"
     )
+
+
+def get_retrieved_context(state: MessagesState):
+    return "\n\n".join(
+        message.content
+        for message in state["messages"]
+        if isinstance(message, ToolMessage)
+    )
+
+
+def count_retrieval_rounds(state: MessagesState):
+    return sum(1 for message in state["messages"] if getattr(message, "tool_calls", None))
 
 
 def build_generate_query_or_respond(response_model, retriever_tool):
@@ -24,25 +44,30 @@ def build_generate_query_or_respond(response_model, retriever_tool):
     return generate_query_or_respond
 
 
-def build_grade_documents(grader_model):
-    def grade_documents(
+def build_decide_after_retrieval(decision_model):
+    def decide_after_retrieval(
         state: MessagesState,
-    ) -> Literal["generate_answer", "rewrite_question"]:
-        """Route based on whether retrieved documents are relevant."""
-        question = state["messages"][0].content
-        context = state["messages"][-1].content
+    ) -> Literal["generate_answer", "generate_followup_query", "rewrite_question"]:
+        """Route after retrieval based on relevance, completeness, and search budget."""
+        if count_retrieval_rounds(state) >= MAX_RETRIEVAL_ROUNDS:
+            return "generate_answer"
 
-        prompt = GRADE_PROMPT.format(question=question, context=context)
-        response = grader_model.with_structured_output(GradeDocuments).invoke(
+        question = state["messages"][0].content
+        context = get_retrieved_context(state)
+        prompt = RETRIEVAL_DECISION_PROMPT.format(question=question, context=context)
+        response = decision_model.with_structured_output(RetrievalDecision).invoke(
             [{"role": "user", "content": prompt}]
         )
 
-        if response.binary_score == "yes":
+        if response.decision == "answer":
             return "generate_answer"
+
+        if response.decision == "retrieve_more":
+            return "generate_followup_query"
 
         return "rewrite_question"
 
-    return grade_documents
+    return decide_after_retrieval
 
 
 def build_rewrite_question(response_model):
@@ -56,11 +81,22 @@ def build_rewrite_question(response_model):
     return rewrite_question
 
 
+def build_generate_followup_query():
+    def generate_followup_query(state: MessagesState):
+        """Ask the model to make one more focused retrieval query."""
+        question = state["messages"][0].content
+        context = get_retrieved_context(state)
+        prompt = FOLLOWUP_QUERY_PROMPT.format(question=question, context=context)
+        return {"messages": [HumanMessage(content=prompt)]}
+
+    return generate_followup_query
+
+
 def build_generate_answer(response_model):
     def generate_answer(state: MessagesState):
         """Generate an answer from the original question and retrieved context."""
         question = state["messages"][0].content
-        context = state["messages"][-1].content
+        context = get_retrieved_context(state)
         prompt = GENERATE_PROMPT.format(question=question, context=context)
         response = response_model.invoke([{"role": "user", "content": prompt}])
         return {"messages": [response]}

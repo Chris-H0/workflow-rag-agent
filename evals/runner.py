@@ -81,6 +81,7 @@ def run_eval_example(
         "agent_answer": agent_answer,
         "supporting_titles": supporting_titles,
         "retrieved_titles": retrieved_titles,
+        "retrieval_rounds": nodes.count("retrieve"),
         "metrics": score_result(
             agent_answer,
             gold_answer,
