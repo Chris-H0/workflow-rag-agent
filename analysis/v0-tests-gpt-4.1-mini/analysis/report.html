@@ -1,0 +1,1648 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>v0-tests-gpt-4.1-mini analysis</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 32px; color: #1f2933; }
+    h1, h2 { margin-bottom: 0.35rem; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0 28px; font-size: 13px; }
+    th, td { border: 1px solid #d9e2ec; padding: 7px 9px; text-align: left; vertical-align: top; }
+    th { background: #f0f4f8; }
+    img { max-width: 100%; border: 1px solid #d9e2ec; margin: 8px 0 28px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .card { border: 1px solid #d9e2ec; padding: 14px; border-radius: 6px; background: #fbfcfd; }
+    .warning { color: #9f580a; }
+    code { background: #f0f4f8; padding: 2px 4px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <h1>v0-tests-gpt-4.1-mini Analysis</h1>
+  <p>Generated from <code>traces/*.json</code> and <code>evals/*.json</code>. Root latency is end-to-end LangGraph wall time; nested component duration charts intentionally keep summed child durations separate from root latency.</p>
+
+  <div class="grid">
+    <div class="card"><h2>Run Counts</h2><table><tr><th>runs</th><td>50</td></tr><tr><th>evals</th><td>50</td></tr><tr><th>traces</th><td>50</td></tr><tr><th>components</th><td>829</td></tr></table></div>
+    <div class="card"><h2>Latency Seconds</h2><table><tr><th>mean</th><td>3.241</td></tr><tr><th>median</th><td>2.605</td></tr><tr><th>min</th><td>1.381</td></tr><tr><th>max</th><td>7.947</td></tr><tr><th>p90</th><td>5.3</td></tr><tr><th>p95</th><td>6.04</td></tr></table></div>
+    <div class="card"><h2>Correctness</h2><table><tr><th>exact_match</th><td>0.56</td></tr><tr><th>contains_gold_answer</th><td>0.74</td></tr><tr><th>contains_partial_gold_answer</th><td>0.78</td></tr><tr><th>supporting_title_hit</th><td>0.98</td></tr><tr><th>supporting_title_recall</th><td>0.85</td></tr></table></div>
+  </div>
+
+  <h2>Configured Models By Node</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>node</th>
+      <th>provider</th>
+      <th>model</th>
+      <th>temperature</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>decide_after_retrieval</td>
+      <td>openai</td>
+      <td>gpt-4.1-mini</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>generate_answer</td>
+      <td>openai</td>
+      <td>gpt-4.1-mini</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>generate_query_or_respond</td>
+      <td>openai</td>
+      <td>gpt-4.1-mini</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>rewrite_question</td>
+      <td>openai</td>
+      <td>gpt-4.1-mini</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Observed LLM Models In Traces</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>langgraph_node</th>
+      <th>model_provider</th>
+      <th>model_name</th>
+      <th>calls</th>
+      <th>duration_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>generate_answer</td>
+      <td>openai</td>
+      <td>gpt-4.1-mini</td>
+      <td>47</td>
+      <td>31.275914</td>
+      <td>30784</td>
+      <td>0.012519</td>
+    </tr>
+    <tr>
+      <td>generate_query_or_respond</td>
+      <td>openai</td>
+      <td>gpt-4.1-mini</td>
+      <td>67</td>
+      <td>68.381440</td>
+      <td>24469</td>
+      <td>0.012448</td>
+    </tr>
+    <tr>
+      <td>retrieve</td>
+      <td>openai</td>
+      <td>gpt-4.1-mini</td>
+      <td>61</td>
+      <td>46.538620</td>
+      <td>40534</td>
+      <td>0.016598</td>
+    </tr>
+    <tr>
+      <td>rewrite_question</td>
+      <td>openai</td>
+      <td>gpt-4.1-mini</td>
+      <td>2</td>
+      <td>1.714551</td>
+      <td>152</td>
+      <td>0.000106</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Warnings</h2>
+  <p>No warnings.</p>
+
+  <section><h2>Latency By Run</h2><img src="latency_by_run.png" alt="Latency By Run"></section>
+<section><h2>Latency Breakdown By Run</h2><img src="latency_breakdown_by_run.png" alt="Latency Breakdown By Run"></section>
+<section><h2>Latency Breakdown By Type</h2><img src="latency_breakdown_by_type.png" alt="Latency Breakdown By Type"></section>
+<section><h2>Latency Breakdown By Node</h2><img src="latency_breakdown_by_node.png" alt="Latency Breakdown By Node"></section>
+<section><h2>Correctness Summary</h2><img src="correctness_summary.png" alt="Correctness Summary"></section>
+<section><h2>Correctness Vs Latency</h2><img src="correctness_vs_latency.png" alt="Correctness Vs Latency"></section>
+<section><h2>Tokens Vs Latency</h2><img src="tokens_vs_latency.png" alt="Tokens Vs Latency"></section>
+<section><h2>Cost By Run</h2><img src="cost_by_run.png" alt="Cost By Run"></section>
+
+  <h2>Slow Incorrect Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>exact_match</th>
+      <th>contains_gold_answer</th>
+      <th>contains_partial_gold_answer</th>
+      <th>supporting_title_recall</th>
+      <th>question</th>
+      <th>agent_answer</th>
+      <th>gold_answer</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>5ae0d4c9554299603e418468</td>
+      <td>0</td>
+      <td>7.947131</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.5</td>
+      <td>Roger O. Egeberg was Assistant Secretary for Health and Scientific Affairs during the administration of a president that served during what years?</td>
+      <td>1969–1974</td>
+      <td>1969 until 1974</td>
+    </tr>
+    <tr>
+      <td>5abbf698554299114383a0b5</td>
+      <td>0</td>
+      <td>5.539693</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>Which British first-generation jet-powered medium bomber was used in the South West Pacific theatre of World War II?</td>
+      <td>The English Electric Canberra is a British first-generation jet-powered medium bomber. However, it was introduced to service in May 1951, which is after World War II ended in 1945. Although No. 2 Squadron RAAF, which operated English Electric Canberra jets, saw action in the South West Pacific theatre, this was not during World War II but in later conflicts such as the Malayan Emergency and the Vietnam War.\n\nTherefore, there was no British first-generation jet-powered medium bomber that saw operational use in the South West Pacific theatre during World War II.</td>
+      <td>English Electric Canberra</td>
+    </tr>
+    <tr>
+      <td>5a8c7595554299585d9e36b6</td>
+      <td>0</td>
+      <td>5.273144</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>What government position was held by the woman who portrayed Corliss Archer in the film Kiss and Tell?</td>
+      <td>Chief of Protocol of the United States</td>
+      <td>Chief of Protocol</td>
+    </tr>
+    <tr>
+      <td>5a722b8655429971e9dc9329</td>
+      <td>0</td>
+      <td>4.155051</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>Who was the writer of These Boots Are Made for Walkin' and who died in 2007?</td>
+      <td>Lee Hazlewood, Lee Hazlewood</td>
+      <td>Barton Lee Hazlewood</td>
+    </tr>
+    <tr>
+      <td>5add61d65542995b365fab21</td>
+      <td>0</td>
+      <td>4.109679</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>What type of forum did a former Soviet statesman initiate?</td>
+      <td>World Summit of Nobel Peace Laureates</td>
+      <td>Organizations could come together to address global issues</td>
+    </tr>
+    <tr>
+      <td>5ae6050f55429929b0807a5e</td>
+      <td>0</td>
+      <td>3.963493</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>This singer of A Rather Blustery Day also voiced what hedgehog?</td>
+      <td>Dr. Robotnik</td>
+      <td>Sonic</td>
+    </tr>
+    <tr>
+      <td>5ab6d09255429954757d337d</td>
+      <td>0</td>
+      <td>3.700040</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>The football manager who recruited David Beckham managed Manchester United during what timeframe?</td>
+      <td>1986 to 2013</td>
+      <td>from 1986 to 2013</td>
+    </tr>
+    <tr>
+      <td>5ac23ff0554299636651994d</td>
+      <td>0</td>
+      <td>3.599347</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.5</td>
+      <td>When was Poison's album "Shut Up, Make Love" released?</td>
+      <td>There is no record of an album titled "Shut Up and Make Love" by Poison. However, "Shut Up, Make Love" is a song by Poison that was released in 2000 as the first single from their 2000 album "Crack a Smile...and More!"</td>
+      <td>2000</td>
+    </tr>
+    <tr>
+      <td>5a8133725542995ce29dcbdb</td>
+      <td>0</td>
+      <td>3.221577</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>Which writer was from England, Henry Roth or Robert Erskine Childers?</td>
+      <td>Robert Erskine Childers</td>
+      <td>Robert Erskine Childers DSC</td>
+    </tr>
+    <tr>
+      <td>5a7166395542994082a3e814</td>
+      <td>0</td>
+      <td>2.455260</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>What is the name of the fight song of the university whose main campus is in Lawrence, Kansas and whose branch campuses are in the Kansas City metropolitan area?</td>
+      <td>Kansas Song (We’re From Kansas)</td>
+      <td>Kansas Song</td>
+    </tr>
+    <tr>
+      <td>5a74106b55429979e288289e</td>
+      <td>0</td>
+      <td>2.436603</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>Where is the company that Sachin Warrier worked for as a software engineer headquartered?</td>
+      <td>Mumbai, Maharashtra</td>
+      <td>Mumbai</td>
+    </tr>
+    <tr>
+      <td>5ab2d3df554299194fa9352c</td>
+      <td>0</td>
+      <td>2.253820</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>The battle in which Giuseppe Arimondi lost his life secured what for Ethiopia?</td>
+      <td>Ethiopian sovereignty</td>
+      <td>sovereignty</td>
+    </tr>
+    <tr>
+      <td>5ae22b8d554299234fd0440f</td>
+      <td>0</td>
+      <td>2.216759</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>What was the father of Kasper Schmeichel voted to be by the IFFHS in 1992?</td>
+      <td>IFFHS World's Best Goalkeeper</td>
+      <td>World's Best Goalkeeper</td>
+    </tr>
+    <tr>
+      <td>5adddccd5542997dc7907069</td>
+      <td>0</td>
+      <td>2.216646</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.5</td>
+      <td>Aside from the Apple Remote, what other device can control the program Apple Remote was originally designed to interact with?</td>
+      <td>Siri Remote</td>
+      <td>keyboard function keys</td>
+    </tr>
+    <tr>
+      <td>5adf37a95542995ec70e8f97</td>
+      <td>0</td>
+      <td>2.195325</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.5</td>
+      <td>The 2011–12 VCU Rams men's basketball team, led by third year head coach Shaka Smart, represented Virginia Commonwealth University which was founded in what year?</td>
+      <td>1968</td>
+      <td>1838</td>
+    </tr>
+    <tr>
+      <td>5a7d54165542995f4f402256</td>
+      <td>0</td>
+      <td>2.172584</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.5</td>
+      <td>A medieval fortress in Dirleton, East Lothian, Scotland borders on the south side of what coastal area?</td>
+      <td>Firth of Forth</td>
+      <td>Yellowcraig</td>
+    </tr>
+    <tr>
+      <td>5ae0361155429925eb1afc2c</td>
+      <td>0</td>
+      <td>2.157415</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.5</td>
+      <td>Which&nbsp;&nbsp;French ace pilot and adventurer fly L'Oiseau Blanc</td>
+      <td>Charles Nungesser</td>
+      <td>Charles Eugène</td>
+    </tr>
+    <tr>
+      <td>5ab56e32554299637185c594</td>
+      <td>0</td>
+      <td>2.131352</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>Are Random House Tower and 888 7th Avenue both used for real estate?</td>
+      <td>yes</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>5a87ab905542996e4f3088c1</td>
+      <td>0</td>
+      <td>1.980106</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>The arena where the Lewiston Maineiacs played their home games can seat how many people?</td>
+      <td>4,000 capacity (3,677 seated)</td>
+      <td>3,677 seated</td>
+    </tr>
+    <tr>
+      <td>5a75e05c55429976ec32bc5f</td>
+      <td>0</td>
+      <td>1.942445</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>Brown State Fishing Lake is in a country that has a population of how many inhabitants ?</td>
+      <td>331 million</td>
+      <td>9,984</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Fast Correct Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>exact_match</th>
+      <th>contains_gold_answer</th>
+      <th>contains_partial_gold_answer</th>
+      <th>supporting_title_recall</th>
+      <th>question</th>
+      <th>agent_answer</th>
+      <th>gold_answer</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>5a8ef2a75542995a26add583</td>
+      <td>0</td>
+      <td>2.048569</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>Seven Brief Lessons on Physics was written by an Italian physicist that has worked in France since what year?</td>
+      <td>2000</td>
+      <td>2000</td>
+    </tr>
+    <tr>
+      <td>5a877e5d5542993e715abf7d</td>
+      <td>0</td>
+      <td>2.147909</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>What screenwriter with credits for "Evolution" co-wrote a film starring Nicolas Cage and Téa Leoni?</td>
+      <td>David Weissman</td>
+      <td>David Weissman</td>
+    </tr>
+    <tr>
+      <td>5ae7a8175542993210983ed8</td>
+      <td>0</td>
+      <td>2.342373</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.5</td>
+      <td>Which other Mexican Formula One race car driver has held the podium besides the Force India driver born in 1990?</td>
+      <td>Pedro Rodríguez</td>
+      <td>Pedro Rodríguez</td>
+    </tr>
+    <tr>
+      <td>5abf63f15542997ec76fd3ea</td>
+      <td>0</td>
+      <td>2.346867</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.5</td>
+      <td>Alexander Kerensky was defeated and destroyed by the Bolsheviks in the course of a civil war that ended when ?</td>
+      <td>October 1922</td>
+      <td>October 1922</td>
+    </tr>
+    <tr>
+      <td>5a7571135542992d0ec05f98</td>
+      <td>0</td>
+      <td>2.434641</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.5</td>
+      <td>Ralph Hefferline was a psychology professor at a university that is located in what city?</td>
+      <td>New York City</td>
+      <td>New York City</td>
+    </tr>
+    <tr>
+      <td>5a8a3e745542996c9b8d5e70</td>
+      <td>0</td>
+      <td>2.462544</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>What is the name for the adventure in "Tunnels and Trolls", a game designed by Ken St. Andre?</td>
+      <td>Arena of Khazan</td>
+      <td>Arena of Khazan</td>
+    </tr>
+    <tr>
+      <td>5a8e068b5542995085b37384</td>
+      <td>0</td>
+      <td>2.478324</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>Are Ferocactus and Silene both types of plant?</td>
+      <td>yes</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <td>5a7cc50e554299452d57ba3e</td>
+      <td>0</td>
+      <td>2.500147</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>Which band, Letters to Cleo or Screaming Trees, had more members?</td>
+      <td>Letters to Cleo</td>
+      <td>Letters to Cleo</td>
+    </tr>
+    <tr>
+      <td>5ab51dae5542991779162d82</td>
+      <td>0</td>
+      <td>2.529295</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>Are both Elko Regional Airport and Gerald R. Ford International Airport located in Michigan?</td>
+      <td>No</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>5a85b2d95542997b5ce40028</td>
+      <td>0</td>
+      <td>2.535268</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>Who was known by his stage name Aladin and helped organizations improve their performance as a consultant?</td>
+      <td>Eenasul Fateh</td>
+      <td>Eenasul Fateh</td>
+    </tr>
+    <tr>
+      <td>5a85ea095542994775f606a8</td>
+      <td>0</td>
+      <td>2.563618</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>What science fantasy young adult series, told in first person, has a set of companion books narrating the stories of enslaved worlds and alien species?</td>
+      <td>Animorphs</td>
+      <td>Animorphs</td>
+    </tr>
+    <tr>
+      <td>5abd94525542992ac4f382d2</td>
+      <td>0</td>
+      <td>2.590237</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.5</td>
+      <td>2014 S/S is the debut album of a South Korean boy group that was formed by who?</td>
+      <td>YG Entertainment</td>
+      <td>YG Entertainment</td>
+    </tr>
+    <tr>
+      <td>5a7bbb64554299042af8f7cc</td>
+      <td>0</td>
+      <td>2.619151</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>Who is older, Annie Morton or Terry Richardson?</td>
+      <td>Terry Richardson</td>
+      <td>Terry Richardson</td>
+    </tr>
+    <tr>
+      <td>5adbf0a255429947ff17385a</td>
+      <td>0</td>
+      <td>2.699230</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>Are the Laleli Mosque and Esma Sultan Mansion located in the same neighborhood?</td>
+      <td>No</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>5a828c8355429966c78a6a50</td>
+      <td>0</td>
+      <td>2.736162</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>Kaiser Ventures corporation was founded by an American industrialist who became known as the father of modern American shipbuilding?</td>
+      <td>Henry J. Kaiser</td>
+      <td>Henry J. Kaiser</td>
+    </tr>
+    <tr>
+      <td>5abc0a5d5542993f40c73c64</td>
+      <td>0</td>
+      <td>3.138835</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>Are Freakonomics and In the Realm of the Hackers both American documentaries?</td>
+      <td>No</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>5a80721b554299485f5985ef</td>
+      <td>0</td>
+      <td>3.406101</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>The Livesey Hal War Memorial commemorates the fallen of which war, that had over 60 million casualties?</td>
+      <td>World War II</td>
+      <td>World War II</td>
+    </tr>
+    <tr>
+      <td>5a79311755429970f5fffe67</td>
+      <td>0</td>
+      <td>3.499051</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.5</td>
+      <td>A Japanese manga series based on a 16 year old high school student Ichitaka Seto, is written and illustrated by someone born in what year?</td>
+      <td>1962</td>
+      <td>1962</td>
+    </tr>
+    <tr>
+      <td>5abd259d55429924427fcf1a</td>
+      <td>0</td>
+      <td>3.514851</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>Are both Dictyosperma, and Huernia described as a genus?</td>
+      <td>yes</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <td>5ab29c24554299449642c932</td>
+      <td>0</td>
+      <td>3.541514</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>Are Giuseppe Verdi and Ambroise Thomas both Opera composers ?</td>
+      <td>yes</td>
+      <td>yes</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>LLM Latency By Node</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>langgraph_node</th>
+      <th>duration_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>generate_query_or_respond</td>
+      <td>68.381440</td>
+      <td>24469</td>
+      <td>0.012448</td>
+    </tr>
+    <tr>
+      <td>retrieve</td>
+      <td>46.538620</td>
+      <td>40534</td>
+      <td>0.016598</td>
+    </tr>
+    <tr>
+      <td>generate_answer</td>
+      <td>31.275914</td>
+      <td>30784</td>
+      <td>0.012519</td>
+    </tr>
+    <tr>
+      <td>rewrite_question</td>
+      <td>1.714551</td>
+      <td>152</td>
+      <td>0.000106</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Tool And Retriever Latency</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>run_id</th>
+      <th>run_type</th>
+      <th>name</th>
+      <th>langgraph_node</th>
+      <th>duration_s</th>
+      <th>status</th>
+      <th>error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140448919312Z-5a8c7595554299585d9e36b6-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.855775</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140448919312Z-5a8c7595554299585d9e36b6-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.854796</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140604297963Z-5ae2070a5542994d89d5b313-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.349849</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140604297963Z-5ae2070a5542994d89d5b313-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.348926</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140459462512Z-5a8e3ea95542995a26add48d-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.306524</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140459462512Z-5a8e3ea95542995a26add48d-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.305691</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140510841163Z-5a7bbb64554299042af8f7cc-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.269105</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140510841163Z-5a7bbb64554299042af8f7cc-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.267106</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140648461575Z-5ab51dae5542991779162d82-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.255792</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140648461575Z-5ab51dae5542991779162d82-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.254922</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140541053738Z-5ab29c24554299449642c932-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.247892</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140541053738Z-5ab29c24554299449642c932-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.247332</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140541053738Z-5ab29c24554299449642c932-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.247251</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140541053738Z-5ab29c24554299449642c932-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.246744</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140526615833Z-5ab56e32554299637185c594-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.245201</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140526615833Z-5ab56e32554299637185c594-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.244348</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140526615833Z-5ab56e32554299637185c594-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.244234</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140526615833Z-5ab56e32554299637185c594-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.242350</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140721681445Z-5a8e068b5542995085b37384-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.235595</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140721681445Z-5a8e068b5542995085b37384-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.234922</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140624959312Z-5a8a3e745542996c9b8d5e70-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.233039</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140624959312Z-5a8a3e745542996c9b8d5e70-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.232117</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140454195174Z-5a85ea095542994775f606a8-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.228062</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140454195174Z-5a85ea095542994775f606a8-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.227553</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140653430648Z-5a7a0e1e5542990783324e1a-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.219412</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140602078997Z-5adddccd5542997dc7907069-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.219270</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140552546005Z-5a8133725542995ce29dcbdb-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.218790</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140653430648Z-5a7a0e1e5542990783324e1a-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.218554</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140635009353Z-5abc0a5d5542993f40c73c64-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.218471</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v0-tests-gpt-4.1-mini-20260504T140602078997Z-5adddccd5542997dc7907069-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.218418</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>All Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+      <th>exact_match</th>
+      <th>contains_gold_answer</th>
+      <th>contains_partial_gold_answer</th>
+      <th>supporting_title_recall</th>
+      <th>retrieval_rounds</th>
+      <th>nodes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>5ae0d4c9554299603e418468</td>
+      <td>0</td>
+      <td>7.947131</td>
+      <td>5458</td>
+      <td>0.002309</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.5</td>
+      <td>3</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ab3e45655429976abd1bcd4</td>
+      <td>0</td>
+      <td>6.654300</td>
+      <td>3464</td>
+      <td>0.001460</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a760ab65542994ccc918697</td>
+      <td>0</td>
+      <td>6.213050</td>
+      <td>5746</td>
+      <td>0.002430</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.5</td>
+      <td>3</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ae2070a5542994d89d5b313</td>
+      <td>0</td>
+      <td>5.828827</td>
+      <td>8118</td>
+      <td>0.003391</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>3</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5abbf698554299114383a0b5</td>
+      <td>0</td>
+      <td>5.539693</td>
+      <td>1378</td>
+      <td>0.000758</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; rewrite_question -&gt; generate_query_or_respond</td>
+    </tr>
+    <tr>
+      <td>5a8c7595554299585d9e36b6</td>
+      <td>0</td>
+      <td>5.273144</td>
+      <td>3242</td>
+      <td>0.001375</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ab3b0bf5542992ade7c6e39</td>
+      <td>0</td>
+      <td>4.401500</td>
+      <td>3275</td>
+      <td>0.001398</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a8e3ea95542995a26add48d</td>
+      <td>0</td>
+      <td>4.266700</td>
+      <td>2983</td>
+      <td>0.001269</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a722b8655429971e9dc9329</td>
+      <td>0</td>
+      <td>4.155051</td>
+      <td>3095</td>
+      <td>0.001323</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a8db19d5542994ba4e3dd00</td>
+      <td>0</td>
+      <td>4.138984</td>
+      <td>1661</td>
+      <td>0.000732</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5add61d65542995b365fab21</td>
+      <td>0</td>
+      <td>4.109679</td>
+      <td>3188</td>
+      <td>0.001348</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ae6050f55429929b0807a5e</td>
+      <td>0</td>
+      <td>3.963493</td>
+      <td>3145</td>
+      <td>0.001329</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ab859a955429934fafe6d7b</td>
+      <td>0</td>
+      <td>3.844490</td>
+      <td>3379</td>
+      <td>0.001442</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a7a0e1e5542990783324e1a</td>
+      <td>0</td>
+      <td>3.704451</td>
+      <td>1718</td>
+      <td>0.000762</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ab6d09255429954757d337d</td>
+      <td>0</td>
+      <td>3.700040</td>
+      <td>3181</td>
+      <td>0.001343</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ac23ff0554299636651994d</td>
+      <td>0</td>
+      <td>3.599347</td>
+      <td>1229</td>
+      <td>0.000618</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; rewrite_question -&gt; generate_query_or_respond</td>
+    </tr>
+    <tr>
+      <td>5ab29c24554299449642c932</td>
+      <td>0</td>
+      <td>3.541514</td>
+      <td>1554</td>
+      <td>0.000694</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5abd259d55429924427fcf1a</td>
+      <td>0</td>
+      <td>3.514851</td>
+      <td>1850</td>
+      <td>0.000810</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a79311755429970f5fffe67</td>
+      <td>0</td>
+      <td>3.499051</td>
+      <td>1116</td>
+      <td>0.000493</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a80721b554299485f5985ef</td>
+      <td>0</td>
+      <td>3.406101</td>
+      <td>984</td>
+      <td>0.000433</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a8133725542995ce29dcbdb</td>
+      <td>0</td>
+      <td>3.221577</td>
+      <td>1522</td>
+      <td>0.000687</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5abc0a5d5542993f40c73c64</td>
+      <td>0</td>
+      <td>3.138835</td>
+      <td>1744</td>
+      <td>0.000773</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a828c8355429966c78a6a50</td>
+      <td>0</td>
+      <td>2.736162</td>
+      <td>1172</td>
+      <td>0.000512</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5adbf0a255429947ff17385a</td>
+      <td>0</td>
+      <td>2.699230</td>
+      <td>1697</td>
+      <td>0.000748</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a7bbb64554299042af8f7cc</td>
+      <td>0</td>
+      <td>2.619151</td>
+      <td>1563</td>
+      <td>0.000700</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5abd94525542992ac4f382d2</td>
+      <td>0</td>
+      <td>2.590237</td>
+      <td>1051</td>
+      <td>0.000459</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a85ea095542994775f606a8</td>
+      <td>0</td>
+      <td>2.563618</td>
+      <td>1128</td>
+      <td>0.000493</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a85b2d95542997b5ce40028</td>
+      <td>0</td>
+      <td>2.535268</td>
+      <td>946</td>
+      <td>0.000419</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ab51dae5542991779162d82</td>
+      <td>0</td>
+      <td>2.529295</td>
+      <td>1667</td>
+      <td>0.000740</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a7cc50e554299452d57ba3e</td>
+      <td>0</td>
+      <td>2.500147</td>
+      <td>1761</td>
+      <td>0.000781</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a8e068b5542995085b37384</td>
+      <td>0</td>
+      <td>2.478324</td>
+      <td>1692</td>
+      <td>0.000740</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a8a3e745542996c9b8d5e70</td>
+      <td>0</td>
+      <td>2.462544</td>
+      <td>1060</td>
+      <td>0.000468</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a7166395542994082a3e814</td>
+      <td>0</td>
+      <td>2.455260</td>
+      <td>1027</td>
+      <td>0.000467</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a74106b55429979e288289e</td>
+      <td>0</td>
+      <td>2.436603</td>
+      <td>901</td>
+      <td>0.000395</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a7571135542992d0ec05f98</td>
+      <td>0</td>
+      <td>2.434641</td>
+      <td>1086</td>
+      <td>0.000470</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5abf63f15542997ec76fd3ea</td>
+      <td>0</td>
+      <td>2.346867</td>
+      <td>1108</td>
+      <td>0.000489</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ae7a8175542993210983ed8</td>
+      <td>0</td>
+      <td>2.342373</td>
+      <td>1128</td>
+      <td>0.000490</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ab2d3df554299194fa9352c</td>
+      <td>0</td>
+      <td>2.253820</td>
+      <td>964</td>
+      <td>0.000430</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ae22b8d554299234fd0440f</td>
+      <td>0</td>
+      <td>2.216759</td>
+      <td>1141</td>
+      <td>0.000501</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5adddccd5542997dc7907069</td>
+      <td>0</td>
+      <td>2.216646</td>
+      <td>1072</td>
+      <td>0.000471</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5adf37a95542995ec70e8f97</td>
+      <td>0</td>
+      <td>2.195325</td>
+      <td>1214</td>
+      <td>0.000516</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a7d54165542995f4f402256</td>
+      <td>0</td>
+      <td>2.172584</td>
+      <td>1110</td>
+      <td>0.000492</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ae0361155429925eb1afc2c</td>
+      <td>0</td>
+      <td>2.157415</td>
+      <td>999</td>
+      <td>0.000440</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a877e5d5542993e715abf7d</td>
+      <td>0</td>
+      <td>2.147909</td>
+      <td>936</td>
+      <td>0.000418</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ab56e32554299637185c594</td>
+      <td>0</td>
+      <td>2.131352</td>
+      <td>1919</td>
+      <td>0.000840</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a8ef2a75542995a26add583</td>
+      <td>0</td>
+      <td>2.048569</td>
+      <td>1070</td>
+      <td>0.000469</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a87ab905542996e4f3088c1</td>
+      <td>0</td>
+      <td>1.980106</td>
+      <td>1193</td>
+      <td>0.000522</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a75e05c55429976ec32bc5f</td>
+      <td>0</td>
+      <td>1.942445</td>
+      <td>1124</td>
+      <td>0.000481</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ae4a3265542995ad6573de5</td>
+      <td>0</td>
+      <td>1.822346</td>
+      <td>1084</td>
+      <td>0.000461</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a8b57f25542995d1e6f1371</td>
+      <td>0</td>
+      <td>1.381222</td>
+      <td>96</td>
+      <td>0.000084</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>generate_query_or_respond</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

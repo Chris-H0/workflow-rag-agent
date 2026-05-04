@@ -6,22 +6,22 @@ from langchain.chat_models import init_chat_model
 NODE_MODEL_CONFIG = {
     "generate_query_or_respond": {
         "provider": "openai",
-        "model": "gpt-5.4",
+        "model": "gpt-4.1-mini",
         "temperature": 0,
     },
     "decide_after_retrieval": {
         "provider": "openai",
-        "model": "gpt-5.4",
+        "model": "gpt-4.1-mini",
         "temperature": 0,
     },
     "rewrite_question": {
         "provider": "openai",
-        "model": "gpt-5.4",
+        "model": "gpt-4.1-mini",
         "temperature": 0,
     },
     "generate_answer": {
         "provider": "openai",
-        "model": "gpt-5.4",
+        "model": "gpt-4.1-mini",
         "temperature": 0,
     },
 }
