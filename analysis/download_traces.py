@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from langsmith import Client
 
 
-CONFIG_ID = "v0-tests-haiku-4-5"
+CONFIG_ID = "v0-test-ollama-llama3.2"
 LIMIT = 75
 
 

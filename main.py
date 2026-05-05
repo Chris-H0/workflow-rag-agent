@@ -8,8 +8,8 @@ from rag.pipeline import build_retriever_from_documents
 from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
-CONFIG_ID = "v0-test-local"
-QUESTION_LIMIT = 1
+CONFIG_ID = "v0-test-ollama-llama3.2"
+QUESTION_LIMIT = 50
 REPEATS = 1
 SAVE_GRAPH = False
 PRINT_UPDATES = False

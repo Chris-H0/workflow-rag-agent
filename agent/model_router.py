@@ -6,19 +6,19 @@ from langchain.chat_models import init_chat_model
 NODE_MODEL_CONFIG = {
     "generate_query_or_respond": {
         "provider": "ollama",
-        "model": "qwen3.5:4b",
+        "model": "llama3.2",
     },
     "decide_after_retrieval": {
         "provider": "ollama",
-        "model": "qwen3.5:4b",
+        "model": "llama3.2",
     },
     "rewrite_question": {
         "provider": "ollama",
-        "model": "qwen3.5:4b",
+        "model": "llama3.2",
     },
     "generate_answer": {
         "provider": "ollama",
-        "model": "qwen3.5:4b",
+        "model": "llama3.2",
     },
 }
 
