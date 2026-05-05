@@ -6,6 +6,10 @@ RETRIEVAL_DECISION_PROMPT = (
     "- answer: the context is relevant and sufficient to answer the original question.\n"
     "- retrieve_more: the context is relevant but missing information needed to answer.\n"
     "- rewrite: the context is not relevant to the original question.\n"
+    "\n"
+    "Return only valid JSON. Do not include markdown, prose, explanations, or extra keys.\n"
+    'The JSON must match exactly this shape: {{"decision": "<one decision>"}}\n'
+    'Allowed values for "decision": "answer", "retrieve_more", "rewrite".\n'
 )
 
 FOLLOWUP_QUERY_PROMPT = (
