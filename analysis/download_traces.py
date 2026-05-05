@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from langsmith import Client
 
 
-CONFIG_ID = "v2-tests-qwen3.5-2b-opus-4-7"
+CONFIG_ID = "v2-tests-qwen3.5-2b"
 LIMIT = 75
 
 

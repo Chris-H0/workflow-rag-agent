@@ -26,8 +26,11 @@ NODE_MODEL_CONFIG = {
         "reasoning": False,
     },
     "generate_answer": {
-        "provider": "anthropic",
-        "model": "claude-opus-4-7",
+        "provider": "ollama",
+        "model": "qwen3.5:2b",
+        "temperature": 0,
+        "thinking": False,
+        "reasoning": False,
     },
 }
 

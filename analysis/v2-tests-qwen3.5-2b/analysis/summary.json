@@ -1,0 +1,36 @@
+{
+  "config_id": "v2-tests-qwen3.5-2b",
+  "run_count": 50,
+  "eval_count": 50,
+  "trace_count": 50,
+  "component_count": 1025,
+  "latency_s": {
+    "mean": 5.43834246,
+    "median": 5.009261,
+    "min": 2.261542,
+    "max": 16.121532,
+    "p90": 9.641848300000001,
+    "p95": 10.054669
+  },
+  "correctness": {
+    "exact_match": 0.46,
+    "contains_gold_answer": 0.5,
+    "contains_partial_gold_answer": 0.62,
+    "supporting_title_hit": 0.98,
+    "supporting_title_recall": 0.82
+  },
+  "root_status_counts": {
+    "success": 50
+  },
+  "component_run_type_counts": {
+    "chain": 545,
+    "llm": 209,
+    "tool": 98,
+    "retriever": 98,
+    "parser": 75
+  },
+  "model_config_counts": {
+    "{\"decide_after_retrieval\": {\"model\": \"qwen3.5:2b\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"generate_answer\": {\"model\": \"qwen3.5:2b\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"generate_query_or_respond\": {\"model\": \"qwen3.5:2b\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"rewrite_question\": {\"model\": \"qwen3.5:2b\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}}": 50
+  },
+  "warnings": []
+}
