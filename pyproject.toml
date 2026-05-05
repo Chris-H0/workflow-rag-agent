@@ -8,6 +8,7 @@ dependencies = [
     "datasets>=4.4.1",
     "dotenv>=0.9.9",
     "langchain-anthropic>=1.2.0",
+    "langchain-ollama>=1.1.0",
     "langchain-text-splitters>=1.1.2",
     "langchain[openai]>=1.2.15",
     "langgraph>=1.1.10",

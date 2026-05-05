@@ -8,8 +8,8 @@ from rag.pipeline import build_retriever_from_documents
 from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
-CONFIG_ID = "v0-tests-haiku-4-5"
-QUESTION_LIMIT = 50
+CONFIG_ID = "v0-test-local"
+QUESTION_LIMIT = 1
 REPEATS = 1
 SAVE_GRAPH = False
 PRINT_UPDATES = False

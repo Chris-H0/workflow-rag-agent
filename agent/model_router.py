@@ -3,41 +3,22 @@ from copy import deepcopy
 from langchain.chat_models import init_chat_model
 
 
-# NODE_MODEL_CONFIG = {
-#     "generate_query_or_respond": {
-#         "provider": "openai",
-#         "model": "gpt-5.5",
-#     },
-#     "decide_after_retrieval": {
-#         "provider": "openai",
-#         "model": "gpt-5.5",
-#     },
-#     "rewrite_question": {
-#         "provider": "openai",
-#         "model": "gpt-5.5",
-#     },
-#     "generate_answer": {
-#         "provider": "openai",
-#         "model": "gpt-5.5",
-#     },
-# }
-
 NODE_MODEL_CONFIG = {
     "generate_query_or_respond": {
-        "provider": "anthropic",
-        "model": "claude-haiku-4-5",
+        "provider": "ollama",
+        "model": "qwen3.5:4b",
     },
     "decide_after_retrieval": {
-        "provider": "anthropic",
-        "model": "claude-haiku-4-5",
+        "provider": "ollama",
+        "model": "qwen3.5:4b",
     },
     "rewrite_question": {
-        "provider": "anthropic",
-        "model": "claude-haiku-4-5",
+        "provider": "ollama",
+        "model": "qwen3.5:4b",
     },
     "generate_answer": {
-        "provider": "anthropic",
-        "model": "claude-haiku-4-5",
+        "provider": "ollama",
+        "model": "qwen3.5:4b",
     },
 }
 
