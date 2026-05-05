@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-CONFIG_ID = "v0-test-ollama-llama3.2"
+CONFIG_ID = "v1-test-ollama-qwen3.5-2b"
 ANALYSIS_ROOT = "analysis"
 OVERWRITE = True
 
