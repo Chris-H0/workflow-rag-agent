@@ -6,19 +6,31 @@ from langchain.chat_models import init_chat_model
 NODE_MODEL_CONFIG = {
     "generate_query_or_respond": {
         "provider": "ollama",
-        "model": "llama3.2",
+        "model": "qwen3.5:2b",
+        "temperature": 0,
+        "thinking": False,
+        "reasoning": False,
     },
     "decide_after_retrieval": {
         "provider": "ollama",
-        "model": "llama3.2",
+        "model": "qwen3.5:2b",
+        "temperature": 0,
+        "thinking": False,
+        "reasoning": False,
     },
     "rewrite_question": {
         "provider": "ollama",
-        "model": "llama3.2",
+        "model": "qwen3.5:2b",
+        "temperature": 0,
+        "thinking": False,
+        "reasoning": False,
     },
     "generate_answer": {
         "provider": "ollama",
-        "model": "llama3.2",
+        "model": "qwen3.5:2b",
+        "temperature": 0,
+        "thinking": True,
+        "reasoning": True,
     },
 }
 
@@ -37,7 +49,13 @@ class ModelRouter:
         return deepcopy(self.model_config)
 
     def build_model(self, config):
+        required_keys = {"provider", "model"}
+        model_kwargs = {
+            key: value for key, value in config.items() if key not in required_keys
+        }
+
         return init_chat_model(
             config["model"],
             model_provider=config["provider"],
+            **model_kwargs,
         )
