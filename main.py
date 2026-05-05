@@ -8,7 +8,7 @@ from rag.pipeline import build_retriever_from_documents
 from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
-CONFIG_ID = "v1-test-ollama-qwen3.5-2b"
+CONFIG_ID = "v2-tests-qwen3.5-2b-opus-4-7"
 QUESTION_LIMIT = 50
 REPEATS = 1
 SAVE_GRAPH = False
