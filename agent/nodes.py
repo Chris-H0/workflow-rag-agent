@@ -1,12 +1,13 @@
 from typing import Literal
 
-from langchain_core.messages import HumanMessage, ToolMessage
+from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 from langgraph.graph import MessagesState
 from pydantic import BaseModel, Field
 
 from agent.prompts import (
     FOLLOWUP_QUERY_PROMPT,
     GENERATE_PROMPT,
+    INITIAL_RETRIEVAL_PROMPT,
     RETRIEVAL_DECISION_PROMPT,
     REWRITE_PROMPT,
 )
@@ -38,7 +39,8 @@ def count_retrieval_rounds(state: MessagesState):
 def build_generate_query_or_respond(response_model, retriever_tool):
     def generate_query_or_respond(state: MessagesState):
         """Either answer directly or call the retriever tool."""
-        response = response_model.bind_tools([retriever_tool]).invoke(state["messages"])
+        messages = [SystemMessage(content=INITIAL_RETRIEVAL_PROMPT), *state["messages"]]
+        response = response_model.bind_tools([retriever_tool]).invoke(messages)
         return {"messages": [response]}
 
     return generate_query_or_respond

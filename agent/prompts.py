@@ -1,3 +1,10 @@
+INITIAL_RETRIEVAL_PROMPT = (
+    "You are the first step in a retrieval-augmented QA workflow. "
+    "For factual questions, prefer calling the retrieval tool before answering, "
+    "especially when the answer depends on specific entities, dates, titles, relationships, "
+    "or facts that should be grounded in documents. "
+)
+
 RETRIEVAL_DECISION_PROMPT = (
     "You are deciding the next step for a retrieval-augmented QA system.\n"
     "Original question: {question}\n\n"
