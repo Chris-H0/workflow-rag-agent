@@ -37,6 +37,10 @@ def write_json(path: Path, data):
     path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
 
 
+def json_string(value):
+    return json.dumps(value, sort_keys=True, default=str)
+
+
 def parse_time(value):
     if not value:
         return None
@@ -123,6 +127,7 @@ def load_evals(eval_files):
             warnings.append(f"Duplicate eval run_id found: {run_id}")
 
         metrics = data.get("metrics") or {}
+        model_config = data.get("model_config") or {}
         row = {
             "run_id": run_id,
             "config_id": data.get("config_id"),
@@ -135,7 +140,8 @@ def load_evals(eval_files):
             "retrieved_titles": "; ".join(data.get("retrieved_titles") or []),
             "retrieval_rounds": data.get("retrieval_rounds"),
             "nodes": " -> ".join(data.get("nodes") or []),
-            "model_config": json.dumps(data.get("model_config") or {}, sort_keys=True),
+            "model_config": json_string(model_config),
+            "model_kwargs": json_string(model_kwargs_by_node(model_config)),
             "eval_file": str(path),
         }
         for metric_name, metric_value in metrics.items():
@@ -236,6 +242,7 @@ def flatten_traces(trace_files):
                     "total_cost": to_float(run.get("total_cost")),
                     "model_name": metadata.get("ls_model_name") or metadata.get("model_name"),
                     "model_provider": metadata.get("ls_provider"),
+                    "model_type": metadata.get("ls_model_type"),
                     "dotted_order": run.get("dotted_order"),
                 }
             )
@@ -477,6 +484,26 @@ def key_value_table(values):
     return f"<table>{''.join(rows)}</table>"
 
 
+def model_kwargs_for(config):
+    if not isinstance(config, dict):
+        return {}
+    return {
+        key: value
+        for key, value in config.items()
+        if key not in {"provider", "model"}
+    }
+
+
+def model_kwargs_by_node(model_config):
+    if not isinstance(model_config, dict):
+        return {}
+    return {
+        node_name: model_kwargs_for(node_config)
+        for node_name, node_config in model_config.items()
+        if isinstance(node_config, dict)
+    }
+
+
 def model_config_table(runs_df: pd.DataFrame):
     if "model_config" not in runs_df:
         return "<p>No model configuration found in eval data.</p>"
@@ -494,15 +521,23 @@ def model_config_table(runs_df: pd.DataFrame):
             continue
 
         for node_name, node_config in sorted(config.items()):
-            key = json.dumps({"node": node_name, **node_config}, sort_keys=True)
+            if not isinstance(node_config, dict):
+                continue
+            key = json_string({"node": node_name, **node_config})
             if key in seen:
                 continue
             seen.add(key)
+            model_kwargs = model_kwargs_for(node_config)
             rows.append(
                 {
                     "node": node_name,
-                    "provider": node_config.get("provider"),
                     "model": node_config.get("model"),
+                    "provider": node_config.get("provider"),
+                    "model_kwargs": (
+                        json_string(model_kwargs)
+                        if model_kwargs
+                        else ""
+                    ),
                 }
             )
 
@@ -522,9 +557,13 @@ def observed_model_table(components_df: pd.DataFrame):
 
     observed["langgraph_node"] = observed["langgraph_node"].fillna("unknown")
     observed["model_provider"] = observed["model_provider"].fillna("unknown")
+    observed["model_type"] = observed["model_type"].fillna("unknown")
     observed["model_name"] = observed["model_name"].fillna("unknown")
     return (
-        observed.groupby(["langgraph_node", "model_provider", "model_name"], as_index=False)
+        observed.groupby(
+            ["langgraph_node", "model_provider", "model_type", "model_name"],
+            as_index=False,
+        )
         .agg(
             calls=("component_id", "count"),
             duration_s=("duration_s", "sum"),

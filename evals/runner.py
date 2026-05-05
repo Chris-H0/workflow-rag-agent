@@ -15,7 +15,19 @@ def make_run_id(config_id: str, example_id: str, repeat: int):
 
 def write_json(path: Path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
+
+
+def model_kwargs_by_node(model_config):
+    return {
+        node_name: {
+            key: value
+            for key, value in node_config.items()
+            if key not in {"provider", "model"}
+        }
+        for node_name, node_config in model_config.items()
+        if isinstance(node_config, dict)
+    }
 
 
 def run_eval_example(
@@ -84,6 +96,7 @@ def run_eval_example(
         "retrieved_titles": retrieved_titles,
         "retrieval_rounds": nodes.count("retrieve"),
         "model_config": model_config,
+        "model_kwargs": model_kwargs_by_node(model_config),
         "metrics": score_result(
             agent_answer,
             gold_answer,
