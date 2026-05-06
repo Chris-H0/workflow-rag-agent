@@ -9,7 +9,7 @@ from rag.pipeline import build_retriever_from_documents
 from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
-CONFIG_ID = "v3-qwen3.5-2b-gpt-5.5"
+CONFIG_ID = "v3-qwen3.5-2b-haiku-4-5"
 HOTPOTQA_LOAD_LIMIT = 100
 HOTPOTQA_LEVEL = "hard"  # Options: "easy", "medium", "hard", "any"
 QUESTIONS = 75
@@ -42,9 +42,8 @@ NODE_MODEL_CONFIG = {
         "reasoning": False,
     },
     "generate_answer": {
-        "provider": "openai",
-        "model": "gpt-5.5",
-        "temperature": 0,
+        "provider": "anthropic",
+        "model": "claude-haiku-4-5",
     },
 }
 
