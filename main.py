@@ -9,7 +9,7 @@ from rag.pipeline import build_retriever_from_documents
 from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
-CONFIG_ID = "v3-gpt-4.1-mini"
+CONFIG_ID = "v3-gpt-4.1-mini-qwen3.5-2b"
 HOTPOTQA_LOAD_LIMIT = 100
 HOTPOTQA_LEVEL = "hard"  # Options: "easy", "medium", "hard", "any"
 QUESTIONS = 75
@@ -36,9 +36,11 @@ NODE_MODEL_CONFIG = {
         "temperature": 0,
     },
     "generate_answer": {
-        "provider": "openai",
-        "model": "gpt-4.1-mini",
+        "provider": "ollama",
+        "model": "qwen3.5:2b",
         "temperature": 0,
+        "thinking": False,
+        "reasoning": False,
     },
 }
 
