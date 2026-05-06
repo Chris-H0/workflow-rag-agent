@@ -1,0 +1,47 @@
+{
+  "config_id": "v3.2-qwen3.5-0.8b",
+  "run_count": 75,
+  "eval_count": 75,
+  "trace_count": 75,
+  "component_count": 452,
+  "latency_s": {
+    "mean": 9.714913893333334,
+    "median": 1.510767,
+    "min": 0.484908,
+    "max": 611.784853,
+    "p90": 2.5823104,
+    "p95": 2.7019338
+  },
+  "correctness": {
+    "exact_match": 0.06666666666666667,
+    "contains_gold_answer": 0.22666666666666666,
+    "contains_partial_gold_answer": 0.24,
+    "answer_token_precision": 0.0974088153612146,
+    "answer_token_recall": 0.31068253968253967,
+    "answer_token_f1": 0.10736452971525193,
+    "supporting_title_hit": 0.2,
+    "supporting_title_recall": 0.12666666666666668
+  },
+  "root_status_counts": {
+    "success": 75
+  },
+  "component_run_type_counts": {
+    "chain": 289,
+    "llm": 107,
+    "tool": 20,
+    "retriever": 20,
+    "parser": 16
+  },
+  "model_config_counts": {
+    "{\"decide_after_retrieval\": {\"model\": \"qwen3.5:0.8b\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"generate_answer\": {\"model\": \"qwen3.5:0.8b\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"generate_query_or_respond\": {\"model\": \"qwen3.5:0.8b\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"rewrite_question\": {\"model\": \"qwen3.5:0.8b\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}}": 75
+  },
+  "questions": {
+    "hotpotqa_level": "hard",
+    "loaded_count": 100,
+    "evaluated_count": 75,
+    "evaluated_question_difficulties": {
+      "hard": 75
+    }
+  },
+  "warnings": []
+}

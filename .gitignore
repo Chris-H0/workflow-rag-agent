@@ -18,3 +18,4 @@ analysis/**/evals
 analysis/**/traces
 analysis/**/analysis/*.png
 analysis/**/config
+archive/
