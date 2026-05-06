@@ -9,7 +9,7 @@ from rag.pipeline import build_retriever_from_documents
 from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
-CONFIG_ID = "v3-qwen3.5-2b-haiku-4-5"
+CONFIG_ID = "v3-haiku-4-5"
 HOTPOTQA_LOAD_LIMIT = 100
 HOTPOTQA_LEVEL = "hard"  # Options: "easy", "medium", "hard", "any"
 QUESTIONS = 75
@@ -21,25 +21,16 @@ PRINT_UPDATES = False
 
 NODE_MODEL_CONFIG = {
     "generate_query_or_respond": {
-        "provider": "ollama",
-        "model": "qwen3.5:2b",
-        "temperature": 0,
-        "thinking": False,
-        "reasoning": False,
+        "provider": "anthropic",
+        "model": "claude-haiku-4-5",
     },
     "decide_after_retrieval": {
-        "provider": "ollama",
-        "model": "qwen3.5:2b",
-        "temperature": 0,
-        "thinking": False,
-        "reasoning": False,
+        "provider": "anthropic",
+        "model": "claude-haiku-4-5",
     },
     "rewrite_question": {
-        "provider": "ollama",
-        "model": "qwen3.5:2b",
-        "temperature": 0,
-        "thinking": False,
-        "reasoning": False,
+        "provider": "anthropic",
+        "model": "claude-haiku-4-5",
     },
     "generate_answer": {
         "provider": "anthropic",

@@ -1,0 +1,47 @@
+{
+  "config_id": "v3-haiku-4-5",
+  "run_count": 75,
+  "eval_count": 75,
+  "trace_count": 75,
+  "component_count": 1430,
+  "latency_s": {
+    "mean": 5.038495893333334,
+    "median": 4.214554,
+    "min": 2.495533,
+    "max": 14.802896,
+    "p90": 8.413643200000003,
+    "p95": 8.9473811
+  },
+  "correctness": {
+    "exact_match": 0.4666666666666667,
+    "contains_gold_answer": 0.64,
+    "contains_partial_gold_answer": 0.7466666666666667,
+    "answer_token_precision": 0.6476861271489855,
+    "answer_token_recall": 0.7345396825396825,
+    "answer_token_f1": 0.6322528962351253,
+    "supporting_title_hit": 0.9866666666666667,
+    "supporting_title_recall": 0.8533333333333334
+  },
+  "root_status_counts": {
+    "success": 75
+  },
+  "component_run_type_counts": {
+    "chain": 748,
+    "llm": 296,
+    "tool": 140,
+    "retriever": 140,
+    "parser": 106
+  },
+  "model_config_counts": {
+    "{\"decide_after_retrieval\": {\"model\": \"claude-haiku-4-5\", \"provider\": \"anthropic\"}, \"generate_answer\": {\"model\": \"claude-haiku-4-5\", \"provider\": \"anthropic\"}, \"generate_query_or_respond\": {\"model\": \"claude-haiku-4-5\", \"provider\": \"anthropic\"}, \"rewrite_question\": {\"model\": \"claude-haiku-4-5\", \"provider\": \"anthropic\"}}": 75
+  },
+  "questions": {
+    "hotpotqa_level": "hard",
+    "loaded_count": 100,
+    "evaluated_count": 75,
+    "evaluated_question_difficulties": {
+      "hard": 75
+    }
+  },
+  "warnings": []
+}
