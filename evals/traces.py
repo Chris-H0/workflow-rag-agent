@@ -6,15 +6,14 @@ from dotenv import load_dotenv
 from langsmith import Client
 
 
-CONFIG_ID = "v2-tests-qwen3.5-2b"
-LIMIT = 75
+LIMIT = 100  # Max LangSmith allows
 
 
 def write_json(path: Path, data):
     path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
 
 
-def download_traces(config_id: str, limit: int):
+def download_traces(config_id: str):
     load_dotenv(".env", override=True)
     project_name = os.getenv("LANGSMITH_PROJECT")
 
@@ -31,7 +30,7 @@ def download_traces(config_id: str, limit: int):
         root_run_kwargs = {
             "filter": filter_query,
             "is_root": True,
-            "limit": limit,
+            "limit": LIMIT,
             "project_name": project_name,
         }
 
@@ -60,10 +59,8 @@ def download_traces(config_id: str, limit: int):
             print(f"Saved trace to {output_path}")
             count += 1
 
-        print(f"Downloaded {count} traces for config ID: {config_id} to {output_dir}.")
+        print(f"Downloaded {count} traces for config ID: {config_id}.")
     except Exception as error:
-        raise RuntimeError(f"Failed to download traces for config ID: {config_id}") from error
-
-
-if __name__ == "__main__":
-    download_traces(CONFIG_ID, LIMIT)
+        raise RuntimeError(
+            f"Failed to download traces for config ID: {config_id}"
+        ) from error

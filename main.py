@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from agent.graph import build_graph, save_graph_image
 from agent.model_router import ModelRouter
 from agent.tools import build_retriever_tool
-from evals.runner import run_eval_loop
+from evals.runner import run_eval_loop, run_download_traces
 from rag.pipeline import build_retriever_from_documents
 from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
@@ -11,6 +11,8 @@ from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 CONFIG_ID = "v2-tests-qwen3.5-2b"
 QUESTION_LIMIT = 50
 REPEATS = 1
+
+DOWNLOAD_TRACES = True
 SAVE_GRAPH = False
 PRINT_UPDATES = False
 
@@ -45,3 +47,6 @@ if __name__ == "__main__":
         PRINT_UPDATES,
         model_router.model_config,
     )
+    
+    if DOWNLOAD_TRACES:
+        run_download_traces(CONFIG_ID)
