@@ -9,42 +9,65 @@ from rag.pipeline import build_retriever_from_documents
 from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
-CONFIG_ID = "v2-tests-qwen3.5-2b-temp-test-2"
+CONFIG_ID = "v2-tests-qwen3.5-2b-temp-test-3"
 HOTPOTQA_LOAD_LIMIT = 100
 HOTPOTQA_LEVEL = "hard"  # Options: "easy", "medium", "hard", "any"
 QUESTIONS = 5
 REPEATS = 1
 
-DOWNLOAD_TRACES = True
-SAVE_GRAPH = False
+RUN_ANALYSIS = True
+SAVE_GRAPH_PNG = False
 PRINT_UPDATES = False
 
-
-def load_env():
-    load_dotenv(".env", override=True)
-
-
-def build_agent(documents, model_router):
-    retriever = build_retriever_from_documents(documents)
-    retriever_tool = build_retriever_tool(retriever)
-    return build_graph(model_router, retriever_tool)
+NODE_MODEL_CONFIG = {
+    "generate_query_or_respond": {
+        "provider": "ollama",
+        "model": "qwen3.5:2b",
+        "temperature": 0,
+        "thinking": False,
+        "reasoning": False,
+    },
+    "decide_after_retrieval": {
+        "provider": "ollama",
+        "model": "qwen3.5:2b",
+        "temperature": 0,
+        "thinking": False,
+        "reasoning": False,
+    },
+    "rewrite_question": {
+        "provider": "ollama",
+        "model": "qwen3.5:2b",
+        "temperature": 0,
+        "thinking": False,
+        "reasoning": False,
+    },
+    "generate_answer": {
+        "provider": "ollama",
+        "model": "qwen3.5:2b",
+        "temperature": 0,
+        "thinking": False,
+        "reasoning": False,
+    },
+}
 
 
 if __name__ == "__main__":
-    load_env()
+    load_dotenv(".env", override=True)
 
     # Load and prepare data
     all_questions = load_hotpotqa_examples(HOTPOTQA_LOAD_LIMIT, HOTPOTQA_LEVEL)
     documents = build_hotpotqa_documents(all_questions)
+    retriever = build_retriever_from_documents(documents)
     eval_questions = all_questions[:QUESTIONS]
-    
+
     # Build agent
-    model_router = ModelRouter()
-    agent_graph = build_agent(documents, model_router)
-    if SAVE_GRAPH:
+    retriever_tool = build_retriever_tool(retriever)
+    model_router = ModelRouter(NODE_MODEL_CONFIG)
+    agent_graph = build_graph(model_router, retriever_tool)
+    if SAVE_GRAPH_PNG:
         save_graph_image(agent_graph)
 
-    # Run evaluation loop
+    # Run agent + evaluate outputs
     run_eval_loop(
         agent_graph,
         eval_questions,
@@ -55,7 +78,8 @@ if __name__ == "__main__":
         PRINT_UPDATES,
         model_router.model_config,
     )
-    
-    if DOWNLOAD_TRACES:
+
+    # Download traces and run analysis
+    if RUN_ANALYSIS:
         run_download_traces(CONFIG_ID)
         analyse_run(CONFIG_ID)

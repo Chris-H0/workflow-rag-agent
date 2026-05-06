@@ -3,41 +3,9 @@ from copy import deepcopy
 from langchain.chat_models import init_chat_model
 
 
-NODE_MODEL_CONFIG = {
-    "generate_query_or_respond": {
-        "provider": "ollama",
-        "model": "qwen3.5:2b",
-        "temperature": 0,
-        "thinking": False,
-        "reasoning": False,
-    },
-    "decide_after_retrieval": {
-        "provider": "ollama",
-        "model": "qwen3.5:2b",
-        "temperature": 0,
-        "thinking": False,
-        "reasoning": False,
-    },
-    "rewrite_question": {
-        "provider": "ollama",
-        "model": "qwen3.5:2b",
-        "temperature": 0,
-        "thinking": False,
-        "reasoning": False,
-    },
-    "generate_answer": {
-        "provider": "ollama",
-        "model": "qwen3.5:2b",
-        "temperature": 0,
-        "thinking": False,
-        "reasoning": False,
-    },
-}
-
-
 class ModelRouter:
-    def __init__(self):
-        self.model_config = NODE_MODEL_CONFIG
+    def __init__(self, node_model_config):
+        self.model_config = node_model_config
         self.models = {}
 
     def get_model(self, node_name: str):
