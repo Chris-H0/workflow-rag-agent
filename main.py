@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 
+from analysis.analyse_run import analyse_run
 from agent.graph import build_graph, save_graph_image
 from agent.model_router import ModelRouter
 from agent.tools import build_retriever_tool
@@ -8,8 +9,8 @@ from rag.pipeline import build_retriever_from_documents
 from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
-CONFIG_ID = "v2-tests-qwen3.5-2b"
-QUESTION_LIMIT = 50
+CONFIG_ID = "v2-tests-qwen3.5-2b-temp-test-1"
+QUESTION_LIMIT = 5
 REPEATS = 1
 
 DOWNLOAD_TRACES = True
@@ -50,3 +51,4 @@ if __name__ == "__main__":
     
     if DOWNLOAD_TRACES:
         run_download_traces(CONFIG_ID)
+        analyse_run(CONFIG_ID)

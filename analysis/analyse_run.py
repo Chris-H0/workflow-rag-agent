@@ -9,8 +9,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-CONFIG_ID = "v2-tests-qwen3.5-2b-test"
-ANALYSIS_ROOT = "analysis"
+CONFIG_ID = ""
 OVERWRITE = True
 
 
@@ -307,7 +306,7 @@ def top_level_node_components(components_df: pd.DataFrame):
     ].copy()
 
 
-def summarise(runs_df: pd.DataFrame, components_df: pd.DataFrame, warnings):
+def summarise(config_id: str, runs_df: pd.DataFrame, components_df: pd.DataFrame, warnings):
     latencies = runs_df["total_latency_s"].dropna().tolist()
     metric_columns = [
         "exact_match",
@@ -341,7 +340,7 @@ def summarise(runs_df: pd.DataFrame, components_df: pd.DataFrame, warnings):
     )
 
     return {
-        "config_id": CONFIG_ID,
+        "config_id": config_id,
         "run_count": int(len(runs_df)),
         "eval_count": int(runs_df["eval_file"].notna().sum()) if "eval_file" in runs_df else 0,
         "trace_count": int(runs_df["trace_file"].notna().sum()) if "trace_file" in runs_df else 0,
@@ -594,6 +593,7 @@ def graph_html(output_dir: Path):
 
 
 def create_report(
+    config_id: str,
     output_dir: Path,
     runs_df: pd.DataFrame,
     components_df: pd.DataFrame,
@@ -644,7 +644,7 @@ def create_report(
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>{escape(CONFIG_ID)} analysis</title>
+  <title>{escape(config_id)} analysis</title>
   <style>
     body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 32px; color: #1f2933; }}
     h1, h2 {{ margin-bottom: 0.35rem; }}
@@ -659,7 +659,7 @@ def create_report(
   </style>
 </head>
 <body>
-  <h1>{escape(CONFIG_ID)} Analysis</h1>
+  <h1>{escape(config_id)} Analysis</h1>
   <p>Generated from <code>traces/*.json</code> and <code>evals/*.json</code>. Root latency is end-to-end LangGraph wall time; nested component duration charts intentionally keep summed child durations separate from root latency.</p>
 
   <div class="grid">
@@ -713,10 +713,10 @@ def create_report(
     (output_dir / REPORT_HTML).write_text(html, encoding="utf-8")
 
 
-def main():
+def analyse_run(config_id: str):
     root_dir = Path(__file__).resolve().parents[1]
-    analysis_root = root_dir / ANALYSIS_ROOT
-    config_dir = analysis_root / CONFIG_ID
+    analysis_root = root_dir / "analysis"
+    config_dir = analysis_root / config_id
     output_dir = config_dir / "analysis"
 
     trace_files, eval_files = validate_input_dirs(config_dir)
@@ -724,19 +724,24 @@ def main():
 
     eval_by_run_id, eval_df, eval_warnings = load_evals(eval_files)
     trace_by_run_id, trace_df, components_df, trace_warnings = flatten_traces(trace_files)
+    if len(eval_by_run_id) != len(trace_by_run_id):
+        raise ValueError(
+            f"Eval count does not match trace count: "
+            f"{len(eval_by_run_id)} evals, {len(trace_by_run_id)} traces"
+        )
     warnings = eval_warnings + trace_warnings
 
     runs_df = join_runs(eval_df, trace_df, warnings)
-    summary = summarise(runs_df, components_df, warnings)
+    summary = summarise(config_id, runs_df, components_df, warnings)
 
     runs_df.to_csv(output_dir / RUNS_CSV, index=False)
     components_df.to_csv(output_dir / COMPONENTS_CSV, index=False)
     write_json(output_dir / SUMMARY_JSON, summary)
 
     create_plots(runs_df, components_df, output_dir)
-    create_report(output_dir, runs_df, components_df, summary)
+    create_report(config_id, output_dir, runs_df, components_df, summary)
 
-    print(f"Analysed config ID: {CONFIG_ID}")
+    print(f"Analysed config ID: {config_id}")
     print(f"Eval files: {len(eval_by_run_id)}")
     print(f"Trace files: {len(trace_by_run_id)}")
     print(f"Output: {output_dir}")
@@ -745,4 +750,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    analyse_run(CONFIG_ID)
