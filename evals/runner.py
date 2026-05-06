@@ -1,6 +1,7 @@
+from datetime import UTC, datetime
 import json
-from datetime import UTC, datetime, time
 from pathlib import Path
+from time import sleep
 
 from langchain_core.messages import AIMessage
 from langchain_core.messages import HumanMessage
@@ -125,5 +126,5 @@ def run_eval_loop(
 
 
 def run_download_traces(config_id: str):
-    time.sleep(5)  # Ensure all traces are available in LangSmith
+    sleep(5)  # Ensure all traces are available in LangSmith.
     download_traces(config_id)

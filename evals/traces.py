@@ -10,6 +10,7 @@ LIMIT = 100  # Max LangSmith allows
 
 
 def write_json(path: Path, data):
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
 
 
@@ -23,10 +24,6 @@ def download_traces(config_id: str):
 
     try:
         client = Client()
-        analysis_dir = Path(__file__).resolve().parent
-        output_dir = analysis_dir / config_id / "traces"
-        output_dir.mkdir(parents=True, exist_ok=True)
-
         root_run_kwargs = {
             "filter": filter_query,
             "is_root": True,
@@ -37,7 +34,7 @@ def download_traces(config_id: str):
         count = 0
         for root_run in client.list_runs(**root_run_kwargs):
             trace_id = root_run.trace_id
-            output_path = output_dir / f"{trace_id}.json"
+            output_path = Path("analysis") / config_id / "traces" / f"{trace_id}.json"
 
             if output_path.exists():
                 continue
