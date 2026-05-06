@@ -9,7 +9,7 @@ from rag.pipeline import build_retriever_from_documents
 from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
-CONFIG_ID = "v3-qwen3.5-2b-opus-4-7"
+CONFIG_ID = "v3-qwen3.5-2b-gpt-4.1-mini"
 HOTPOTQA_LOAD_LIMIT = 100
 HOTPOTQA_LEVEL = "hard"  # Options: "easy", "medium", "hard", "any"
 QUESTIONS = 75
@@ -42,8 +42,9 @@ NODE_MODEL_CONFIG = {
         "reasoning": False,
     },
     "generate_answer": {
-        "provider": "anthropic",
-        "model": "claude-opus-4-7",
+        "provider": "openai",
+        "model": "gpt-4.1-mini",
+        "temperature": 0,
     },
 }
 
