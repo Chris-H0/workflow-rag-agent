@@ -9,7 +9,7 @@ from rag.pipeline import build_retriever_from_documents
 from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
-CONFIG_ID = "v3-gpt-5.5"
+CONFIG_ID = "v3-gpt-4.1-mini"
 HOTPOTQA_LOAD_LIMIT = 100
 HOTPOTQA_LEVEL = "hard"  # Options: "easy", "medium", "hard", "any"
 QUESTIONS = 75
@@ -22,22 +22,22 @@ PRINT_UPDATES = False
 NODE_MODEL_CONFIG = {
     "generate_query_or_respond": {
         "provider": "openai",
-        "model": "gpt-5.5",
+        "model": "gpt-4.1-mini",
         "temperature": 0,
     },
     "decide_after_retrieval": {
         "provider": "openai",
-        "model": "gpt-5.5",
+        "model": "gpt-4.1-mini",
         "temperature": 0,
     },
     "rewrite_question": {
         "provider": "openai",
-        "model": "gpt-5.5",
+        "model": "gpt-4.1-mini",
         "temperature": 0,
     },
     "generate_answer": {
         "provider": "openai",
-        "model": "gpt-5.5",
+        "model": "gpt-4.1-mini",
         "temperature": 0,
     },
 }

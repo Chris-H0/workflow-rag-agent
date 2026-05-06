@@ -1,0 +1,46 @@
+{
+  "config_id": "v3-gpt-4.1-mini",
+  "run_count": 75,
+  "eval_count": 75,
+  "trace_count": 75,
+  "component_count": 1264,
+  "latency_s": {
+    "mean": 3.5615265733333334,
+    "median": 2.954153,
+    "min": 1.962461,
+    "max": 9.366942,
+    "p90": 5.528129400000004,
+    "p95": 6.9536929999999995
+  },
+  "correctness": {
+    "exact_match": 0.5733333333333334,
+    "contains_gold_answer": 0.68,
+    "contains_partial_gold_answer": 0.7466666666666667,
+    "answer_token_precision": 0.7127070707070707,
+    "answer_token_recall": 0.7351851851851852,
+    "answer_token_f1": 0.7059936507936508,
+    "supporting_title_hit": 1.0,
+    "supporting_title_recall": 0.8266666666666667
+  },
+  "root_status_counts": {
+    "success": 75
+  },
+  "component_run_type_counts": {
+    "chain": 762,
+    "llm": 270,
+    "tool": 116,
+    "retriever": 116
+  },
+  "model_config_counts": {
+    "{\"decide_after_retrieval\": {\"model\": \"gpt-4.1-mini\", \"provider\": \"openai\", \"temperature\": 0}, \"generate_answer\": {\"model\": \"gpt-4.1-mini\", \"provider\": \"openai\", \"temperature\": 0}, \"generate_query_or_respond\": {\"model\": \"gpt-4.1-mini\", \"provider\": \"openai\", \"temperature\": 0}, \"rewrite_question\": {\"model\": \"gpt-4.1-mini\", \"provider\": \"openai\", \"temperature\": 0}}": 75
+  },
+  "questions": {
+    "hotpotqa_level": "hard",
+    "loaded_count": 100,
+    "evaluated_count": 75,
+    "evaluated_question_difficulties": {
+      "hard": 75
+    }
+  },
+  "warnings": []
+}
