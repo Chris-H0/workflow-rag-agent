@@ -2,21 +2,17 @@ from datasets import load_dataset
 from langchain_core.documents import Document
 
 
-HOTPOTQA_LEVEL = "hard"
-HOTPOTQA_LIMIT = 50
-
-
-def load_hotpotqa_examples():
+def load_hotpotqa_examples(limit: int, level: str):
     dataset = load_dataset("hotpotqa/hotpot_qa", "distractor", split="validation")
     examples = []
 
     for example in dataset:
-        if example["level"] != HOTPOTQA_LEVEL:
+        if level != "any" and example["level"] != level:
             continue
 
         examples.append(example)
 
-        if len(examples) == HOTPOTQA_LIMIT:
+        if len(examples) == limit:
             break
 
     return examples

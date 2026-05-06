@@ -20,6 +20,31 @@ def write_json(path: Path, data):
     path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
 
 
+def write_question_log(config_id: str, hotpotqa_level: str, examples, eval_examples):
+    evaluated_ids = {example["id"] for example in eval_examples}
+    questions = [
+        {
+            "id": example["id"],
+            "level": example["level"],
+            "evaluated": example["id"] in evaluated_ids,
+        }
+        for example in examples
+    ]
+
+    output_path = Path("analysis") / config_id / "config" / "question.json"
+    write_json(
+        output_path,
+        {
+            "config_id": config_id,
+            "hotpotqa_level": hotpotqa_level,
+            "loaded_count": len(examples),
+            "evaluated_count": len(eval_examples),
+            "questions": questions,
+        },
+    )
+    print(f"Saved question log to {output_path}")
+
+
 def run_eval_example(
     graph,
     example,
@@ -105,11 +130,15 @@ def run_eval_example(
 def run_eval_loop(
     graph,
     examples,
+    all_examples,
     config_id: str,
+    hotpotqa_level: str,
     repeats: int,
     print_updates: bool,
     model_config: dict,
 ):
+    write_question_log(config_id, hotpotqa_level, all_examples, examples)
+
     count = 0
     for repeat in range(repeats):
         for example in examples:
