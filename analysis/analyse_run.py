@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-CONFIG_ID = "v2-tests-qwen3.5-2b"
+CONFIG_ID = "v2-tests-qwen3.5-2b-test"
 ANALYSIS_ROOT = "analysis"
 OVERWRITE = True
 
@@ -276,6 +276,9 @@ def join_runs(eval_df: pd.DataFrame, trace_df: pd.DataFrame, warnings):
         "exact_match",
         "contains_gold_answer",
         "contains_partial_gold_answer",
+        "answer_token_precision",
+        "answer_token_recall",
+        "answer_token_f1",
         "supporting_title_hit",
         "supporting_title_recall",
     ]
@@ -310,6 +313,9 @@ def summarise(runs_df: pd.DataFrame, components_df: pd.DataFrame, warnings):
         "exact_match",
         "contains_gold_answer",
         "contains_partial_gold_answer",
+        "answer_token_precision",
+        "answer_token_recall",
+        "answer_token_f1",
         "supporting_title_hit",
         "supporting_title_recall",
     ]
@@ -615,6 +621,9 @@ def create_report(
         "exact_match",
         "contains_gold_answer",
         "contains_partial_gold_answer",
+        "answer_token_precision",
+        "answer_token_recall",
+        "answer_token_f1",
         "supporting_title_recall",
         "question",
         "agent_answer",
@@ -697,7 +706,7 @@ def create_report(
   {dataframe_table(retriever_tool, ["run_id", "run_type", "name", "langgraph_node", "duration_s", "status", "error"], max_rows=30)}
 
   <h2>All Runs</h2>
-  {dataframe_table(runs_df.sort_values("total_latency_s", ascending=False), ["example_id", "repeat", "total_latency_s", "total_tokens", "total_cost", "exact_match", "contains_gold_answer", "contains_partial_gold_answer", "supporting_title_recall", "retrieval_rounds", "nodes"], max_rows=50)}
+  {dataframe_table(runs_df.sort_values("total_latency_s", ascending=False), ["example_id", "repeat", "total_latency_s", "total_tokens", "total_cost", "exact_match", "contains_gold_answer", "contains_partial_gold_answer", "answer_token_precision", "answer_token_recall", "answer_token_f1", "supporting_title_recall", "retrieval_rounds", "nodes"], max_rows=50)}
 </body>
 </html>
 """
