@@ -9,7 +9,7 @@ from rag.pipeline import build_retriever_from_documents
 from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
-CONFIG_ID = "v3-haiku-4-5"
+CONFIG_ID = "v3-opus-4-7"
 HOTPOTQA_LOAD_LIMIT = 100
 HOTPOTQA_LEVEL = "hard"  # Options: "easy", "medium", "hard", "any"
 QUESTIONS = 75
@@ -22,19 +22,19 @@ PRINT_UPDATES = False
 NODE_MODEL_CONFIG = {
     "generate_query_or_respond": {
         "provider": "anthropic",
-        "model": "claude-haiku-4-5",
+        "model": "claude-opus-4-7",
     },
     "decide_after_retrieval": {
         "provider": "anthropic",
-        "model": "claude-haiku-4-5",
+        "model": "claude-opus-4-7",
     },
     "rewrite_question": {
         "provider": "anthropic",
-        "model": "claude-haiku-4-5",
+        "model": "claude-opus-4-7",
     },
     "generate_answer": {
         "provider": "anthropic",
-        "model": "claude-haiku-4-5",
+        "model": "claude-opus-4-7",
     },
 }
 

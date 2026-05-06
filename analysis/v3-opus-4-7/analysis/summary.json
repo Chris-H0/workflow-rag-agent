@@ -1,0 +1,47 @@
+{
+  "config_id": "v3-opus-4-7",
+  "run_count": 75,
+  "eval_count": 75,
+  "trace_count": 75,
+  "component_count": 1245,
+  "latency_s": {
+    "mean": 7.6038288666666665,
+    "median": 6.41794,
+    "min": 4.431378,
+    "max": 24.150175,
+    "p90": 11.3172888,
+    "p95": 12.0589071
+  },
+  "correctness": {
+    "exact_match": 0.6666666666666666,
+    "contains_gold_answer": 0.7066666666666667,
+    "contains_partial_gold_answer": 0.8266666666666667,
+    "answer_token_precision": 0.8180534979423868,
+    "answer_token_recall": 0.8023703703703704,
+    "answer_token_f1": 0.7907886953155245,
+    "supporting_title_hit": 0.9733333333333334,
+    "supporting_title_recall": 0.86
+  },
+  "root_status_counts": {
+    "success": 75
+  },
+  "component_run_type_counts": {
+    "chain": 643,
+    "llm": 264,
+    "tool": 122,
+    "retriever": 122,
+    "parser": 94
+  },
+  "model_config_counts": {
+    "{\"decide_after_retrieval\": {\"model\": \"claude-opus-4-7\", \"provider\": \"anthropic\"}, \"generate_answer\": {\"model\": \"claude-opus-4-7\", \"provider\": \"anthropic\"}, \"generate_query_or_respond\": {\"model\": \"claude-opus-4-7\", \"provider\": \"anthropic\"}, \"rewrite_question\": {\"model\": \"claude-opus-4-7\", \"provider\": \"anthropic\"}}": 75
+  },
+  "questions": {
+    "hotpotqa_level": "hard",
+    "loaded_count": 100,
+    "evaluated_count": 75,
+    "evaluated_question_difficulties": {
+      "hard": 75
+    }
+  },
+  "warnings": []
+}
