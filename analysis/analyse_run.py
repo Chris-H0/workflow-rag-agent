@@ -111,6 +111,43 @@ def validate_input_dirs(config_dir: Path):
     return trace_files, eval_files
 
 
+def load_question_summary(config_dir: Path, warnings):
+    path = config_dir / "config" / "question.json"
+    if not path.exists():
+        warnings.append(f"Missing question config file: {path}")
+        return {
+            "hotpotqa_level": None,
+            "loaded_count": 0,
+            "evaluated_count": 0,
+            "evaluated_question_difficulties": {},
+        }
+
+    data = read_json(path)
+    evaluated_questions = [
+        question
+        for question in data.get("questions", [])
+        if question.get("evaluated")
+    ]
+    difficulty_counts = (
+        pd.Series(
+            [question.get("level") or "unknown" for question in evaluated_questions]
+        )
+        .value_counts()
+        .sort_index()
+        .to_dict()
+    )
+
+    return {
+        "hotpotqa_level": data.get("hotpotqa_level"),
+        "loaded_count": data.get("loaded_count"),
+        "evaluated_count": data.get("evaluated_count"),
+        "evaluated_question_difficulties": {
+            level: int(count)
+            for level, count in difficulty_counts.items()
+        },
+    }
+
+
 def load_evals(eval_files):
     eval_rows = []
     eval_by_run_id = {}
@@ -306,7 +343,13 @@ def top_level_node_components(components_df: pd.DataFrame):
     ].copy()
 
 
-def summarise(config_id: str, runs_df: pd.DataFrame, components_df: pd.DataFrame, warnings):
+def summarise(
+    config_id: str,
+    runs_df: pd.DataFrame,
+    components_df: pd.DataFrame,
+    question_summary,
+    warnings,
+):
     latencies = runs_df["total_latency_s"].dropna().tolist()
     metric_columns = [
         "exact_match",
@@ -357,6 +400,7 @@ def summarise(config_id: str, runs_df: pd.DataFrame, components_df: pd.DataFrame
         "root_status_counts": status_counts,
         "component_run_type_counts": run_type_counts,
         "model_config_counts": model_configs,
+        "questions": question_summary,
         "warnings": warnings,
     }
 
@@ -580,6 +624,21 @@ def observed_model_table(components_df: pd.DataFrame):
     )
 
 
+def question_difficulty_table(summary):
+    difficulties = summary["questions"]["evaluated_question_difficulties"]
+    if not difficulties:
+        return "<p>No evaluated question difficulty data found.</p>"
+
+    rows = [
+        {
+            "difficulty": difficulty,
+            "evaluated_questions": count,
+        }
+        for difficulty, count in sorted(difficulties.items())
+    ]
+    return pd.DataFrame(rows).to_html(index=False, escape=True)
+
+
 def graph_html(output_dir: Path):
     html = []
     for filename in GRAPH_FILES:
@@ -707,6 +766,9 @@ def create_report(
 
   <h2>All Runs</h2>
   {dataframe_table(runs_df.sort_values("total_latency_s", ascending=False), ["example_id", "repeat", "total_latency_s", "total_tokens", "total_cost", "exact_match", "contains_gold_answer", "contains_partial_gold_answer", "answer_token_precision", "answer_token_recall", "answer_token_f1", "supporting_title_recall", "retrieval_rounds", "nodes"], max_rows=50)}
+
+  <h2>Question Difficulty Split</h2>
+  {question_difficulty_table(summary)}
 </body>
 </html>
 """
@@ -730,9 +792,10 @@ def analyse_run(config_id: str):
             f"{len(eval_by_run_id)} evals, {len(trace_by_run_id)} traces"
         )
     warnings = eval_warnings + trace_warnings
+    question_summary = load_question_summary(config_dir, warnings)
 
     runs_df = join_runs(eval_df, trace_df, warnings)
-    summary = summarise(config_id, runs_df, components_df, warnings)
+    summary = summarise(config_id, runs_df, components_df, question_summary, warnings)
 
     runs_df.to_csv(output_dir / RUNS_CSV, index=False)
     components_df.to_csv(output_dir / COMPONENTS_CSV, index=False)
