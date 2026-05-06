@@ -9,10 +9,10 @@ from rag.pipeline import build_retriever_from_documents
 from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
-CONFIG_ID = "v2-tests-qwen3.5-2b-temp-test-3"
+CONFIG_ID = "v3-qwen3.5-2b"
 HOTPOTQA_LOAD_LIMIT = 100
 HOTPOTQA_LEVEL = "hard"  # Options: "easy", "medium", "hard", "any"
-QUESTIONS = 5
+QUESTIONS = 75
 REPEATS = 1
 
 RUN_ANALYSIS = True
