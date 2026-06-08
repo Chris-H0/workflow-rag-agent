@@ -3,7 +3,12 @@ from copy import deepcopy
 from langchain.chat_models import init_chat_model
 
 
-MODEL_CONFIG_METADATA_KEYS = {"placement", "placement_policy"}
+MODEL_CONFIG_METADATA_KEYS = {
+    "downstream_impact_score",
+    "placement",
+    "placement_policy",
+    "placement_reason",
+}
 
 
 class ModelRouter:

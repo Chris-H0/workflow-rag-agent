@@ -3,14 +3,14 @@ from dotenv import load_dotenv
 from analysis.analyse_run import analyse_run
 from agent.graph import build_graph, save_graph_image
 from agent.model_router import ModelRouter
-from agent.placement import build_position_aware_model_config
+from agent.placement import build_downstream_impact_model_config
 from agent.tools import build_retriever_tool
 from evals.runner import run_eval_loop, run_download_traces
 from rag.pipeline import build_retriever_from_documents
 from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
-CONFIG_ID = "v3-position-aware-qwen3.5-2b-gpt-4.1-mini"
+CONFIG_ID = "v3-downstream-impact-qwen3.5-2b-gpt-4.1-mini"
 HOTPOTQA_LOAD_LIMIT = 100
 HOTPOTQA_LEVEL = "hard"  # Options: "easy", "medium", "hard", "any"
 QUESTIONS = 75
@@ -30,21 +30,13 @@ MODEL_PROFILES = {
     },
     "cloud": {
         "provider": "openai",
-        "model": "gpt-4.1-mini",
+        "model": "gpt-5.5",
         "temperature": 0,
     },
 }
 
-POSITION_AWARE_NODE_PLACEMENT = {
-    "generate_query_or_respond": "local",
-    "decide_after_retrieval": "local",
-    "rewrite_question": "local",
-    "generate_answer": "cloud",
-}
-
-NODE_MODEL_CONFIG = build_position_aware_model_config(
+NODE_MODEL_CONFIG = build_downstream_impact_model_config(
     MODEL_PROFILES,
-    POSITION_AWARE_NODE_PLACEMENT,
 )
 
 

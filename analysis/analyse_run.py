@@ -536,10 +536,16 @@ def key_value_table(values):
 def model_kwargs_for(config):
     if not isinstance(config, dict):
         return {}
+    metadata_keys = {
+        "downstream_impact_score",
+        "placement",
+        "placement_policy",
+        "placement_reason",
+    }
     return {
         key: value
         for key, value in config.items()
-        if key not in {"provider", "model", "placement", "placement_policy"}
+        if key not in {"provider", "model"} | metadata_keys
     }
 
 
@@ -582,6 +588,10 @@ def model_config_table(runs_df: pd.DataFrame):
                     "node": node_name,
                     "placement_policy": node_config.get("placement_policy"),
                     "placement": node_config.get("placement"),
+                    "downstream_impact_score": node_config.get(
+                        "downstream_impact_score"
+                    ),
+                    "placement_reason": node_config.get("placement_reason"),
                     "model": node_config.get("model"),
                     "provider": node_config.get("provider"),
                     "model_kwargs": (
