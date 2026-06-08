@@ -1,0 +1,46 @@
+{
+  "config_id": "v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5",
+  "run_count": 75,
+  "eval_count": 75,
+  "trace_count": 75,
+  "component_count": 1355,
+  "latency_s": {
+    "mean": 7.600925253333333,
+    "median": 5.862548,
+    "min": 2.749753,
+    "max": 29.694783,
+    "p90": 14.259514000000003,
+    "p95": 16.3799954
+  },
+  "correctness": {
+    "exact_match": 0.6,
+    "contains_gold_answer": 0.6933333333333334,
+    "contains_partial_gold_answer": 0.7866666666666666,
+    "answer_token_precision": 0.7543400673400673,
+    "answer_token_recall": 0.7723809523809524,
+    "answer_token_f1": 0.7396568415105,
+    "supporting_title_hit": 0.9733333333333334,
+    "supporting_title_recall": 0.7933333333333333
+  },
+  "root_status_counts": {
+    "success": 75
+  },
+  "component_run_type_counts": {
+    "chain": 821,
+    "llm": 286,
+    "tool": 124,
+    "retriever": 124
+  },
+  "model_config_counts": {
+    "{\"decide_after_retrieval\": {\"model\": \"gpt-4.1-mini\", \"placement\": \"cloud_fast\", \"placement_policy\": \"internal_control_strong_terminal\", \"placement_reason\": \"fast cloud for internal workflow control node\", \"provider\": \"openai\", \"temperature\": 0}, \"generate_answer\": {\"model\": \"gpt-5.5\", \"placement\": \"cloud_strong\", \"placement_policy\": \"internal_control_strong_terminal\", \"placement_reason\": \"strong cloud for user-facing terminal synthesis\", \"provider\": \"openai\", \"temperature\": 0}, \"generate_query_or_respond\": {\"model\": \"qwen3.5:2b\", \"placement\": \"local\", \"placement_policy\": \"internal_control_strong_terminal\", \"placement_reason\": \"boundary or support node\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"rewrite_question\": {\"model\": \"qwen3.5:2b\", \"placement\": \"local\", \"placement_policy\": \"internal_control_strong_terminal\", \"placement_reason\": \"boundary or support node\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}}": 75
+  },
+  "questions": {
+    "hotpotqa_level": "hard",
+    "loaded_count": 100,
+    "evaluated_count": 75,
+    "evaluated_question_difficulties": {
+      "hard": 75
+    }
+  },
+  "warnings": []
+}

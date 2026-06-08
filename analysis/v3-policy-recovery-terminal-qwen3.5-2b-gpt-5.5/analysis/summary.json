@@ -1,0 +1,47 @@
+{
+  "config_id": "v3-policy-recovery-terminal-qwen3.5-2b-gpt-5.5",
+  "run_count": 75,
+  "eval_count": 75,
+  "trace_count": 75,
+  "component_count": 1675,
+  "latency_s": {
+    "mean": 9.32194468,
+    "median": 8.600949,
+    "min": 3.330136,
+    "max": 23.387927,
+    "p90": 16.5792326,
+    "p95": 18.1130547
+  },
+  "correctness": {
+    "exact_match": 0.6266666666666667,
+    "contains_gold_answer": 0.6933333333333334,
+    "contains_partial_gold_answer": 0.8266666666666667,
+    "answer_token_precision": 0.8275862068965517,
+    "answer_token_recall": 0.803957671957672,
+    "answer_token_f1": 0.7975878437396464,
+    "supporting_title_hit": 0.9733333333333334,
+    "supporting_title_recall": 0.8133333333333334
+  },
+  "root_status_counts": {
+    "success": 75
+  },
+  "component_run_type_counts": {
+    "chain": 898,
+    "llm": 336,
+    "tool": 160,
+    "retriever": 160,
+    "parser": 121
+  },
+  "model_config_counts": {
+    "{\"decide_after_retrieval\": {\"model\": \"qwen3.5:2b\", \"placement\": \"local\", \"placement_policy\": \"recovery_terminal\", \"placement_reason\": \"normal support node\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"generate_answer\": {\"model\": \"gpt-5.5\", \"placement\": \"cloud\", \"placement_policy\": \"recovery_terminal\", \"placement_reason\": \"user-facing or terminal synthesis node\", \"provider\": \"openai\", \"temperature\": 0}, \"generate_query_or_respond\": {\"model\": \"qwen3.5:2b\", \"placement\": \"local\", \"placement_policy\": \"recovery_terminal\", \"placement_reason\": \"normal support node\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"rewrite_question\": {\"model\": \"gpt-5.5\", \"placement\": \"cloud\", \"placement_policy\": \"recovery_terminal\", \"placement_reason\": \"recovery node repairs failed retrieval context\", \"provider\": \"openai\", \"temperature\": 0}}": 75
+  },
+  "questions": {
+    "hotpotqa_level": "hard",
+    "loaded_count": 100,
+    "evaluated_count": 75,
+    "evaluated_question_difficulties": {
+      "hard": 75
+    }
+  },
+  "warnings": []
+}

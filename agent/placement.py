@@ -4,6 +4,15 @@ from copy import deepcopy
 POSITION_AWARE_POLICY = "position_aware"
 DOWNSTREAM_IMPACT_POLICY = "downstream_impact"
 GRAPH_CENTRALITY_POLICY = DOWNSTREAM_IMPACT_POLICY
+TERMINAL_ONLY_POLICY = "terminal_only"
+DECISION_TERMINAL_POLICY = "decision_terminal"
+BRANCHING_TERMINAL_POLICY = "branching_terminal"
+BOUNDARY_IO_POLICY = "boundary_io"
+RECOVERY_TERMINAL_POLICY = "recovery_terminal"
+TIERED_CONTROL_TERMINAL_POLICY = "tiered_control_terminal"
+FAST_TERMINAL_ONLY_POLICY = "fast_terminal_only"
+ENTRY_STRONG_TERMINAL_POLICY = "entry_strong_terminal"
+INTERNAL_CONTROL_STRONG_TERMINAL_POLICY = "internal_control_strong_terminal"
 FINAL_ANSWER_NODE = "generate_answer"
 DEFAULT_DOWNSTREAM_IMPACT_CLOUD_THRESHOLD = 5
 
@@ -154,6 +163,291 @@ def build_position_aware_model_config(model_profiles, node_placement=None):
         model_config[node_name] = node_config
 
     return model_config
+
+
+def llm_node_metadata(registry):
+    return {
+        node_name: metadata
+        for node_name, metadata in registry.items()
+        if metadata["calls_llm"]
+    }
+
+
+def build_metadata_policy_model_config(
+    model_profiles,
+    policy_name,
+    placement_reasons,
+):
+    model_config = {}
+
+    for node_name, placement_reason in placement_reasons.items():
+        placement, reason = placement_reason
+        if placement not in model_profiles:
+            raise ValueError(f"No model profile configured for placement: {placement}")
+
+        node_config = deepcopy(model_profiles[placement])
+        node_config["placement"] = placement
+        node_config["placement_policy"] = policy_name
+        node_config["placement_reason"] = reason
+        model_config[node_name] = node_config
+
+    return model_config
+
+
+def terminal_only_placement_reasons(node_metadata):
+    placement_reasons = {}
+    for node_name, metadata in llm_node_metadata(node_metadata).items():
+        if metadata["user_facing"] or metadata["stage"] == "terminal":
+            placement_reasons[node_name] = (
+                "cloud",
+                "user-facing or terminal synthesis node",
+            )
+        else:
+            placement_reasons[node_name] = ("local", "support node")
+    return placement_reasons
+
+
+def decision_terminal_placement_reasons(node_metadata):
+    placement_reasons = {}
+    for node_name, metadata in llm_node_metadata(node_metadata).items():
+        if metadata["user_facing"] or metadata["stage"] == "terminal":
+            placement_reasons[node_name] = (
+                "cloud",
+                "user-facing or terminal synthesis node",
+            )
+        elif metadata["role"] == "retrieval_decision":
+            placement_reasons[node_name] = (
+                "cloud",
+                "retrieval decision controls downstream execution",
+            )
+        else:
+            placement_reasons[node_name] = ("local", "non-terminal support node")
+    return placement_reasons
+
+
+def branching_terminal_placement_reasons(node_metadata):
+    placement_reasons = {}
+    for node_name, metadata in llm_node_metadata(node_metadata).items():
+        if metadata["user_facing"] or metadata["stage"] == "terminal":
+            placement_reasons[node_name] = (
+                "cloud",
+                "user-facing or terminal synthesis node",
+            )
+        elif metadata["controls_branching"]:
+            placement_reasons[node_name] = (
+                "cloud",
+                "branching node controls downstream execution",
+            )
+        else:
+            placement_reasons[node_name] = ("local", "non-branching support node")
+    return placement_reasons
+
+
+def boundary_io_placement_reasons(node_metadata):
+    placement_reasons = {}
+    for node_name, metadata in llm_node_metadata(node_metadata).items():
+        if "START" in metadata["edges_in"] or "END" in metadata["edges_out"]:
+            placement_reasons[node_name] = (
+                "cloud",
+                "workflow boundary node connected to START or END",
+            )
+        else:
+            placement_reasons[node_name] = ("local", "internal support node")
+    return placement_reasons
+
+
+def recovery_terminal_placement_reasons(node_metadata):
+    placement_reasons = {}
+    for node_name, metadata in llm_node_metadata(node_metadata).items():
+        if metadata["user_facing"] or metadata["stage"] == "terminal":
+            placement_reasons[node_name] = (
+                "cloud",
+                "user-facing or terminal synthesis node",
+            )
+        elif metadata["role"] == "question_rewriting":
+            placement_reasons[node_name] = (
+                "cloud",
+                "recovery node repairs failed retrieval context",
+            )
+        else:
+            placement_reasons[node_name] = ("local", "normal support node")
+    return placement_reasons
+
+
+def tiered_control_terminal_placement_reasons(node_metadata):
+    placement_reasons = {}
+    for node_name, metadata in llm_node_metadata(node_metadata).items():
+        if metadata["user_facing"] or metadata["stage"] == "terminal":
+            placement_reasons[node_name] = (
+                "cloud_strong",
+                "strong cloud for user-facing terminal synthesis",
+            )
+        elif metadata["controls_branching"]:
+            placement_reasons[node_name] = (
+                "cloud_fast",
+                "fast cloud for workflow control node",
+            )
+        else:
+            placement_reasons[node_name] = ("local", "non-control support node")
+    return placement_reasons
+
+
+def fast_terminal_only_placement_reasons(node_metadata):
+    placement_reasons = {}
+    for node_name, metadata in llm_node_metadata(node_metadata).items():
+        if metadata["user_facing"] or metadata["stage"] == "terminal":
+            placement_reasons[node_name] = (
+                "cloud_fast",
+                "fast cloud for user-facing terminal synthesis",
+            )
+        else:
+            placement_reasons[node_name] = ("local", "support node")
+    return placement_reasons
+
+
+def entry_strong_terminal_placement_reasons(node_metadata):
+    placement_reasons = {}
+    for node_name, metadata in llm_node_metadata(node_metadata).items():
+        if metadata["user_facing"] or metadata["stage"] == "terminal":
+            placement_reasons[node_name] = (
+                "cloud_strong",
+                "strong cloud for user-facing terminal synthesis",
+            )
+        elif "START" in metadata["edges_in"]:
+            placement_reasons[node_name] = (
+                "cloud_fast",
+                "fast cloud for workflow entry node",
+            )
+        else:
+            placement_reasons[node_name] = ("local", "internal support node")
+    return placement_reasons
+
+
+def internal_control_strong_terminal_placement_reasons(node_metadata):
+    placement_reasons = {}
+    for node_name, metadata in llm_node_metadata(node_metadata).items():
+        is_boundary_node = "START" in metadata["edges_in"] or "END" in metadata["edges_out"]
+        if metadata["user_facing"] or metadata["stage"] == "terminal":
+            placement_reasons[node_name] = (
+                "cloud_strong",
+                "strong cloud for user-facing terminal synthesis",
+            )
+        elif metadata["controls_branching"] and not is_boundary_node:
+            placement_reasons[node_name] = (
+                "cloud_fast",
+                "fast cloud for internal workflow control node",
+            )
+        else:
+            placement_reasons[node_name] = ("local", "boundary or support node")
+    return placement_reasons
+
+
+def build_terminal_only_model_config(
+    model_profiles,
+    node_metadata=None,
+):
+    registry = node_metadata or WORKFLOW_NODE_METADATA
+    return build_metadata_policy_model_config(
+        model_profiles,
+        TERMINAL_ONLY_POLICY,
+        terminal_only_placement_reasons(registry),
+    )
+
+
+def build_decision_terminal_model_config(
+    model_profiles,
+    node_metadata=None,
+):
+    registry = node_metadata or WORKFLOW_NODE_METADATA
+    return build_metadata_policy_model_config(
+        model_profiles,
+        DECISION_TERMINAL_POLICY,
+        decision_terminal_placement_reasons(registry),
+    )
+
+
+def build_branching_terminal_model_config(
+    model_profiles,
+    node_metadata=None,
+):
+    registry = node_metadata or WORKFLOW_NODE_METADATA
+    return build_metadata_policy_model_config(
+        model_profiles,
+        BRANCHING_TERMINAL_POLICY,
+        branching_terminal_placement_reasons(registry),
+    )
+
+
+def build_boundary_io_model_config(
+    model_profiles,
+    node_metadata=None,
+):
+    registry = node_metadata or WORKFLOW_NODE_METADATA
+    return build_metadata_policy_model_config(
+        model_profiles,
+        BOUNDARY_IO_POLICY,
+        boundary_io_placement_reasons(registry),
+    )
+
+
+def build_recovery_terminal_model_config(
+    model_profiles,
+    node_metadata=None,
+):
+    registry = node_metadata or WORKFLOW_NODE_METADATA
+    return build_metadata_policy_model_config(
+        model_profiles,
+        RECOVERY_TERMINAL_POLICY,
+        recovery_terminal_placement_reasons(registry),
+    )
+
+
+def build_tiered_control_terminal_model_config(
+    model_profiles,
+    node_metadata=None,
+):
+    registry = node_metadata or WORKFLOW_NODE_METADATA
+    return build_metadata_policy_model_config(
+        model_profiles,
+        TIERED_CONTROL_TERMINAL_POLICY,
+        tiered_control_terminal_placement_reasons(registry),
+    )
+
+
+def build_fast_terminal_only_model_config(
+    model_profiles,
+    node_metadata=None,
+):
+    registry = node_metadata or WORKFLOW_NODE_METADATA
+    return build_metadata_policy_model_config(
+        model_profiles,
+        FAST_TERMINAL_ONLY_POLICY,
+        fast_terminal_only_placement_reasons(registry),
+    )
+
+
+def build_entry_strong_terminal_model_config(
+    model_profiles,
+    node_metadata=None,
+):
+    registry = node_metadata or WORKFLOW_NODE_METADATA
+    return build_metadata_policy_model_config(
+        model_profiles,
+        ENTRY_STRONG_TERMINAL_POLICY,
+        entry_strong_terminal_placement_reasons(registry),
+    )
+
+
+def build_internal_control_strong_terminal_model_config(
+    model_profiles,
+    node_metadata=None,
+):
+    registry = node_metadata or WORKFLOW_NODE_METADATA
+    return build_metadata_policy_model_config(
+        model_profiles,
+        INTERNAL_CONTROL_STRONG_TERMINAL_POLICY,
+        internal_control_strong_terminal_placement_reasons(registry),
+    )
 
 
 def downstream_llm_nodes(node_metadata, registry):

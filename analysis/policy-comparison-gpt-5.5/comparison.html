@@ -1,0 +1,144 @@
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>config_id</th>
+      <th>type</th>
+      <th>label</th>
+      <th>description</th>
+      <th>eval_count</th>
+      <th>trace_count</th>
+      <th>exact_match</th>
+      <th>contains_gold_answer</th>
+      <th>contains_partial_gold_answer</th>
+      <th>answer_token_f1</th>
+      <th>supporting_title_recall</th>
+      <th>mean_latency_s</th>
+      <th>p95_latency_s</th>
+      <th>total_cost</th>
+      <th>observed_models</th>
+      <th>warnings</th>
+      <th>cost_vs_cloud</th>
+      <th>cost_savings_vs_cloud</th>
+      <th>exact_match_vs_cloud</th>
+      <th>exact_matches</th>
+      <th>cost_per_exact_match</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>v3-gpt-5.5</td>
+      <td>baseline</td>
+      <td>Cloud only</td>
+      <td>All LLM nodes use GPT-5.5.</td>
+      <td>75</td>
+      <td>75</td>
+      <td>0.546667</td>
+      <td>0.653333</td>
+      <td>0.720000</td>
+      <td>0.700579</td>
+      <td>0.806667</td>
+      <td>8.667761</td>
+      <td>16.787457</td>
+      <td>1.18176</td>
+      <td>openai/gpt-5.5: 247</td>
+      <td>0</td>
+      <td>1.000000</td>
+      <td>0.000000</td>
+      <td>1.000000</td>
+      <td>41.0</td>
+      <td>0.028823</td>
+    </tr>
+    <tr>
+      <td>v3-qwen3.5-2b</td>
+      <td>baseline</td>
+      <td>Local only</td>
+      <td>All LLM nodes use qwen3.5:2b locally.</td>
+      <td>75</td>
+      <td>75</td>
+      <td>0.413333</td>
+      <td>0.466667</td>
+      <td>0.573333</td>
+      <td>0.546863</td>
+      <td>0.813333</td>
+      <td>5.723321</td>
+      <td>9.796272</td>
+      <td>0.00000</td>
+      <td>ollama/qwen3.5:2b: 336</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>1.000000</td>
+      <td>0.756098</td>
+      <td>31.0</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <td>v3-policy-terminal-only-qwen3.5-2b-gpt-5.5</td>
+      <td>policy</td>
+      <td>Terminal only</td>
+      <td>Use GPT-5.5 only for user-facing terminal synthesis; run all support LLM nodes locally.</td>
+      <td>75</td>
+      <td>75</td>
+      <td>0.653333</td>
+      <td>0.720000</td>
+      <td>0.813333</td>
+      <td>0.789847</td>
+      <td>0.813333</td>
+      <td>10.055491</td>
+      <td>21.308869</td>
+      <td>0.52551</td>
+      <td>ollama/qwen3.5:2b: 262; openai/gpt-5.5: 74</td>
+      <td>0</td>
+      <td>0.444684</td>
+      <td>0.555316</td>
+      <td>1.195122</td>
+      <td>49.0</td>
+      <td>0.010725</td>
+    </tr>
+    <tr>
+      <td>v3-policy-decision-terminal-qwen3.5-2b-gpt-5.5</td>
+      <td>policy</td>
+      <td>Decision + terminal</td>
+      <td>Use GPT-5.5 for retrieval decision-making and final synthesis; run query generation and rewriting locally.</td>
+      <td>75</td>
+      <td>75</td>
+      <td>0.653333</td>
+      <td>0.746667</td>
+      <td>0.840000</td>
+      <td>0.817683</td>
+      <td>0.826667</td>
+      <td>9.911539</td>
+      <td>25.048824</td>
+      <td>1.02619</td>
+      <td>ollama/qwen3.5:2b: 115; openai/gpt-5.5: 181</td>
+      <td>0</td>
+      <td>0.868357</td>
+      <td>0.131643</td>
+      <td>1.195122</td>
+      <td>49.0</td>
+      <td>0.020943</td>
+    </tr>
+    <tr>
+      <td>v3-policy-branching-terminal-qwen3.5-2b-gpt-5.5</td>
+      <td>policy</td>
+      <td>Branching + terminal</td>
+      <td>Use GPT-5.5 for LLM nodes that control branching plus final synthesis; run non-branching rewrite support locally.</td>
+      <td>75</td>
+      <td>75</td>
+      <td>0.520000</td>
+      <td>0.586667</td>
+      <td>0.666667</td>
+      <td>0.666831</td>
+      <td>0.800000</td>
+      <td>9.961122</td>
+      <td>21.790649</td>
+      <td>1.20054</td>
+      <td>openai/gpt-5.5: 244</td>
+      <td>0</td>
+      <td>1.015892</td>
+      <td>-0.015892</td>
+      <td>0.951220</td>
+      <td>39.0</td>
+      <td>0.030783</td>
+    </tr>
+  </tbody>
+</table>

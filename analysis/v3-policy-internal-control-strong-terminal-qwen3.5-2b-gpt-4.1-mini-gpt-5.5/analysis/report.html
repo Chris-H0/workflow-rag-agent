@@ -1,0 +1,2514 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5 analysis</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 32px; color: #1f2933; }
+    h1, h2 { margin-bottom: 0.35rem; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0 28px; font-size: 13px; }
+    th, td { border: 1px solid #d9e2ec; padding: 7px 9px; text-align: left; vertical-align: top; }
+    th { background: #f0f4f8; }
+    img { max-width: 100%; border: 1px solid #d9e2ec; margin: 8px 0 28px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .card { border: 1px solid #d9e2ec; padding: 14px; border-radius: 6px; background: #fbfcfd; }
+    .warning { color: #9f580a; }
+    code { background: #f0f4f8; padding: 2px 4px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <h1>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5 Analysis</h1>
+  <p>Generated from <code>traces/*.json</code> and <code>evals/*.json</code>. Root latency is end-to-end LangGraph wall time; nested component duration charts intentionally keep summed child durations separate from root latency.</p>
+
+  <div class="grid">
+    <div class="card"><h2>Run Counts</h2><table><tr><th>runs</th><td>75</td></tr><tr><th>evals</th><td>75</td></tr><tr><th>traces</th><td>75</td></tr><tr><th>components</th><td>1355</td></tr></table></div>
+    <div class="card"><h2>Latency Seconds</h2><table><tr><th>mean</th><td>7.601</td></tr><tr><th>median</th><td>5.863</td></tr><tr><th>min</th><td>2.75</td></tr><tr><th>max</th><td>29.695</td></tr><tr><th>p90</th><td>14.26</td></tr><tr><th>p95</th><td>16.38</td></tr></table></div>
+    <div class="card"><h2>Correctness</h2><table><tr><th>exact_match</th><td>0.6</td></tr><tr><th>contains_gold_answer</th><td>0.693</td></tr><tr><th>contains_partial_gold_answer</th><td>0.787</td></tr><tr><th>answer_token_precision</th><td>0.754</td></tr><tr><th>answer_token_recall</th><td>0.772</td></tr><tr><th>answer_token_f1</th><td>0.74</td></tr><tr><th>supporting_title_hit</th><td>0.973</td></tr><tr><th>supporting_title_recall</th><td>0.793</td></tr></table></div>
+  </div>
+
+  <h2>Configured Models By Node</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>node</th>
+      <th>placement_policy</th>
+      <th>placement</th>
+      <th>downstream_impact_score</th>
+      <th>placement_reason</th>
+      <th>model</th>
+      <th>provider</th>
+      <th>model_kwargs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>decide_after_retrieval</td>
+      <td>internal_control_strong_terminal</td>
+      <td>cloud_fast</td>
+      <td>None</td>
+      <td>fast cloud for internal workflow control node</td>
+      <td>gpt-4.1-mini</td>
+      <td>openai</td>
+      <td>{"temperature": 0}</td>
+    </tr>
+    <tr>
+      <td>generate_answer</td>
+      <td>internal_control_strong_terminal</td>
+      <td>cloud_strong</td>
+      <td>None</td>
+      <td>strong cloud for user-facing terminal synthesis</td>
+      <td>gpt-5.5</td>
+      <td>openai</td>
+      <td>{"temperature": 0}</td>
+    </tr>
+    <tr>
+      <td>generate_query_or_respond</td>
+      <td>internal_control_strong_terminal</td>
+      <td>local</td>
+      <td>None</td>
+      <td>boundary or support node</td>
+      <td>qwen3.5:2b</td>
+      <td>ollama</td>
+      <td>{"reasoning": false, "temperature": 0, "thinking": false}</td>
+    </tr>
+    <tr>
+      <td>rewrite_question</td>
+      <td>internal_control_strong_terminal</td>
+      <td>local</td>
+      <td>None</td>
+      <td>boundary or support node</td>
+      <td>qwen3.5:2b</td>
+      <td>ollama</td>
+      <td>{"reasoning": false, "temperature": 0, "thinking": false}</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Observed LLM Models In Traces</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>langgraph_node</th>
+      <th>model_provider</th>
+      <th>model_type</th>
+      <th>model_name</th>
+      <th>calls</th>
+      <th>duration_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>generate_answer</td>
+      <td>openai</td>
+      <td>chat</td>
+      <td>gpt-5.5</td>
+      <td>72</td>
+      <td>242.658316</td>
+      <td>55620</td>
+      <td>0.473175</td>
+    </tr>
+    <tr>
+      <td>generate_query_or_respond</td>
+      <td>ollama</td>
+      <td>chat</td>
+      <td>qwen3.5:2b</td>
+      <td>111</td>
+      <td>189.866266</td>
+      <td>84708</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <td>retrieve</td>
+      <td>openai</td>
+      <td>chat</td>
+      <td>gpt-4.1-mini</td>
+      <td>100</td>
+      <td>89.061574</td>
+      <td>69628</td>
+      <td>0.028510</td>
+    </tr>
+    <tr>
+      <td>rewrite_question</td>
+      <td>ollama</td>
+      <td>chat</td>
+      <td>qwen3.5:2b</td>
+      <td>3</td>
+      <td>18.449080</td>
+      <td>979</td>
+      <td>0.000000</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Warnings</h2>
+  <p>No warnings.</p>
+
+  <section><h2>Latency By Run</h2><img src="latency_by_run.png" alt="Latency By Run"></section>
+<section><h2>Latency Breakdown By Run</h2><img src="latency_breakdown_by_run.png" alt="Latency Breakdown By Run"></section>
+<section><h2>Latency Breakdown By Type</h2><img src="latency_breakdown_by_type.png" alt="Latency Breakdown By Type"></section>
+<section><h2>Latency Breakdown By Node</h2><img src="latency_breakdown_by_node.png" alt="Latency Breakdown By Node"></section>
+<section><h2>Correctness Vs Latency</h2><img src="correctness_vs_latency.png" alt="Correctness Vs Latency"></section>
+<section><h2>Tokens Vs Latency</h2><img src="tokens_vs_latency.png" alt="Tokens Vs Latency"></section>
+
+  <h2>Correct Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>exact_match</th>
+      <th>contains_gold_answer</th>
+      <th>contains_partial_gold_answer</th>
+      <th>answer_token_precision</th>
+      <th>answer_token_recall</th>
+      <th>answer_token_f1</th>
+      <th>supporting_title_recall</th>
+      <th>question</th>
+      <th>agent_answer</th>
+      <th>gold_answer</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>5ae2070a5542994d89d5b313</td>
+      <td>0</td>
+      <td>16.270451</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Which performance act has a higher instrument to person ratio, Badly Drawn Boy or Wolf Alice?</td>
+      <td>Badly Drawn Boy</td>
+      <td>Badly Drawn Boy</td>
+    </tr>
+    <tr>
+      <td>5ae7ba7a5542993210983f12</td>
+      <td>0</td>
+      <td>13.657556</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.5</td>
+      <td>What is the name of the singer who's song was released as the lead single from the album "Confessions", and that had popular song stuck behind for eight consecutive weeks?</td>
+      <td>Usher</td>
+      <td>Usher</td>
+    </tr>
+    <tr>
+      <td>5abc0a5d5542993f40c73c64</td>
+      <td>0</td>
+      <td>13.297876</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Are Freakonomics and In the Realm of the Hackers both American documentaries?</td>
+      <td>No</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>5a8e1027554299653c1aa15f</td>
+      <td>0</td>
+      <td>12.646999</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>Which year and which conference was the 14th season for this conference as part of the NCAA Division that the Colorado Buffaloes played in with a record of 2-6 in conference play?</td>
+      <td>2009 Big 12 Conference</td>
+      <td>2009 Big 12 Conference</td>
+    </tr>
+    <tr>
+      <td>5a760ab65542994ccc918697</td>
+      <td>0</td>
+      <td>11.982433</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Alfred Balk served as the secretary of the Committee on the Employment of Minority Groups in the News Media under which United States Vice President?</td>
+      <td>Nelson Rockefeller</td>
+      <td>Nelson Rockefeller</td>
+    </tr>
+    <tr>
+      <td>5aba7cfe554299232ef4a2fd</td>
+      <td>0</td>
+      <td>11.171519</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.5</td>
+      <td>The 2017–18 Wigan Athletic F.C. season will be a year in which the team competes in the league cup known as what for sponsorship reasons?</td>
+      <td>Carabao Cup</td>
+      <td>Carabao Cup</td>
+    </tr>
+    <tr>
+      <td>5a8f4c8d554299458435d5a3</td>
+      <td>0</td>
+      <td>10.329736</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Scott Parkin has been a vocal critic of Exxonmobil and another corporation that has operations in how many countries ?</td>
+      <td>more than 70 countries</td>
+      <td>more than 70 countries</td>
+    </tr>
+    <tr>
+      <td>5ae7a8175542993210983ed8</td>
+      <td>0</td>
+      <td>10.034145</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Which other Mexican Formula One race car driver has held the podium besides the Force India driver born in 1990?</td>
+      <td>Pedro Rodríguez</td>
+      <td>Pedro Rodríguez</td>
+    </tr>
+    <tr>
+      <td>5a87c13f5542996e4f30890c</td>
+      <td>0</td>
+      <td>8.396812</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>In what city did the "Prince of tenors" star in a film based on an opera by Giacomo Puccini?</td>
+      <td>Rome</td>
+      <td>Rome</td>
+    </tr>
+    <tr>
+      <td>5ab3e45655429976abd1bcd4</td>
+      <td>0</td>
+      <td>7.884917</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>The Vermont Catamounts men's soccer team currently competes in a conference that was formerly known as what from 1988 to 1996?</td>
+      <td>North Atlantic Conference</td>
+      <td>the North Atlantic Conference</td>
+    </tr>
+    <tr>
+      <td>5a8e3ea95542995a26add48d</td>
+      <td>0</td>
+      <td>7.755011</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>The director of the romantic comedy "Big Stone Gap" is based in what New York city?</td>
+      <td>Greenwich Village, New York City</td>
+      <td>Greenwich Village, New York City</td>
+    </tr>
+    <tr>
+      <td>5a8361b65542992ef85e22a0</td>
+      <td>0</td>
+      <td>7.677422</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.5</td>
+      <td>Vince Phillips held a junior welterweight title by an organization recognized by what larger Hall of Fame?</td>
+      <td>International Boxing Hall of Fame</td>
+      <td>International Boxing Hall of Fame</td>
+    </tr>
+    <tr>
+      <td>5ab84bf555429916710eb01f</td>
+      <td>0</td>
+      <td>7.367584</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>In 1991 Euromarché was bought by a chain that operated how any hypermarkets at the end of 2016?</td>
+      <td>1,462</td>
+      <td>1,462</td>
+    </tr>
+    <tr>
+      <td>5a8ef2a75542995a26add583</td>
+      <td>0</td>
+      <td>6.735616</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Seven Brief Lessons on Physics was written by an Italian physicist that has worked in France since what year?</td>
+      <td>2000</td>
+      <td>2000</td>
+    </tr>
+    <tr>
+      <td>5ab3b0bf5542992ade7c6e39</td>
+      <td>0</td>
+      <td>6.453481</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>What year did Guns N Roses perform a promo for a movie starring Arnold Schwarzenegger as a former New York Police detective?</td>
+      <td>1999</td>
+      <td>1999</td>
+    </tr>
+    <tr>
+      <td>5ab859a955429934fafe6d7b</td>
+      <td>0</td>
+      <td>6.385409</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Who is the writer of this song that was inspired by words on a tombstone and was the first track on the box set Back to Mono?</td>
+      <td>Phil Spector</td>
+      <td>Phil Spector</td>
+    </tr>
+    <tr>
+      <td>5adbf0a255429947ff17385a</td>
+      <td>0</td>
+      <td>6.142033</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Are the Laleli Mosque and Esma Sultan Mansion located in the same neighborhood?</td>
+      <td>no</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>5a79311755429970f5fffe67</td>
+      <td>0</td>
+      <td>5.862548</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>A Japanese manga series based on a 16 year old high school student Ichitaka Seto, is written and illustrated by someone born in what year?</td>
+      <td>1962</td>
+      <td>1962</td>
+    </tr>
+    <tr>
+      <td>5a877e5d5542993e715abf7d</td>
+      <td>0</td>
+      <td>5.728639</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>What screenwriter with credits for "Evolution" co-wrote a film starring Nicolas Cage and Téa Leoni?</td>
+      <td>David Weissman</td>
+      <td>David Weissman</td>
+    </tr>
+    <tr>
+      <td>5a80721b554299485f5985ef</td>
+      <td>0</td>
+      <td>5.574733</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.5</td>
+      <td>The Livesey Hal War Memorial commemorates the fallen of which war, that had over 60 million casualties?</td>
+      <td>World War II</td>
+      <td>World War II</td>
+    </tr>
+    <tr>
+      <td>5a77152355429966f1a36c2e</td>
+      <td>0</td>
+      <td>5.473965</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>What was the Roud Folk Song Index of the nursery rhyme inspiring What Are Little Girls Made Of?</td>
+      <td>821</td>
+      <td>821</td>
+    </tr>
+    <tr>
+      <td>5abd94525542992ac4f382d2</td>
+      <td>0</td>
+      <td>5.426979</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.5</td>
+      <td>2014 S/S is the debut album of a South Korean boy group that was formed by who?</td>
+      <td>YG Entertainment</td>
+      <td>YG Entertainment</td>
+    </tr>
+    <tr>
+      <td>5a8b57f25542995d1e6f1371</td>
+      <td>0</td>
+      <td>5.314164</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Were Scott Derrickson and Ed Wood of the same nationality?</td>
+      <td>Yes</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <td>5a7320565542991f9a20c61d</td>
+      <td>0</td>
+      <td>5.118107</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>who is younger Keith Bostic or Jerry Glanville ?</td>
+      <td>Keith Bostic</td>
+      <td>Keith Bostic</td>
+    </tr>
+    <tr>
+      <td>5a77724455429972597f153e</td>
+      <td>0</td>
+      <td>4.986918</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.5</td>
+      <td>What race track in the midwest hosts a 500 mile race eavery May?</td>
+      <td>Indianapolis Motor Speedway</td>
+      <td>Indianapolis Motor Speedway</td>
+    </tr>
+    <tr>
+      <td>5ab29c24554299449642c932</td>
+      <td>0</td>
+      <td>4.922540</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Are Giuseppe Verdi and Ambroise Thomas both Opera composers ?</td>
+      <td>yes</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <td>5a7cc50e554299452d57ba3e</td>
+      <td>0</td>
+      <td>4.916590</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Which band, Letters to Cleo or Screaming Trees, had more members?</td>
+      <td>Letters to Cleo</td>
+      <td>Letters to Cleo</td>
+    </tr>
+    <tr>
+      <td>5adf37a95542995ec70e8f97</td>
+      <td>0</td>
+      <td>4.807821</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.5</td>
+      <td>The 2011–12 VCU Rams men's basketball team, led by third year head coach Shaka Smart, represented Virginia Commonwealth University which was founded in what year?</td>
+      <td>1838</td>
+      <td>1838</td>
+    </tr>
+    <tr>
+      <td>5a7a0e1e5542990783324e1a</td>
+      <td>0</td>
+      <td>4.709319</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.5</td>
+      <td>Which dog's ancestors include Gordon and Irish Setters: the Manchester Terrier or the Scotch Collie?</td>
+      <td>Scotch Collie</td>
+      <td>Scotch Collie</td>
+    </tr>
+    <tr>
+      <td>5abd259d55429924427fcf1a</td>
+      <td>0</td>
+      <td>4.530691</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Are both Dictyosperma, and Huernia described as a genus?</td>
+      <td>yes</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <td>5a7bbb64554299042af8f7cc</td>
+      <td>0</td>
+      <td>4.494377</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Who is older, Annie Morton or Terry Richardson?</td>
+      <td>Terry Richardson</td>
+      <td>Terry Richardson</td>
+    </tr>
+    <tr>
+      <td>5a8e068b5542995085b37384</td>
+      <td>0</td>
+      <td>4.268487</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Are Ferocactus and Silene both types of plant?</td>
+      <td>yes</td>
+      <td>yes</td>
+    </tr>
+    <tr>
+      <td>5a8a3e745542996c9b8d5e70</td>
+      <td>0</td>
+      <td>3.815698</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>What is the name for the adventure in "Tunnels and Trolls", a game designed by Ken St. Andre?</td>
+      <td>Arena of Khazan</td>
+      <td>Arena of Khazan</td>
+    </tr>
+    <tr>
+      <td>5a87ab905542996e4f3088c1</td>
+      <td>0</td>
+      <td>3.688588</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>The arena where the Lewiston Maineiacs played their home games can seat how many people?</td>
+      <td>3,677 seated</td>
+      <td>3,677 seated</td>
+    </tr>
+    <tr>
+      <td>5a80840f554299485f59863b</td>
+      <td>0</td>
+      <td>3.683471</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>What WB supernatrual drama series was Jawbreaker star Rose Mcgowan best known for being in?</td>
+      <td>Charmed</td>
+      <td>Charmed</td>
+    </tr>
+    <tr>
+      <td>5ab51dae5542991779162d82</td>
+      <td>0</td>
+      <td>3.644748</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Are both Elko Regional Airport and Gerald R. Ford International Airport located in Michigan?</td>
+      <td>No</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>5a7571135542992d0ec05f98</td>
+      <td>0</td>
+      <td>3.491792</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.5</td>
+      <td>Ralph Hefferline was a psychology professor at a university that is located in what city?</td>
+      <td>New York City</td>
+      <td>New York City</td>
+    </tr>
+    <tr>
+      <td>5ae7e1fc55429952e35ea9cc</td>
+      <td>0</td>
+      <td>3.377746</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>What color clothing do people of the Netherlands wear during Oranjegekte or to celebrate the national holiday Koningsdag?</td>
+      <td>orange</td>
+      <td>orange</td>
+    </tr>
+    <tr>
+      <td>5ae4a3265542995ad6573de5</td>
+      <td>0</td>
+      <td>3.375219</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.5</td>
+      <td>Hayden is a singer-songwriter from Canada, but where does Buck-Tick hail from?</td>
+      <td>Fujioka, Gunma</td>
+      <td>Fujioka, Gunma</td>
+    </tr>
+    <tr>
+      <td>5a85b2d95542997b5ce40028</td>
+      <td>0</td>
+      <td>3.374855</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.5</td>
+      <td>Who was known by his stage name Aladin and helped organizations improve their performance as a consultant?</td>
+      <td>Eenasul Fateh</td>
+      <td>Eenasul Fateh</td>
+    </tr>
+    <tr>
+      <td>5ae73acb5542991e8301cc07</td>
+      <td>0</td>
+      <td>3.276577</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>D1NZ is a series based on what oversteering technique?</td>
+      <td>Drifting</td>
+      <td>Drifting</td>
+    </tr>
+    <tr>
+      <td>5ae37c765542992f92d822d4</td>
+      <td>0</td>
+      <td>3.183457</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.5</td>
+      <td>What was the name of the 1996 loose adaptation of William Shakespeare's "Romeo &amp; Juliet" written by James Gunn?</td>
+      <td>Tromeo and Juliet</td>
+      <td>Tromeo and Juliet</td>
+    </tr>
+    <tr>
+      <td>5a828c8355429966c78a6a50</td>
+      <td>0</td>
+      <td>2.911738</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Kaiser Ventures corporation was founded by an American industrialist who became known as the father of modern American shipbuilding?</td>
+      <td>Henry J. Kaiser</td>
+      <td>Henry J. Kaiser</td>
+    </tr>
+    <tr>
+      <td>5a85ea095542994775f606a8</td>
+      <td>0</td>
+      <td>2.887786</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>What science fantasy young adult series, told in first person, has a set of companion books narrating the stories of enslaved worlds and alien species?</td>
+      <td>Animorphs</td>
+      <td>Animorphs</td>
+    </tr>
+    <tr>
+      <td>5a8db19d5542994ba4e3dd00</td>
+      <td>0</td>
+      <td>2.749753</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Are Local H and For Against both from the United States?</td>
+      <td>yes</td>
+      <td>yes</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Partially Correct Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>exact_match</th>
+      <th>contains_gold_answer</th>
+      <th>contains_partial_gold_answer</th>
+      <th>answer_token_precision</th>
+      <th>answer_token_recall</th>
+      <th>answer_token_f1</th>
+      <th>supporting_title_recall</th>
+      <th>question</th>
+      <th>agent_answer</th>
+      <th>gold_answer</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>5a8c7595554299585d9e36b6</td>
+      <td>0</td>
+      <td>14.692277</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.500000</td>
+      <td>1.000000</td>
+      <td>0.666667</td>
+      <td>1.0</td>
+      <td>What government position was held by the woman who portrayed Corliss Archer in the film Kiss and Tell?</td>
+      <td>Chief of Protocol of the United States</td>
+      <td>Chief of Protocol</td>
+    </tr>
+    <tr>
+      <td>5adddccd5542997dc7907069</td>
+      <td>0</td>
+      <td>14.346564</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>0.333333</td>
+      <td>0.500000</td>
+      <td>0.5</td>
+      <td>Aside from the Apple Remote, what other device can control the program Apple Remote was originally designed to interact with?</td>
+      <td>keyboard</td>
+      <td>keyboard function keys</td>
+    </tr>
+    <tr>
+      <td>5abbf698554299114383a0b5</td>
+      <td>0</td>
+      <td>13.289544</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.027778</td>
+      <td>1.000000</td>
+      <td>0.054054</td>
+      <td>1.0</td>
+      <td>Which British first-generation jet-powered medium bomber was used in the South West Pacific theatre of World War II?</td>
+      <td>Based on the documents retrieved, the specific British first-generation jet-powered medium bomber used in the South West Pacific theatre of World War II is the **English Electric Canberra**.\n\nThe retrieved information confirms the following:\n*&nbsp;&nbsp; **Aircraft:** The English Electric Canberra is explicitly described as a "British first-generation jet-powered medium bomber."\n*&nbsp;&nbsp; **Usage:** It was developed in response to a 1944 Air Ministry requirement and was used in the South West Pacific theatre.\n*&nbsp;&nbsp; **Specific Unit:** A **No. 2 Squadron RAAF** is mentioned as having seen action as a bomber unit in the South West Pacific theatre, equipped with English Electric Canberra jets.\n\nWhile the Avro Lancaster is a British first-generation jet-powered medium bomber, the documents specifically link the Canberra to the South West Pacific theatre and the RAAF squadron mentioned.</td>
+      <td>English Electric Canberra</td>
+    </tr>
+    <tr>
+      <td>5ac23ff0554299636651994d</td>
+      <td>0</td>
+      <td>8.531486</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.025000</td>
+      <td>1.000000</td>
+      <td>0.048780</td>
+      <td>0.5</td>
+      <td>When was Poison's album "Shut Up, Make Love" released?</td>
+      <td>Based on the retrieved documents, Poison's album **"Shut Up, Make Love"** was released in **2000**.\n\nSpecifically, it was the first single presented to radio stations from their 2000 album *Crack a Smile...and More!* and also appeared as a B-side on the second single "Be the One."</td>
+      <td>2000</td>
+    </tr>
+    <tr>
+      <td>5a8133725542995ce29dcbdb</td>
+      <td>0</td>
+      <td>7.328897</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>0.750000</td>
+      <td>0.857143</td>
+      <td>1.0</td>
+      <td>Which writer was from England, Henry Roth or Robert Erskine Childers?</td>
+      <td>Robert Erskine Childers</td>
+      <td>Robert Erskine Childers DSC</td>
+    </tr>
+    <tr>
+      <td>5ae1f4cb554299234fd0436d</td>
+      <td>0</td>
+      <td>7.061330</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>0.500000</td>
+      <td>0.666667</td>
+      <td>1.0</td>
+      <td>What is the inhabitant of the city where&nbsp;&nbsp;122nd SS-Standarte was formed in2014</td>
+      <td>276,170</td>
+      <td>276,170 inhabitants</td>
+    </tr>
+    <tr>
+      <td>5a722b8655429971e9dc9329</td>
+      <td>0</td>
+      <td>6.864043</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>0.666667</td>
+      <td>0.800000</td>
+      <td>1.0</td>
+      <td>Who was the writer of These Boots Are Made for Walkin' and who died in 2007?</td>
+      <td>Lee Hazlewood</td>
+      <td>Barton Lee Hazlewood</td>
+    </tr>
+    <tr>
+      <td>5a7166395542994082a3e814</td>
+      <td>0</td>
+      <td>6.265980</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.400000</td>
+      <td>1.000000</td>
+      <td>0.571429</td>
+      <td>1.0</td>
+      <td>What is the name of the fight song of the university whose main campus is in Lawrence, Kansas and whose branch campuses are in the Kansas City metropolitan area?</td>
+      <td>Kansas Song (We’re From Kansas)</td>
+      <td>Kansas Song</td>
+    </tr>
+    <tr>
+      <td>5ae22b8d554299234fd0440f</td>
+      <td>0</td>
+      <td>4.909083</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.750000</td>
+      <td>1.000000</td>
+      <td>0.857143</td>
+      <td>1.0</td>
+      <td>What was the father of Kasper Schmeichel voted to be by the IFFHS in 1992?</td>
+      <td>IFFHS World's Best Goalkeeper</td>
+      <td>World's Best Goalkeeper</td>
+    </tr>
+    <tr>
+      <td>5a7be2595542997c3ec972ac</td>
+      <td>0</td>
+      <td>4.775924</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>0.666667</td>
+      <td>0.800000</td>
+      <td>1.0</td>
+      <td>Who was born earlier, Emma Bull or Virginia Woolf?</td>
+      <td>Virginia Woolf</td>
+      <td>Adeline Virginia Woolf</td>
+    </tr>
+    <tr>
+      <td>5ab6d09255429954757d337d</td>
+      <td>0</td>
+      <td>4.656173</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>0.750000</td>
+      <td>0.857143</td>
+      <td>0.5</td>
+      <td>The football manager who recruited David Beckham managed Manchester United during what timeframe?</td>
+      <td>1986 to 2013</td>
+      <td>from 1986 to 2013</td>
+    </tr>
+    <tr>
+      <td>5a74106b55429979e288289e</td>
+      <td>0</td>
+      <td>4.396085</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.500000</td>
+      <td>1.000000</td>
+      <td>0.666667</td>
+      <td>1.0</td>
+      <td>Where is the company that Sachin Warrier worked for as a software engineer headquartered?</td>
+      <td>Mumbai, Maharashtra</td>
+      <td>Mumbai</td>
+    </tr>
+    <tr>
+      <td>5ab2d3df554299194fa9352c</td>
+      <td>0</td>
+      <td>3.761808</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.500000</td>
+      <td>1.000000</td>
+      <td>0.666667</td>
+      <td>1.0</td>
+      <td>The battle in which Giuseppe Arimondi lost his life secured what for Ethiopia?</td>
+      <td>Ethiopian sovereignty</td>
+      <td>sovereignty</td>
+    </tr>
+    <tr>
+      <td>5ae5aba0554299546bf82f17</td>
+      <td>0</td>
+      <td>3.453346</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>0.666667</td>
+      <td>0.800000</td>
+      <td>0.5</td>
+      <td>Which of Tara Strong major voice role in animated series is an American animated television series based on the DC Comics fictional superhero team, the "Teen Titans"?</td>
+      <td>Teen Titans</td>
+      <td>Teen Titans Go!</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Fully Incorrect Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>exact_match</th>
+      <th>contains_gold_answer</th>
+      <th>contains_partial_gold_answer</th>
+      <th>answer_token_precision</th>
+      <th>answer_token_recall</th>
+      <th>answer_token_f1</th>
+      <th>supporting_title_recall</th>
+      <th>question</th>
+      <th>agent_answer</th>
+      <th>gold_answer</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>5ab96ab755429970cfb8eacd</td>
+      <td>0</td>
+      <td>29.694783</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.272727</td>
+      <td>0.428571</td>
+      <td>0.333333</td>
+      <td>0.5</td>
+      <td>Ellie Goulding worked with what other writers on her third studio album, Delirium?</td>
+      <td>Max Martin, Greg Kurstin, Ryan Tedder, Klas Åhlund and Guy Lawrence</td>
+      <td>Max Martin, Savan Kotecha and Ilya Salmanzadeh</td>
+    </tr>
+    <tr>
+      <td>5ae32e125542991a06ce9946</td>
+      <td>0</td>
+      <td>19.658727</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.5</td>
+      <td>According to the 2001 census, what was the population of the city in which Kirton End is located?</td>
+      <td>273</td>
+      <td>35,124</td>
+    </tr>
+    <tr>
+      <td>5add61d65542995b365fab21</td>
+      <td>0</td>
+      <td>18.983058</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>What type of forum did a former Soviet statesman initiate?</td>
+      <td>unknown</td>
+      <td>Organizations could come together to address global issues</td>
+    </tr>
+    <tr>
+      <td>5a75e05c55429976ec32bc5f</td>
+      <td>0</td>
+      <td>16.635599</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.5</td>
+      <td>Brown State Fishing Lake is in a country that has a population of how many inhabitants ?</td>
+      <td>unknown</td>
+      <td>9,984</td>
+    </tr>
+    <tr>
+      <td>5ac2acff55429921a00ab02b</td>
+      <td>0</td>
+      <td>15.233660</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.5</td>
+      <td>who is the younger brother of The episode guest stars of The Hard Easy</td>
+      <td>The guest stars of the 2006 film *The Hard Easy* are Henry Thomas, Vera Farmiga, David Boreanaz, Bruce Dern, Peter Weller, Gary Busey, and Nick Lachey.\n\nBased on the provided documents, there is no information linking any of these specific cast members to a younger brother. The documents mention a different show, *Adventure Time*, where the episode "The Hard Easy" guest stars Brian Doyle-Murray and Jonathan Katz, but this does not apply to the 2006 film.\n\nTherefore, the answer to the question "Who is the younger brother of the guest stars of *The Hard Easy*?" cannot be determined from the available information.</td>
+      <td>Bill Murray</td>
+    </tr>
+    <tr>
+      <td>5abf63f15542997ec76fd3ea</td>
+      <td>0</td>
+      <td>14.128939</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.5</td>
+      <td>Alexander Kerensky was defeated and destroyed by the Bolsheviks in the course of a civil war that ended when ?</td>
+      <td>1923</td>
+      <td>October 1922</td>
+    </tr>
+    <tr>
+      <td>5ae0d4c9554299603e418468</td>
+      <td>0</td>
+      <td>13.442649</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.5</td>
+      <td>Roger O. Egeberg was Assistant Secretary for Health and Scientific Affairs during the administration of a president that served during what years?</td>
+      <td>1969–1974</td>
+      <td>1969 until 1974</td>
+    </tr>
+    <tr>
+      <td>5ae6050f55429929b0807a5e</td>
+      <td>0</td>
+      <td>8.905779</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.0</td>
+      <td>This singer of A Rather Blustery Day also voiced what hedgehog?</td>
+      <td>Dr. Robotnik</td>
+      <td>Sonic</td>
+    </tr>
+    <tr>
+      <td>5ab56e32554299637185c594</td>
+      <td>0</td>
+      <td>8.601096</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.0</td>
+      <td>Are Random House Tower and 888 7th Avenue both used for real estate?</td>
+      <td>yes</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>5a85fb085542994775f606de</td>
+      <td>0</td>
+      <td>7.574116</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.5</td>
+      <td>What is the name of the executive producer of the film that has a score composed by Jerry Goldsmith?</td>
+      <td>Francis Ford Coppola and Jack Schwartzman</td>
+      <td>Ronald Shusett</td>
+    </tr>
+    <tr>
+      <td>5ae0361155429925eb1afc2c</td>
+      <td>0</td>
+      <td>6.429544</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.500000</td>
+      <td>0.500000</td>
+      <td>0.500000</td>
+      <td>0.5</td>
+      <td>Which&nbsp;&nbsp;French ace pilot and adventurer fly L'Oiseau Blanc</td>
+      <td>Charles Nungesser</td>
+      <td>Charles Eugène</td>
+    </tr>
+    <tr>
+      <td>5a7d54165542995f4f402256</td>
+      <td>0</td>
+      <td>6.400165</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.5</td>
+      <td>A medieval fortress in Dirleton, East Lothian, Scotland borders on the south side of what coastal area?</td>
+      <td>Firth of Forth</td>
+      <td>Yellowcraig</td>
+    </tr>
+    <tr>
+      <td>5a8b20335542996c9b8d5fb3</td>
+      <td>0</td>
+      <td>5.183629</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.600000</td>
+      <td>0.333333</td>
+      <td>0.428571</td>
+      <td>1.0</td>
+      <td>What distinction is held by the former NBA player who was a member of the Charlotte Hornets during their 1992-93 season and was head coach for the WNBA team Charlotte Sting?</td>
+      <td>shortest player in NBA history</td>
+      <td>shortest player ever to play in the National Basketball Association</td>
+    </tr>
+    <tr>
+      <td>5ae33c4d5542992f92d82262</td>
+      <td>0</td>
+      <td>4.290138</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.500000</td>
+      <td>0.333333</td>
+      <td>0.400000</td>
+      <td>0.5</td>
+      <td>Robert Suettinger was the national intelligence officer under which former Governor of Arkansas?</td>
+      <td>Bill Clinton</td>
+      <td>William Jefferson Clinton</td>
+    </tr>
+    <tr>
+      <td>5adc53f75542996e6852530a</td>
+      <td>0</td>
+      <td>3.517847</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.0</td>
+      <td>Are both Cypress and Ajuga genera?</td>
+      <td>yes</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>5a8a43eb5542996c9b8d5e82</td>
+      <td>0</td>
+      <td>3.270819</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.5</td>
+      <td>Which Australian city founded in 1838 contains a boarding school opened by a Prime Minister of Australia and named after a school in London of the same name.</td>
+      <td>Adelaide</td>
+      <td>Marion, South Australia</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>LLM Latency By Node</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>langgraph_node</th>
+      <th>duration_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>generate_answer</td>
+      <td>242.658316</td>
+      <td>55620</td>
+      <td>0.473175</td>
+    </tr>
+    <tr>
+      <td>generate_query_or_respond</td>
+      <td>189.866266</td>
+      <td>84708</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <td>retrieve</td>
+      <td>89.061574</td>
+      <td>69628</td>
+      <td>0.028510</td>
+    </tr>
+    <tr>
+      <td>rewrite_question</td>
+      <td>18.449080</td>
+      <td>979</td>
+      <td>0.000000</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Tool And Retriever Latency</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>run_id</th>
+      <th>run_type</th>
+      <th>name</th>
+      <th>langgraph_node</th>
+      <th>duration_s</th>
+      <th>status</th>
+      <th>error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T184101304179Z-5a7320565542991f9a20c61d-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.630430</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T184101304179Z-5a7320565542991f9a20c61d-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.627475</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T184004298750Z-5ab84bf555429916710eb01f-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.603862</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T184004298750Z-5ab84bf555429916710eb01f-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.602899</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T183850329696Z-5a760ab65542994ccc918697-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.431564</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T183850329696Z-5a760ab65542994ccc918697-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.430678</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T184257837594Z-5ae1f4cb554299234fd0436d-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.430462</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T184257837594Z-5ae1f4cb554299234fd0436d-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.430075</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T184142366137Z-5a7be2595542997c3ec972ac-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.415385</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T184142366137Z-5a7be2595542997c3ec972ac-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.414597</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T184025056586Z-5ab96ab755429970cfb8eacd-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.414139</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T184025056586Z-5ab96ab755429970cfb8eacd-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.412732</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T183345551062Z-5a8b57f25542995d1e6f1371-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.384998</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T183345551062Z-5a8b57f25542995d1e6f1371-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.383599</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T183637325301Z-5ae2070a5542994d89d5b313-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.383270</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T183637325301Z-5ae2070a5542994d89d5b313-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.382486</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T183345551062Z-5a8b57f25542995d1e6f1371-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.382332</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T183637325301Z-5ae2070a5542994d89d5b313-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.382238</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T183637325301Z-5ae2070a5542994d89d5b313-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.381374</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T183345551062Z-5a8b57f25542995d1e6f1371-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.380392</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T183915103391Z-5add61d65542995b365fab21-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.378070</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T183733359816Z-5ae0361155429925eb1afc2c-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.377596</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T183915103391Z-5add61d65542995b365fab21-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.377246</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T183733359816Z-5ae0361155429925eb1afc2c-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.377097</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T184202950961Z-5a80840f554299485f59863b-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.374309</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T184202950961Z-5a80840f554299485f59863b-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.373412</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T184016656816Z-5a87c13f5542996e4f30890c-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.340583</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T184016656816Z-5a87c13f5542996e4f30890c-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.340066</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T183824452903Z-5ab51dae5542991779162d82-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.326750</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>v3-policy-internal-control-strong-terminal-qwen3.5-2b-gpt-4.1-mini-gpt-5.5-20260608T183824452903Z-5ab51dae5542991779162d82-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.325831</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>All Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+      <th>exact_match</th>
+      <th>contains_gold_answer</th>
+      <th>contains_partial_gold_answer</th>
+      <th>answer_token_precision</th>
+      <th>answer_token_recall</th>
+      <th>answer_token_f1</th>
+      <th>supporting_title_recall</th>
+      <th>retrieval_rounds</th>
+      <th>nodes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>5ab96ab755429970cfb8eacd</td>
+      <td>0</td>
+      <td>29.694783</td>
+      <td>7475</td>
+      <td>0.033659</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.272727</td>
+      <td>0.428571</td>
+      <td>0.333333</td>
+      <td>0.5</td>
+      <td>3</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ae32e125542991a06ce9946</td>
+      <td>0</td>
+      <td>19.658727</td>
+      <td>7047</td>
+      <td>0.021679</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.5</td>
+      <td>3</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5add61d65542995b365fab21</td>
+      <td>0</td>
+      <td>18.983058</td>
+      <td>6236</td>
+      <td>0.021090</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a75e05c55429976ec32bc5f</td>
+      <td>0</td>
+      <td>16.635599</td>
+      <td>1877</td>
+      <td>0.018053</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ae2070a5542994d89d5b313</td>
+      <td>0</td>
+      <td>16.270451</td>
+      <td>11188</td>
+      <td>0.015650</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>3</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ac2acff55429921a00ab02b</td>
+      <td>0</td>
+      <td>15.233660</td>
+      <td>2699</td>
+      <td>0.000243</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; rewrite_question -&gt; generate_query_or_respond</td>
+    </tr>
+    <tr>
+      <td>5a8c7595554299585d9e36b6</td>
+      <td>0</td>
+      <td>14.692277</td>
+      <td>4151</td>
+      <td>0.012840</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.500000</td>
+      <td>1.000000</td>
+      <td>0.666667</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5adddccd5542997dc7907069</td>
+      <td>0</td>
+      <td>14.346564</td>
+      <td>1709</td>
+      <td>0.011854</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>0.333333</td>
+      <td>0.500000</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5abf63f15542997ec76fd3ea</td>
+      <td>0</td>
+      <td>14.128939</td>
+      <td>1885</td>
+      <td>0.018073</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ae7ba7a5542993210983f12</td>
+      <td>0</td>
+      <td>13.657556</td>
+      <td>2010</td>
+      <td>0.015957</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ae0d4c9554299603e418468</td>
+      <td>0</td>
+      <td>13.442649</td>
+      <td>7063</td>
+      <td>0.012615</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.5</td>
+      <td>3</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5abc0a5d5542993f40c73c64</td>
+      <td>0</td>
+      <td>13.297876</td>
+      <td>2151</td>
+      <td>0.005492</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5abbf698554299114383a0b5</td>
+      <td>0</td>
+      <td>13.289544</td>
+      <td>2560</td>
+      <td>0.000254</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.027778</td>
+      <td>1.000000</td>
+      <td>0.054054</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; rewrite_question -&gt; generate_query_or_respond</td>
+    </tr>
+    <tr>
+      <td>5a8e1027554299653c1aa15f</td>
+      <td>0</td>
+      <td>12.646999</td>
+      <td>4591</td>
+      <td>0.016157</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>0.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a760ab65542994ccc918697</td>
+      <td>0</td>
+      <td>11.982433</td>
+      <td>7187</td>
+      <td>0.008611</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>3</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5aba7cfe554299232ef4a2fd</td>
+      <td>0</td>
+      <td>11.171519</td>
+      <td>7241</td>
+      <td>0.009614</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>0.5</td>
+      <td>3</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a8f4c8d554299458435d5a3</td>
+      <td>0</td>
+      <td>10.329736</td>
+      <td>6291</td>
+      <td>0.007839</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>3</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ae7a8175542993210983ed8</td>
+      <td>0</td>
+      <td>10.034145</td>
+      <td>3772</td>
+      <td>0.007144</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ae6050f55429929b0807a5e</td>
+      <td>0</td>
+      <td>8.905779</td>
+      <td>3991</td>
+      <td>0.007467</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ab56e32554299637185c594</td>
+      <td>0</td>
+      <td>8.601096</td>
+      <td>2499</td>
+      <td>0.012015</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ac23ff0554299636651994d</td>
+      <td>0</td>
+      <td>8.531486</td>
+      <td>2200</td>
+      <td>0.000241</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.025000</td>
+      <td>1.000000</td>
+      <td>0.048780</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; rewrite_question -&gt; generate_query_or_respond</td>
+    </tr>
+    <tr>
+      <td>5a87c13f5542996e4f30890c</td>
+      <td>0</td>
+      <td>8.396812</td>
+      <td>3899</td>
+      <td>0.006964</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ab3e45655429976abd1bcd4</td>
+      <td>0</td>
+      <td>7.884917</td>
+      <td>4304</td>
+      <td>0.005870</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a8e3ea95542995a26add48d</td>
+      <td>0</td>
+      <td>7.755011</td>
+      <td>3501</td>
+      <td>0.007274</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a8361b65542992ef85e22a0</td>
+      <td>0</td>
+      <td>7.677422</td>
+      <td>1555</td>
+      <td>0.008062</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a85fb085542994775f606de</td>
+      <td>0</td>
+      <td>7.574116</td>
+      <td>1519</td>
+      <td>0.009643</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ab84bf555429916710eb01f</td>
+      <td>0</td>
+      <td>7.367584</td>
+      <td>3883</td>
+      <td>0.004532</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a8133725542995ce29dcbdb</td>
+      <td>0</td>
+      <td>7.328897</td>
+      <td>3682</td>
+      <td>0.006275</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>0.750000</td>
+      <td>0.857143</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ae1f4cb554299234fd0436d</td>
+      <td>0</td>
+      <td>7.061330</td>
+      <td>3765</td>
+      <td>0.006414</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>0.500000</td>
+      <td>0.666667</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a722b8655429971e9dc9329</td>
+      <td>0</td>
+      <td>6.864043</td>
+      <td>3738</td>
+      <td>0.005932</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>0.666667</td>
+      <td>0.800000</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a8ef2a75542995a26add583</td>
+      <td>0</td>
+      <td>6.735616</td>
+      <td>3780</td>
+      <td>0.004647</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ab3b0bf5542992ade7c6e39</td>
+      <td>0</td>
+      <td>6.453481</td>
+      <td>4013</td>
+      <td>0.004959</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ae0361155429925eb1afc2c</td>
+      <td>0</td>
+      <td>6.429544</td>
+      <td>1388</td>
+      <td>0.005626</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.500000</td>
+      <td>0.500000</td>
+      <td>0.500000</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a7d54165542995f4f402256</td>
+      <td>0</td>
+      <td>6.400165</td>
+      <td>1542</td>
+      <td>0.005761</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ab859a955429934fafe6d7b</td>
+      <td>0</td>
+      <td>6.385409</td>
+      <td>4275</td>
+      <td>0.005284</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a7166395542994082a3e814</td>
+      <td>0</td>
+      <td>6.265980</td>
+      <td>3929</td>
+      <td>0.004838</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.400000</td>
+      <td>1.000000</td>
+      <td>0.571429</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5adbf0a255429947ff17385a</td>
+      <td>0</td>
+      <td>6.142033</td>
+      <td>2005</td>
+      <td>0.005207</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a79311755429970f5fffe67</td>
+      <td>0</td>
+      <td>5.862548</td>
+      <td>3967</td>
+      <td>0.004830</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a877e5d5542993e715abf7d</td>
+      <td>0</td>
+      <td>5.728639</td>
+      <td>3771</td>
+      <td>0.004402</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a80721b554299485f5985ef</td>
+      <td>0</td>
+      <td>5.574733</td>
+      <td>1427</td>
+      <td>0.006168</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a77152355429966f1a36c2e</td>
+      <td>0</td>
+      <td>5.473965</td>
+      <td>1416</td>
+      <td>0.005734</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5abd94525542992ac4f382d2</td>
+      <td>0</td>
+      <td>5.426979</td>
+      <td>1467</td>
+      <td>0.004791</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a8b57f25542995d1e6f1371</td>
+      <td>0</td>
+      <td>5.314164</td>
+      <td>2076</td>
+      <td>0.005016</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a8b20335542996c9b8d5fb3</td>
+      <td>0</td>
+      <td>5.183629</td>
+      <td>1529</td>
+      <td>0.004562</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.600000</td>
+      <td>0.333333</td>
+      <td>0.428571</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a7320565542991f9a20c61d</td>
+      <td>0</td>
+      <td>5.118107</td>
+      <td>1738</td>
+      <td>0.004505</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a77724455429972597f153e</td>
+      <td>0</td>
+      <td>4.986918</td>
+      <td>1320</td>
+      <td>0.003814</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ab29c24554299449642c932</td>
+      <td>0</td>
+      <td>4.922540</td>
+      <td>1926</td>
+      <td>0.004983</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5a7cc50e554299452d57ba3e</td>
+      <td>0</td>
+      <td>4.916590</td>
+      <td>2095</td>
+      <td>0.005698</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5ae22b8d554299234fd0440f</td>
+      <td>0</td>
+      <td>4.909083</td>
+      <td>1525</td>
+      <td>0.004579</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>0.750000</td>
+      <td>1.000000</td>
+      <td>0.857143</td>
+      <td>1.0</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+    <tr>
+      <td>5adf37a95542995ec70e8f97</td>
+      <td>0</td>
+      <td>4.807821</td>
+      <td>1630</td>
+      <td>0.005124</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>1.000000</td>
+      <td>0.5</td>
+      <td>1</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Question Difficulty Split</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>difficulty</th>
+      <th>evaluated_questions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>hard</td>
+      <td>75</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>
