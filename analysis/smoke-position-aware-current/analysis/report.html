@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>smoke-position-aware-current analysis</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 32px; color: #1f2933; }
+    h1, h2 { margin-bottom: 0.35rem; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0 28px; font-size: 13px; }
+    th, td { border: 1px solid #d9e2ec; padding: 7px 9px; text-align: left; vertical-align: top; }
+    th { background: #f0f4f8; }
+    img { max-width: 100%; border: 1px solid #d9e2ec; margin: 8px 0 28px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .card { border: 1px solid #d9e2ec; padding: 14px; border-radius: 6px; background: #fbfcfd; }
+    .warning { color: #9f580a; }
+    code { background: #f0f4f8; padding: 2px 4px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <h1>smoke-position-aware-current Analysis</h1>
+  <p>Generated from <code>traces/*.json</code> and <code>evals/*.json</code>. Root latency is end-to-end LangGraph wall time; nested component duration charts intentionally keep summed child durations separate from root latency.</p>
+
+  <div class="grid">
+    <div class="card"><h2>Run Counts</h2><table><tr><th>runs</th><td>1</td></tr><tr><th>evals</th><td>1</td></tr><tr><th>traces</th><td>1</td></tr><tr><th>components</th><td>28</td></tr></table></div>
+    <div class="card"><h2>Latency Seconds</h2><table><tr><th>mean</th><td>13.902</td></tr><tr><th>median</th><td>13.902</td></tr><tr><th>min</th><td>13.902</td></tr><tr><th>max</th><td>13.902</td></tr><tr><th>p90</th><td>13.902</td></tr><tr><th>p95</th><td>13.902</td></tr></table></div>
+    <div class="card"><h2>Correctness</h2><table><tr><th>exact_match</th><td>1.0</td></tr><tr><th>contains_gold_answer</th><td>1.0</td></tr><tr><th>contains_partial_gold_answer</th><td>1.0</td></tr><tr><th>answer_token_precision</th><td>1.0</td></tr><tr><th>answer_token_recall</th><td>1.0</td></tr><tr><th>answer_token_f1</th><td>1.0</td></tr><tr><th>supporting_title_hit</th><td>1.0</td></tr><tr><th>supporting_title_recall</th><td>1.0</td></tr></table></div>
+  </div>
+
+  <h2>Configured Models By Node</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>node</th>
+      <th>placement_policy</th>
+      <th>placement</th>
+      <th>model</th>
+      <th>provider</th>
+      <th>model_kwargs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>decide_after_retrieval</td>
+      <td>position_aware</td>
+      <td>local</td>
+      <td>qwen3.5:2b</td>
+      <td>ollama</td>
+      <td>{"reasoning": false, "temperature": 0, "thinking": false}</td>
+    </tr>
+    <tr>
+      <td>generate_answer</td>
+      <td>position_aware</td>
+      <td>cloud</td>
+      <td>gpt-4.1-mini</td>
+      <td>openai</td>
+      <td>{"temperature": 0}</td>
+    </tr>
+    <tr>
+      <td>generate_query_or_respond</td>
+      <td>position_aware</td>
+      <td>local</td>
+      <td>qwen3.5:2b</td>
+      <td>ollama</td>
+      <td>{"reasoning": false, "temperature": 0, "thinking": false}</td>
+    </tr>
+    <tr>
+      <td>rewrite_question</td>
+      <td>position_aware</td>
+      <td>local</td>
+      <td>qwen3.5:2b</td>
+      <td>ollama</td>
+      <td>{"reasoning": false, "temperature": 0, "thinking": false}</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Observed LLM Models In Traces</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>langgraph_node</th>
+      <th>model_provider</th>
+      <th>model_type</th>
+      <th>model_name</th>
+      <th>calls</th>
+      <th>duration_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>generate_answer</td>
+      <td>openai</td>
+      <td>chat</td>
+      <td>gpt-4.1-mini</td>
+      <td>1</td>
+      <td>1.713963</td>
+      <td>1426</td>
+      <td>0.000572</td>
+    </tr>
+    <tr>
+      <td>generate_query_or_respond</td>
+      <td>ollama</td>
+      <td>chat</td>
+      <td>qwen3.5:2b</td>
+      <td>2</td>
+      <td>6.884678</td>
+      <td>2352</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <td>retrieve</td>
+      <td>ollama</td>
+      <td>chat</td>
+      <td>qwen3.5:2b</td>
+      <td>2</td>
+      <td>2.943368</td>
+      <td>2488</td>
+      <td>0.000000</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Warnings</h2>
+  <p>No warnings.</p>
+
+  <section><h2>Latency By Run</h2><img src="latency_by_run.png" alt="Latency By Run"></section>
+<section><h2>Latency Breakdown By Run</h2><img src="latency_breakdown_by_run.png" alt="Latency Breakdown By Run"></section>
+<section><h2>Latency Breakdown By Type</h2><img src="latency_breakdown_by_type.png" alt="Latency Breakdown By Type"></section>
+<section><h2>Latency Breakdown By Node</h2><img src="latency_breakdown_by_node.png" alt="Latency Breakdown By Node"></section>
+<section><h2>Correctness Vs Latency</h2><img src="correctness_vs_latency.png" alt="Correctness Vs Latency"></section>
+<section><h2>Tokens Vs Latency</h2><img src="tokens_vs_latency.png" alt="Tokens Vs Latency"></section>
+
+  <h2>Correct Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>exact_match</th>
+      <th>contains_gold_answer</th>
+      <th>contains_partial_gold_answer</th>
+      <th>answer_token_precision</th>
+      <th>answer_token_recall</th>
+      <th>answer_token_f1</th>
+      <th>supporting_title_recall</th>
+      <th>question</th>
+      <th>agent_answer</th>
+      <th>gold_answer</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>5a8b57f25542995d1e6f1371</td>
+      <td>0</td>
+      <td>13.901828</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>Were Scott Derrickson and Ed Wood of the same nationality?</td>
+      <td>Yes</td>
+      <td>yes</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Partially Correct Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>exact_match</th>
+      <th>contains_gold_answer</th>
+      <th>contains_partial_gold_answer</th>
+      <th>answer_token_precision</th>
+      <th>answer_token_recall</th>
+      <th>answer_token_f1</th>
+      <th>supporting_title_recall</th>
+      <th>question</th>
+      <th>agent_answer</th>
+      <th>gold_answer</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+
+  <h2>Fully Incorrect Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>exact_match</th>
+      <th>contains_gold_answer</th>
+      <th>contains_partial_gold_answer</th>
+      <th>answer_token_precision</th>
+      <th>answer_token_recall</th>
+      <th>answer_token_f1</th>
+      <th>supporting_title_recall</th>
+      <th>question</th>
+      <th>agent_answer</th>
+      <th>gold_answer</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+
+  <h2>LLM Latency By Node</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>langgraph_node</th>
+      <th>duration_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>generate_query_or_respond</td>
+      <td>6.884678</td>
+      <td>2352</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <td>retrieve</td>
+      <td>2.943368</td>
+      <td>2488</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <td>generate_answer</td>
+      <td>1.713963</td>
+      <td>1426</td>
+      <td>0.000572</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Tool And Retriever Latency</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>run_id</th>
+      <th>run_type</th>
+      <th>name</th>
+      <th>langgraph_node</th>
+      <th>duration_s</th>
+      <th>status</th>
+      <th>error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>smoke-position-aware-current-20260608T144340510346Z-5a8b57f25542995d1e6f1371-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>2.113326</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>smoke-position-aware-current-20260608T144340510346Z-5a8b57f25542995d1e6f1371-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>2.111873</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>smoke-position-aware-current-20260608T144340510346Z-5a8b57f25542995d1e6f1371-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.621760</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>smoke-position-aware-current-20260608T144340510346Z-5a8b57f25542995d1e6f1371-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.620909</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>smoke-position-aware-current-20260608T144340510346Z-5a8b57f25542995d1e6f1371-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.203733</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>smoke-position-aware-current-20260608T144340510346Z-5a8b57f25542995d1e6f1371-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.203156</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>smoke-position-aware-current-20260608T144340510346Z-5a8b57f25542995d1e6f1371-r0</td>
+      <td>tool</td>
+      <td>retrieve_documents</td>
+      <td>retrieve</td>
+      <td>0.175952</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <td>smoke-position-aware-current-20260608T144340510346Z-5a8b57f25542995d1e6f1371-r0</td>
+      <td>retriever</td>
+      <td>VectorStoreRetriever</td>
+      <td>retrieve</td>
+      <td>0.174584</td>
+      <td>success</td>
+      <td>None</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>All Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+      <th>exact_match</th>
+      <th>contains_gold_answer</th>
+      <th>contains_partial_gold_answer</th>
+      <th>answer_token_precision</th>
+      <th>answer_token_recall</th>
+      <th>answer_token_f1</th>
+      <th>supporting_title_recall</th>
+      <th>retrieval_rounds</th>
+      <th>nodes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>5a8b57f25542995d1e6f1371</td>
+      <td>0</td>
+      <td>13.901828</td>
+      <td>6266</td>
+      <td>0.000572</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>2</td>
+      <td>generate_query_or_respond -&gt; retrieve -&gt; generate_followup_query -&gt; generate_query_or_respond -&gt; retrieve -&gt; generate_answer</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Question Difficulty Split</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>difficulty</th>
+      <th>evaluated_questions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>hard</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

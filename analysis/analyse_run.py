@@ -539,7 +539,7 @@ def model_kwargs_for(config):
     return {
         key: value
         for key, value in config.items()
-        if key not in {"provider", "model"}
+        if key not in {"provider", "model", "placement", "placement_policy"}
     }
 
 
@@ -580,6 +580,8 @@ def model_config_table(runs_df: pd.DataFrame):
             rows.append(
                 {
                     "node": node_name,
+                    "placement_policy": node_config.get("placement_policy"),
+                    "placement": node_config.get("placement"),
                     "model": node_config.get("model"),
                     "provider": node_config.get("provider"),
                     "model_kwargs": (

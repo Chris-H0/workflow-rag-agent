@@ -3,6 +3,9 @@ from copy import deepcopy
 from langchain.chat_models import init_chat_model
 
 
+MODEL_CONFIG_METADATA_KEYS = {"placement", "placement_policy"}
+
+
 class ModelRouter:
     def __init__(self, node_model_config):
         self.model_config = node_model_config
@@ -18,8 +21,9 @@ class ModelRouter:
 
     def build_model(self, config):
         required_keys = {"provider", "model"}
+        excluded_keys = required_keys | MODEL_CONFIG_METADATA_KEYS
         model_kwargs = {
-            key: value for key, value in config.items() if key not in required_keys
+            key: value for key, value in config.items() if key not in excluded_keys
         }
 
         return init_chat_model(

@@ -1,0 +1,47 @@
+{
+  "config_id": "smoke-position-aware-current",
+  "run_count": 1,
+  "eval_count": 1,
+  "trace_count": 1,
+  "component_count": 28,
+  "latency_s": {
+    "mean": 13.901828,
+    "median": 13.901828,
+    "min": 13.901828,
+    "max": 13.901828,
+    "p90": 13.901828,
+    "p95": 13.901828
+  },
+  "correctness": {
+    "exact_match": 1.0,
+    "contains_gold_answer": 1.0,
+    "contains_partial_gold_answer": 1.0,
+    "answer_token_precision": 1.0,
+    "answer_token_recall": 1.0,
+    "answer_token_f1": 1.0,
+    "supporting_title_hit": 1.0,
+    "supporting_title_recall": 1.0
+  },
+  "root_status_counts": {
+    "success": 1
+  },
+  "component_run_type_counts": {
+    "chain": 13,
+    "llm": 5,
+    "tool": 4,
+    "retriever": 4,
+    "parser": 2
+  },
+  "model_config_counts": {
+    "{\"decide_after_retrieval\": {\"model\": \"qwen3.5:2b\", \"placement\": \"local\", \"placement_policy\": \"position_aware\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"generate_answer\": {\"model\": \"gpt-4.1-mini\", \"placement\": \"cloud\", \"placement_policy\": \"position_aware\", \"provider\": \"openai\", \"temperature\": 0}, \"generate_query_or_respond\": {\"model\": \"qwen3.5:2b\", \"placement\": \"local\", \"placement_policy\": \"position_aware\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"rewrite_question\": {\"model\": \"qwen3.5:2b\", \"placement\": \"local\", \"placement_policy\": \"position_aware\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}}": 1
+  },
+  "questions": {
+    "hotpotqa_level": "hard",
+    "loaded_count": 3,
+    "evaluated_count": 1,
+    "evaluated_question_difficulties": {
+      "hard": 1
+    }
+  },
+  "warnings": []
+}
