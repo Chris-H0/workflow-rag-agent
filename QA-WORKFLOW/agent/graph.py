@@ -1,8 +1,7 @@
-from pathlib import Path
-
 from langgraph.graph import END, START, MessagesState, StateGraph
 from langgraph.prebuilt import ToolNode, tools_condition
 
+from paths import WORKFLOW_ROOT
 from agent.nodes import (
     build_decide_after_retrieval,
     build_generate_answer,
@@ -10,9 +9,6 @@ from agent.nodes import (
     build_generate_query_or_respond,
     build_rewrite_question,
 )
-
-
-ROOT_DIR = Path(__file__).resolve().parents[1]
 
 
 def build_graph(model_router, retriever_tool):
@@ -47,6 +43,6 @@ def build_graph(model_router, retriever_tool):
 
 
 def save_graph_image(graph, filename: str = "agent_graph.png"):
-    path = ROOT_DIR / filename
+    path = WORKFLOW_ROOT / filename
     path.write_bytes(graph.get_graph().draw_mermaid_png())
     print(f"Saved graph image to {path}")

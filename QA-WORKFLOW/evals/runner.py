@@ -8,6 +8,7 @@ from langchain_core.messages import HumanMessage
 
 from evals.metrics import get_retrieved_titles, get_supporting_titles, score_result
 from evals.traces import download_traces
+from paths import analysis_config_dir
 
 
 def make_run_id(config_id: str, example_id: str, repeat: int):
@@ -31,7 +32,7 @@ def write_question_log(config_id: str, hotpotqa_level: str, examples, eval_examp
         for example in examples
     ]
 
-    output_path = Path("analysis") / config_id / "config" / "question.json"
+    output_path = analysis_config_dir(config_id) / "config" / "question.json"
     write_json(
         output_path,
         {
@@ -120,7 +121,7 @@ def run_eval_example(
         "nodes": nodes,
     }
 
-    output_path = Path("analysis") / config_id / "evals" / f"{run_id}.json"
+    output_path = analysis_config_dir(config_id) / "evals" / f"{run_id}.json"
     write_json(output_path, result)
     print(f"Saved eval result to {output_path}")
 

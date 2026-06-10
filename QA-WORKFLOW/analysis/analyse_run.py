@@ -8,6 +8,8 @@ from statistics import mean, median
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from paths import analysis_config_dir
+
 
 CONFIG_ID = ""
 OVERWRITE = True
@@ -776,9 +778,7 @@ def create_report(
 
 
 def analyse_run(config_id: str):
-    root_dir = Path(__file__).resolve().parents[1]
-    analysis_root = root_dir / "analysis"
-    config_dir = analysis_root / config_id
+    config_dir = analysis_config_dir(config_id)
     output_dir = config_dir / "analysis"
 
     trace_files, eval_files = validate_input_dirs(config_dir)

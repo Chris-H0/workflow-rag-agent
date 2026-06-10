@@ -14,8 +14,8 @@ wheels/
 .DS_Store
 
 # Data files
-analysis/**/evals
-analysis/**/traces
-analysis/**/analysis/*.png
-analysis/**/config
+**/analysis/**/evals
+**/analysis/**/traces
+**/analysis/**/analysis/*.png
+**/analysis/**/config
 archive/

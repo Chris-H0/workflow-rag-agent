@@ -2,8 +2,9 @@ import json
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv
 from langsmith import Client
+
+from paths import analysis_config_dir, load_workflow_dotenv
 
 
 LIMIT = 100  # Max LangSmith allows
@@ -15,7 +16,7 @@ def write_json(path: Path, data):
 
 
 def download_traces(config_id: str):
-    load_dotenv(".env", override=True)
+    load_workflow_dotenv(override=True)
     project_name = os.getenv("LANGSMITH_PROJECT")
 
     filter_query = (
@@ -34,7 +35,7 @@ def download_traces(config_id: str):
         count = 0
         for root_run in client.list_runs(**root_run_kwargs):
             trace_id = root_run.trace_id
-            output_path = Path("analysis") / config_id / "traces" / f"{trace_id}.json"
+            output_path = analysis_config_dir(config_id) / "traces" / f"{trace_id}.json"
 
             if output_path.exists():
                 continue
