@@ -6,9 +6,9 @@ from evals.runner import run_download_traces, run_eval_loop
 from paths import load_workflow_dotenv
 
 
-CONFIG_ID = "code-v1-smoke"
-MBPP_LOAD_LIMIT = 5
-TASKS = 1
+CONFIG_ID = "v1-qwen3.5-2b"
+MBPP_LOAD_LIMIT = 100
+TASKS = 75
 REPEATS = 1
 
 RUN_ANALYSIS = True
@@ -17,14 +17,18 @@ PRINT_UPDATES = False
 
 NODE_MODEL_CONFIG = {
     "generate_solution": {
-        "provider": "openai",
-        "model": "gpt-4.1-mini",
+        "provider": "ollama",
+        "model": "qwen3.5:2b",
         "temperature": 0,
+        "thinking": False,
+        "reasoning": False,
     },
     "debug_solution": {
-        "provider": "openai",
-        "model": "gpt-4.1-mini",
+        "provider": "ollama",
+        "model": "qwen3.5:2b",
         "temperature": 0,
+        "thinking": False,
+        "reasoning": False,
     },
 }
 

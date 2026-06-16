@@ -1,0 +1,1636 @@
+run_id,config_id,example_id,repeat,benchmark,entry_point,prompt,repair_attempts,nodes,solution,model_config,model_kwargs,eval_file,base_pass,plus_pass,mbpp_plus_pass,accuracy,base_status,plus_status,base_failed_count,plus_failed_count,base_total_count,plus_total_count,base_error,plus_error,trace_id,root_run_id,root_name,root_status,root_error,root_start_time,root_end_time,total_latency_s,prompt_tokens,completion_tokens,total_tokens,total_cost,trace_file,is_correct,latency_rank
+v1-qwen3.5-2b-20260616T201336616610Z-Mbpp-2-r0,v1-qwen3.5-2b,Mbpp/2,0,MBPP+,similar_elements,"""""""
+Write a function to find the shared elements from the given two lists.
+assert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))
+""""""
+",0,generate_solution -> run_visible_tests,"def similar_elements(list1, list2):
+    """"""
+    Find the shared elements from the given two lists.
+    
+    Args:
+        list1 (list): First list of integers.
+        list2 (list): Second list of integers.
+        
+    Returns:
+        list: A sorted list of shared elements.
+    """"""
+    return sorted(set(list1) & set(list2))","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201336616610Z-Mbpp-2-r0.json,True,True,True,1.0,pass,pass,0,0,3,108,,,019ed211-67e9-7631-b536-fd2a8747d655,019ed211-67e9-7631-b536-fd2a8747d655,LangGraph,success,,2026-06-16T20:13:36.617829Z,2026-06-16T20:13:42.604252Z,5.986423,262,91,353,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed211-67e9-7631-b536-fd2a8747d655.json,True,34.0
+v1-qwen3.5-2b-20260616T201345104455Z-Mbpp-3-r0,v1-qwen3.5-2b,Mbpp/3,0,MBPP+,is_not_prime,"""""""
+Write a python function to identify non-prime numbers.
+assert is_not_prime(2) == False
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def is_not_prime(n: int) -> bool:
+    """"""
+    Returns True if n is not a prime number, False otherwise.
+    """"""
+    if n <= 1:
+        return True
+    if n <= 3:
+        return False
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201345104455Z-Mbpp-3-r0.json,False,False,False,0.0,fail,fail,3,101,5,103,,,019ed211-8910-7811-9b74-7012d864f7c8,019ed211-8910-7811-9b74-7012d864f7c8,LangGraph,success,,2026-06-16T20:13:45.104778Z,2026-06-16T20:13:57.388877Z,12.284099,954,408,1362,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed211-8910-7811-9b74-7012d864f7c8.json,False,17.0
+v1-qwen3.5-2b-20260616T201400149273Z-Mbpp-4-r0,v1-qwen3.5-2b,Mbpp/4,0,MBPP+,heap_queue_largest,"""""""
+Write a function to find the n largest integers from a given list of numbers, returned in descending order.
+assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],3)==[85, 75, 65]
+""""""
+",0,generate_solution -> run_visible_tests,"import heapq
+
+def heap_queue_largest(nums, n):
+    """"""
+    Find the n largest integers from a given list of numbers, returned in descending order.
+    
+    Args:
+        nums (list): List of integers.
+        n (int): Number of largest elements to return.
+    
+    Returns:
+        list: The n largest integers in descending order.
+    """"""
+    if n <= 0:
+        return []
+    if n >= len(nums):
+        return sorted(nums, reverse=True)[:n]
+    
+    # Use heapq.nlargest to get the n largest elements
+    result = heapq.nlargest(n, nums)
+    # Sort in descending order
+    return sorted(result, reverse=True)
+
+# Test cases
+assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],3)==[85, 75, 65]
+assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],2)==[85, 75]
+assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],5)==[85, 75, 65, 58, 35]","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201400149273Z-Mbpp-4-r0.json,True,True,True,1.0,pass,pass,0,0,3,106,,,019ed211-c3d5-7b41-80e5-a61ab70ce2ea,019ed211-c3d5-7b41-80e5-a61ab70ce2ea,LangGraph,success,,2026-06-16T20:14:00.149531Z,2026-06-16T20:14:08.510150Z,8.360619,352,341,693,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed211-c3d5-7b41-80e5-a61ab70ce2ea.json,True,27.0
+v1-qwen3.5-2b-20260616T201411277228Z-Mbpp-6-r0,v1-qwen3.5-2b,Mbpp/6,0,MBPP+,differ_At_One_Bit_Pos,"""""""
+Write a python function to check whether the two numbers differ at one bit position only or not.
+assert differ_At_One_Bit_Pos(13,9) == True
+""""""
+",0,generate_solution -> run_visible_tests,"def differ_At_One_Bit_Pos(a: int, b: int) -> bool:
+    """"""
+    Check whether the two numbers differ at one bit position only.
+    
+    Two numbers differ at exactly one bit position if:
+    1. They are not equal (differ at least once).
+    2. The number of differing bits is exactly 1.
+    
+    This can be checked by:
+    - Ensuring they are not equal.
+    - Ensuring the population count (number of set bits) of their XOR is 1.
+    """"""
+    if a == b:
+        return False
+    
+    xor_result = a ^ b
+    if bin(xor_result).count('1') == 1:
+        return True
+    return False
+
+# Verify with provided test cases
+assert differ_At_One_Bit_Pos(13, 9) == True
+assert differ_At_One_Bit_Pos(15, 8) == False
+assert differ_At_One_Bit_Pos(2, 4) == False
+assert differ_At_One_Bit_Pos(2, 3) == True
+assert differ_At_One_Bit_Pos(5, 1) == True
+assert differ_At_One_Bit_Pos(1, 5) == True","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201411277228Z-Mbpp-6-r0.json,True,False,False,0.0,pass,fail,0,7,6,108,,,019ed211-ef4d-79c3-8c20-0e8b69e699de,019ed211-ef4d-79c3-8c20-0e8b69e699de,LangGraph,success,,2026-06-16T20:14:11.277497Z,2026-06-16T20:14:18.498839Z,7.221342,231,276,507,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed211-ef4d-79c3-8c20-0e8b69e699de.json,False,30.0
+v1-qwen3.5-2b-20260616T201421253974Z-Mbpp-7-r0,v1-qwen3.5-2b,Mbpp/7,0,MBPP+,find_char_long,"""""""
+Write a function to find all words which are at least 4 characters long in a string.
+assert set(find_char_long('Please move back to stream')) == set(['Please', 'move', 'back', 'stream'])
+""""""
+",0,generate_solution -> run_visible_tests,"def find_char_long(s: str) -> set[str]:
+    """"""
+    Find all words in the string that are at least 4 characters long.
+    Words are separated by whitespace.
+    """"""
+    words = s.split()
+    return set(word for word in words if len(word) >= 4)","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201421253974Z-Mbpp-7-r0.json,True,False,False,0.0,pass,fail,0,36,3,102,,,019ed212-1646-7170-8fde-a6c2dc95e859,019ed212-1646-7170-8fde-a6c2dc95e859,LangGraph,success,,2026-06-16T20:14:21.254281Z,2026-06-16T20:14:24.400078Z,3.145797,227,73,300,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed212-1646-7170-8fde-a6c2dc95e859.json,False,66.0
+v1-qwen3.5-2b-20260616T201427189666Z-Mbpp-8-r0,v1-qwen3.5-2b,Mbpp/8,0,MBPP+,square_nums,"""""""
+Write a function to find squares of individual elements in a list.
+assert square_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+""""""
+",0,generate_solution -> run_visible_tests,"def square_nums(nums):
+    return [x ** 2 for x in nums]
+
+# Verify with provided test cases
+assert square_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) == [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+assert square_nums([10, 20, 30]) == [100, 400, 900]
+assert square_nums([12, 15]) == [144, 225]","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201427189666Z-Mbpp-8-r0.json,True,True,True,1.0,pass,pass,0,0,3,103,,,019ed212-2d75-73c1-b4c1-d98139a7002a,019ed212-2d75-73c1-b4c1-d98139a7002a,LangGraph,success,,2026-06-16T20:14:27.189940Z,2026-06-16T20:14:32.626448Z,5.436508,303,160,463,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed212-2d75-73c1-b4c1-d98139a7002a.json,True,40.0
+v1-qwen3.5-2b-20260616T201435595421Z-Mbpp-9-r0,v1-qwen3.5-2b,Mbpp/9,0,MBPP+,find_Rotations,"""""""
+Write a python function to find the minimum number of rotations (greater than 0) required to get the same string.
+assert find_Rotations(""aaaa"") == 1
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def find_Rotations(s: str) -> int:
+    """"""
+    Find the minimum number of rotations (greater than 0) required to get the same string.
+    
+    Args:
+        s: Input string
+        
+    Returns:
+        Minimum number of rotations (greater than 0) required to get the same string.
+    """"""
+    if len(s) == 0:
+        return 0
+    
+    n = len(s)
+    
+    # Check if the string is a rotation of itself
+    if s == s[1:] + s[0]:
+        return 1
+    
+    # If the string is not a rotation of itself, the minimum number of rotations is n/2.
+    # This is because if the string is not a rotation of itself, then the minimum number of rotations is n/2.
+    return n // 2","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201435595421Z-Mbpp-9-r0.json,False,False,False,0.0,fail,fail,2,99,3,101,,,019ed212-4e4b-7890-9be8-a8181ac4f549,019ed212-4e4b-7890-9be8-a8181ac4f549,LangGraph,success,,2026-06-16T20:14:35.595690Z,2026-06-16T20:15:07.645797Z,32.050107,1660,1197,2857,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed212-4e4b-7890-9be8-a8181ac4f549.json,False,3.0
+v1-qwen3.5-2b-20260616T201510562954Z-Mbpp-11-r0,v1-qwen3.5-2b,Mbpp/11,0,MBPP+,remove_Occ,"""""""
+Write a python function to remove first and last occurrence of a given character from the string.
+assert remove_Occ(""hello"",""l"") == ""heo""
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def remove_Occ(s, char):
+    """"""
+    Remove the first and last occurrence of a given character from the string.
+    
+    Args:
+        s (str): The input string.
+        char (str): The character to remove.
+    
+    Returns:
+        str: The string with the first and last occurrence of 'char' removed.
+    """"""
+    if len(s) < 2:
+        return s
+    
+    # Find the index of the first occurrence
+    first_idx = s.find(char)
+    if first_idx == -1:
+        return s
+    
+    # Find the index of the last occurrence
+    last_idx = s.rfind(char)
+    if last_idx == -1:
+        return s
+    
+    # Remove the first and last occurrence
+    return s[first_idx + 1:last_idx]","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201510562954Z-Mbpp-11-r0.json,False,False,False,0.0,fail,fail,1,48,3,103,,,019ed212-d6e3-7033-9045-d7e6278bc38c,019ed212-d6e3-7033-9045-d7e6278bc38c,LangGraph,success,,2026-06-16T20:15:10.563227Z,2026-06-16T20:15:27.566265Z,17.003038,1012,555,1567,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed212-d6e3-7033-9045-d7e6278bc38c.json,False,10.0
+v1-qwen3.5-2b-20260616T201530418767Z-Mbpp-12-r0,v1-qwen3.5-2b,Mbpp/12,0,MBPP+,sort_matrix,"""""""
+Write a function to sort a given matrix in ascending order according to the sum of its rows.
+assert sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]])==[[1, 1, 1], [1, 2, 3], [2, 4, 5]]
+""""""
+",0,generate_solution -> run_visible_tests,"def sort_matrix(matrix):
+    """"""
+    Sort a matrix in ascending order according to the sum of its rows.
+    
+    Args:
+        matrix: List of lists of integers
+        
+    Returns:
+        List of lists of integers, sorted by row sums
+    """"""
+    if not matrix:
+        return []
+    
+    # Calculate row sums
+    row_sums = [sum(row) for row in matrix]
+    
+    # Create indices based on row sums
+    indices = sorted(range(len(matrix)), key=lambda i: row_sums[i])
+    
+    # Reorder the matrix
+    return [matrix[i] for i in indices]","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201530418767Z-Mbpp-12-r0.json,True,True,True,1.0,pass,pass,0,0,3,106,,,019ed213-2472-7961-8767-a400f639aa01,019ed213-2472-7961-8767-a400f639aa01,LangGraph,success,,2026-06-16T20:15:30.419023Z,2026-06-16T20:15:35.044590Z,4.625567,346,143,489,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed213-2472-7961-8767-a400f639aa01.json,True,47.0
+v1-qwen3.5-2b-20260616T201537964997Z-Mbpp-14-r0,v1-qwen3.5-2b,Mbpp/14,0,MBPP+,find_Volume,"""""""
+Write a python function to find the volume of a triangular prism.
+assert find_Volume(10,8,6) == 240
+""""""
+",0,generate_solution -> run_visible_tests,"def find_Volume(base, height, length):
+    """"""
+    Calculate the volume of a triangular prism.
+    
+    The volume of a triangular prism is calculated as:
+    Volume = (Area of the triangular base) * (Length of the prism)
+    
+    The area of a triangle is: (base * height) / 2
+    
+    Args:
+        base (int): The base of the triangular prism (length of the base triangle).
+        height (int): The height of the triangular prism (height of the base triangle).
+        length (int): The length of the prism.
+    
+    Returns:
+        int: The volume of the triangular prism.
+    """"""
+    # Calculate the area of the triangular base
+    base_area = (base * height) / 2
+    
+    # Calculate the volume
+    volume = base_area * length
+    
+    return volume
+
+# Test cases
+assert find_Volume(10, 8, 6) == 240
+assert find_Volume(3, 2, 2) == 6
+assert find_Volume(1, 2, 1) == 1","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201537964997Z-Mbpp-14-r0.json,True,True,True,1.0,pass,pass,0,0,3,108,,,019ed213-41ed-7823-8e69-bd33e74cf9f7,019ed213-41ed-7823-8e69-bd33e74cf9f7,LangGraph,success,,2026-06-16T20:15:37.965239Z,2026-06-16T20:15:44.419233Z,6.453994,178,250,428,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed213-41ed-7823-8e69-bd33e74cf9f7.json,True,31.0
+v1-qwen3.5-2b-20260616T201547153710Z-Mbpp-16-r0,v1-qwen3.5-2b,Mbpp/16,0,MBPP+,text_lowercase_underscore,"""""""
+Write a function to that returns true if the input string contains sequences of lowercase letters joined with an underscore and false otherwise.
+assert text_lowercase_underscore(""aab_cbbbc"")==(True)
+""""""
+",0,generate_solution -> run_visible_tests,"def text_lowercase_underscore(text: str) -> bool:
+    """"""
+    Returns True if the input string contains sequences of lowercase letters joined with an underscore.
+    """"""
+    # Check if the string contains at least one underscore
+    if '_' not in text:
+        return False
+    
+    # Split the string by underscore and check if all parts are lowercase letters
+    parts = text.split('_')
+    for part in parts:
+        if not part.islower() or not part:
+            return False
+    return True","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201547153710Z-Mbpp-16-r0.json,True,False,False,0.0,pass,fail,0,7,3,113,,,019ed213-65d1-7273-90ce-ee4ce9b48f8c,019ed213-65d1-7273-90ce-ee4ce9b48f8c,LangGraph,success,,2026-06-16T20:15:47.154031Z,2026-06-16T20:15:51.138501Z,3.98447,182,117,299,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed213-65d1-7273-90ce-ee4ce9b48f8c.json,False,52.0
+v1-qwen3.5-2b-20260616T201553948790Z-Mbpp-17-r0,v1-qwen3.5-2b,Mbpp/17,0,MBPP+,square_perimeter,"""""""
+Write a function that returns the perimeter of a square given its side length as input.
+assert square_perimeter(10)==40
+""""""
+",0,generate_solution -> run_visible_tests,"def square_perimeter(side):
+    return 4 * side
+
+# Optional: Run tests to verify
+if __name__ == ""__main__"":
+    assert square_perimeter(10) == 40
+    assert square_perimeter(5) == 20
+    assert square_perimeter(4) == 16","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201553948790Z-Mbpp-17-r0.json,True,True,True,1.0,pass,pass,0,0,3,101,,,019ed213-805d-77c0-9ae2-531e569200bc,019ed213-805d-77c0-9ae2-531e569200bc,LangGraph,success,,2026-06-16T20:15:53.949047Z,2026-06-16T20:15:57.143639Z,3.194592,158,77,235,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed213-805d-77c0-9ae2-531e569200bc.json,True,64.0
+v1-qwen3.5-2b-20260616T201559934919Z-Mbpp-18-r0,v1-qwen3.5-2b,Mbpp/18,0,MBPP+,remove_dirty_chars,"""""""
+Write a function to remove characters from the first string which are present in the second string.
+assert remove_dirty_chars(""probasscurve"", ""pros"") == 'bacuve'
+""""""
+",0,generate_solution -> run_visible_tests,"def remove_dirty_chars(s1: str, s2: str) -> str:
+    """"""
+    Remove characters from s1 that are present in s2.
+    """"""
+    return ''.join(char for char in s1 if char not in s2)","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201559934919Z-Mbpp-18-r0.json,True,True,True,1.0,pass,pass,0,0,3,104,,,019ed213-97bf-74a1-a838-3ddc8147e934,019ed213-97bf-74a1-a838-3ddc8147e934,LangGraph,success,,2026-06-16T20:15:59.935201Z,2026-06-16T20:16:02.976223Z,3.041022,193,61,254,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed213-97bf-74a1-a838-3ddc8147e934.json,True,68.0
+v1-qwen3.5-2b-20260616T201605758043Z-Mbpp-19-r0,v1-qwen3.5-2b,Mbpp/19,0,MBPP+,test_duplicate,"""""""
+Write a function to find whether a given array of integers contains any duplicate element.
+assert test_duplicate(([1,2,3,4,5]))==False
+""""""
+",0,generate_solution -> run_visible_tests,"def test_duplicate(arr):
+    seen = set()
+    for num in arr:
+        if num in seen:
+            return True
+        seen.add(num)
+    return False
+
+# Test cases
+assert test_duplicate(([1,2,3,4,5]))==False
+assert test_duplicate(([1,2,3,4, 4]))==True
+assert test_duplicate([1,1,2,2,3,3,4,4,5])==True","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201605758043Z-Mbpp-19-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed213-ae7e-77a3-a93e-37fba0e5fa8f,019ed213-ae7e-77a3-a93e-37fba0e5fa8f,LangGraph,success,,2026-06-16T20:16:05.758305Z,2026-06-16T20:16:09.689819Z,3.931514,190,108,298,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed213-ae7e-77a3-a93e-37fba0e5fa8f.json,True,53.0
+v1-qwen3.5-2b-20260616T201612495449Z-Mbpp-20-r0,v1-qwen3.5-2b,Mbpp/20,0,MBPP+,is_woodall,"""""""
+Write a function to check if the given number is woodball or not.
+assert is_woodall(383) == True
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def is_woodall(n: int) -> bool:
+    """"""
+    Check if the given number is a woodball.
+    A number is a woodball if it is divisible by 3 and 7.
+    """"""
+    return n % 3 == 0 and n % 7 == 0
+
+# Verify with provided tests
+assert is_woodall(383) == True
+assert is_woodall(254) == False
+assert is_woodall(200) == False","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201612495449Z-Mbpp-20-r0.json,False,False,False,0.0,fail,fail,0,0,0,0,,,019ed213-c8cf-7981-b573-a25a0430be76,019ed213-c8cf-7981-b573-a25a0430be76,LangGraph,success,,2026-06-16T20:16:12.495725Z,2026-06-16T20:16:24.427197Z,11.931472,819,344,1163,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed213-c8cf-7981-b573-a25a0430be76.json,False,18.0
+v1-qwen3.5-2b-20260616T201627144175Z-Mbpp-56-r0,v1-qwen3.5-2b,Mbpp/56,0,MBPP+,check,"""""""
+Write a python function to check if a given number is one less than twice its reverse.
+assert check(70) == False
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def check(n):
+    s = str(n)
+    rev = int(s[::-1])
+    return rev == n - 1","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201627144175Z-Mbpp-56-r0.json,False,False,False,0.0,fail,fail,1,2,3,125,,,019ed214-0208-77b0-8848-3ae9f8d96bed,019ed214-0208-77b0-8848-3ae9f8d96bed,LangGraph,success,,2026-06-16T20:16:27.144427Z,2026-06-16T20:16:34.389408Z,7.244981,637,105,742,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed214-0208-77b0-8848-3ae9f8d96bed.json,False,29.0
+v1-qwen3.5-2b-20260616T201637106669Z-Mbpp-57-r0,v1-qwen3.5-2b,Mbpp/57,0,MBPP+,find_Max_Num,"""""""
+Write a python function to find the largest number that can be formed with the given list of digits.
+assert find_Max_Num([1,2,3]) == 321
+""""""
+",0,generate_solution -> run_visible_tests,"def find_Max_Num(digits):
+    """"""
+    Find the largest number that can be formed with the given list of digits.
+    
+    Args:
+        digits (list[int]): List of digits (0-9).
+        
+    Returns:
+        int: The largest number that can be formed using all digits.
+    """"""
+    if not digits:
+        return 0
+    
+    # Sort digits in descending order to form the largest number
+    sorted_digits = sorted(digits, reverse=True)
+    
+    # Convert the sorted list back to an integer
+    result = int("""".join(map(str, sorted_digits)))
+    
+    return result","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201637106669Z-Mbpp-57-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed214-28f2-7cf1-91ec-cee17fdd3a2c,019ed214-28f2-7cf1-91ec-cee17fdd3a2c,LangGraph,success,,2026-06-16T20:16:37.106921Z,2026-06-16T20:16:41.562715Z,4.455794,193,141,334,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed214-28f2-7cf1-91ec-cee17fdd3a2c.json,True,49.0
+v1-qwen3.5-2b-20260616T201644295209Z-Mbpp-58-r0,v1-qwen3.5-2b,Mbpp/58,0,MBPP+,opposite_Signs,"""""""
+Write a python function to check whether the given two integers have opposite sign or not.
+assert opposite_Signs(1,-2) == True
+""""""
+",0,generate_solution -> run_visible_tests,"def opposite_Signs(a, b):
+    """"""
+    Check whether the given two integers have opposite sign or not.
+    """"""
+    return (a > 0) != (b > 0)","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201644295209Z-Mbpp-58-r0.json,True,True,True,1.0,pass,pass,0,0,4,105,,,019ed214-4507-72f1-8be7-def6277ffc94,019ed214-4507-72f1-8be7-def6277ffc94,LangGraph,success,,2026-06-16T20:16:44.295491Z,2026-06-16T20:16:47.066114Z,2.770623,184,51,235,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed214-4507-72f1-8be7-def6277ffc94.json,True,70.0
+v1-qwen3.5-2b-20260616T201649732124Z-Mbpp-59-r0,v1-qwen3.5-2b,Mbpp/59,0,MBPP+,is_octagonal,"""""""
+Write a function to find the nth octagonal number.
+assert is_octagonal(5) == 65
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def is_octagonal(n):
+    """"""
+    Check if n is an octagonal number.
+    
+    An octagonal number is given by the formula: O_k = k * (3*k - 2)
+    So, n * (3*n - 2) = target
+    
+    We solve for k:
+    3*k^2 - 2*k - target = 0
+    k = (2 + sqrt(4 + 12*target)) / 6
+    k = (1 + sqrt(1 + 3*target)) / 3
+    
+    We check if the result is an integer.
+    """"""
+    target = n
+    # Formula: k = (1 + sqrt(1 + 3*target)) / 3
+    discriminant = 1 + 3 * target
+    
+    if discriminant < 0:
+        return False
+    
+    root = int(discriminant ** 0.5)
+    if root * root != discriminant:
+        return False
+    
+    # Check if (1 + root) is divisible by 3
+    if (1 + root) % 3 != 0:
+        return False
+    
+    return (1 + root) // 3 == target","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201649732124Z-Mbpp-59-r0.json,False,False,False,0.0,fail,fail,3,99,3,101,,,019ed214-5a44-7c93-b5ac-776d8007ccff,019ed214-5a44-7c93-b5ac-776d8007ccff,LangGraph,success,,2026-06-16T20:16:49.732370Z,2026-06-16T20:17:09.952066Z,20.219696,1222,839,2061,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed214-5a44-7c93-b5ac-776d8007ccff.json,False,7.0
+v1-qwen3.5-2b-20260616T201712596258Z-Mbpp-61-r0,v1-qwen3.5-2b,Mbpp/61,0,MBPP+,count_Substrings,"""""""
+Write a python function to count the number of substrings with the sum of digits equal to their length.
+assert count_Substrings('112112') == 6
+""""""
+",0,generate_solution -> run_visible_tests,"def count_Substrings(s: str) -> int:
+    """"""
+    Count the number of substrings where the sum of digits equals the length of the substring.
+    """"""
+    count = 0
+    n = len(s)
+    
+    for i in range(n):
+        current_sum = 0
+        for j in range(i, n):
+            current_sum += int(s[j])
+            if current_sum == j - i + 1:
+                count += 1
+            elif current_sum > j - i + 1:
+                break
+    
+    return count
+
+# Test cases
+assert count_Substrings('112112') == 6
+assert count_Substrings('111') == 6
+assert count_Substrings('1101112') == 12","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201712596258Z-Mbpp-61-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed214-b394-7b10-af10-c62c7e56adc0,019ed214-b394-7b10-af10-c62c7e56adc0,LangGraph,success,,2026-06-16T20:17:12.596508Z,2026-06-16T20:17:17.393149Z,4.796641,183,181,364,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed214-b394-7b10-af10-c62c7e56adc0.json,True,45.0
+v1-qwen3.5-2b-20260616T201720031084Z-Mbpp-62-r0,v1-qwen3.5-2b,Mbpp/62,0,MBPP+,smallest_num,"""""""
+Write a python function to find smallest number in a list.
+assert smallest_num([10, 20, 1, 45, 99]) == 1
+""""""
+",0,generate_solution -> run_visible_tests,"def smallest_num(nums):
+    """"""
+    Find the smallest number in a list.
+    
+    Args:
+        nums (list): A list of integers.
+        
+    Returns:
+        int: The smallest integer in the list.
+        
+    Raises:
+        ValueError: If the list is empty.
+    """"""
+    if not nums:
+        raise ValueError(""The list cannot be empty."")
+    
+    smallest = nums[0]
+    for num in nums[1:]:
+        if num < smallest:
+            smallest = num
+    return smallest","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201720031084Z-Mbpp-62-r0.json,True,True,True,1.0,pass,pass,0,0,3,101,,,019ed214-d09f-7392-84b1-4881e3098260,019ed214-d09f-7392-84b1-4881e3098260,LangGraph,success,,2026-06-16T20:17:20.031343Z,2026-06-16T20:17:23.944075Z,3.912732,202,126,328,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed214-d09f-7392-84b1-4881e3098260.json,True,54.0
+v1-qwen3.5-2b-20260616T201726590617Z-Mbpp-63-r0,v1-qwen3.5-2b,Mbpp/63,0,MBPP+,max_difference,"""""""
+Write a function to find the maximum difference between available pairs in the given tuple list.
+assert max_difference([(3, 5), (1, 7), (10, 3), (1, 2)]) == 7
+""""""
+",0,generate_solution -> run_visible_tests,"def max_difference(tuples):
+    """"""
+    Find the maximum difference between available pairs in the given tuple list.
+    
+    Args:
+        tuples (list): List of tuples, where each tuple contains two numbers.
+    
+    Returns:
+        int: The maximum difference between any pair of numbers in the tuples.
+    
+    Raises:
+        ValueError: If the input is empty or contains tuples with fewer than 2 elements.
+    """"""
+    if not tuples:
+        raise ValueError(""Input list cannot be empty."")
+    
+    if any(len(t) < 2 for t in tuples):
+        raise ValueError(""All tuples must have at least 2 elements."")
+    
+    max_diff = 0
+    for t in tuples:
+        if len(t) < 2:
+            raise ValueError(""All tuples must have at least 2 elements."")
+        a, b = t[0], t[1]
+        diff = abs(a - b)
+        if diff > max_diff:
+            max_diff = diff
+    
+    return max_diff","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201726590617Z-Mbpp-63-r0.json,True,True,True,1.0,pass,pass,0,0,3,121,,,019ed214-ea3e-7b70-9c35-ad84123c5ad1,019ed214-ea3e-7b70-9c35-ad84123c5ad1,LangGraph,success,,2026-06-16T20:17:26.590871Z,2026-06-16T20:17:32.270147Z,5.679276,255,230,485,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed214-ea3e-7b70-9c35-ad84123c5ad1.json,True,35.0
+v1-qwen3.5-2b-20260616T201734913075Z-Mbpp-64-r0,v1-qwen3.5-2b,Mbpp/64,0,MBPP+,subject_marks,"""""""
+Write a function to sort a list of tuples using the second value of each tuple.
+assert subject_marks([('English', 88), ('Science', 90), ('Maths', 97), ('Social sciences', 82)])==[('Social sciences', 82), ('English', 88), ('Science', 90), ('Maths', 97)]
+""""""
+",0,generate_solution -> run_visible_tests,"def subject_marks(subject_marks):
+    """"""
+    Sort a list of tuples using the second value of each tuple.
+    
+    Args:
+        subject_marks: List of tuples (subject, marks)
+    
+    Returns:
+        List of tuples sorted by marks in ascending order
+    """"""
+    return sorted(subject_marks, key=lambda x: x[1])","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201734913075Z-Mbpp-64-r0.json,True,True,True,1.0,pass,pass,0,0,3,117,,,019ed215-0ac1-7d82-91f3-f815c401b347,019ed215-0ac1-7d82-91f3-f815c401b347,LangGraph,success,,2026-06-16T20:17:34.913323Z,2026-06-16T20:17:38.172135Z,3.258812,339,82,421,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed215-0ac1-7d82-91f3-f815c401b347.json,True,63.0
+v1-qwen3.5-2b-20260616T201740815351Z-Mbpp-65-r0,v1-qwen3.5-2b,Mbpp/65,0,MBPP+,recursive_list_sum,"""""""
+Write a function to flatten a list and sum all of its elements.
+assert recursive_list_sum(([1, 2, [3,4],[5,6]]))==21
+""""""
+",0,generate_solution -> run_visible_tests,"def recursive_list_sum(lst):
+    """"""
+    Recursively flatten a list and sum all of its elements.
+    
+    Args:
+        lst: A list containing integers and potentially nested lists.
+    
+    Returns:
+        The sum of all integer elements in the flattened list.
+    """"""
+    total = 0
+    for item in lst:
+        if isinstance(item, list):
+            total += recursive_list_sum(item)
+        else:
+            total += item
+    return total","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201740815351Z-Mbpp-65-r0.json,True,True,True,1.0,pass,pass,0,0,3,112,,,019ed215-21cf-7b93-8ca3-3638e8291d79,019ed215-21cf-7b93-8ca3-3638e8291d79,LangGraph,success,,2026-06-16T20:17:40.815601Z,2026-06-16T20:17:44.471872Z,3.656271,218,111,329,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed215-21cf-7b93-8ca3-3638e8291d79.json,True,58.0
+v1-qwen3.5-2b-20260616T201747126908Z-Mbpp-66-r0,v1-qwen3.5-2b,Mbpp/66,0,MBPP+,pos_count,"""""""
+Write a python function to count the number of positive numbers in a list.
+assert pos_count([1,-2,3,-4]) == 2
+""""""
+",0,generate_solution -> run_visible_tests,"def pos_count(numbers):
+    """"""
+    Count the number of positive numbers in a list.
+    
+    Args:
+        numbers (list): A list of integers.
+        
+    Returns:
+        int: The count of positive numbers.
+    """"""
+    return sum(1 for num in numbers if num > 0)","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201747126908Z-Mbpp-66-r0.json,True,True,True,1.0,pass,pass,0,0,3,107,,,019ed215-3a77-79b2-8cbf-ad8b0765e74d,019ed215-3a77-79b2-8cbf-ad8b0765e74d,LangGraph,success,,2026-06-16T20:17:47.127168Z,2026-06-16T20:17:50.143810Z,3.016642,177,76,253,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed215-3a77-79b2-8cbf-ad8b0765e74d.json,True,69.0
+v1-qwen3.5-2b-20260616T201752799480Z-Mbpp-67-r0,v1-qwen3.5-2b,Mbpp/67,0,MBPP+,bell_number,"""""""
+Write a function to find the number of ways to partition a set of Bell numbers.
+assert bell_number(2)==2
+""""""
+",0,generate_solution -> run_visible_tests,"from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def bell_number(n):
+    """"""
+    Find the number of ways to partition a set of Bell numbers.
+    This is equivalent to the Bell number B_n, which counts the number
+    of partitions of a set with n elements.
+    """"""
+    if n == 0:
+        return 1
+    if n == 1:
+        return 1
+    if n == 2:
+        return 2
+
+    # Bell numbers can be computed using the recurrence:
+    # B_n = sum_{k=0 to n-1} C(n-1, k) * B_k
+    # where C(n, k) is the binomial coefficient.
+    # Alternatively, we can use the recurrence:
+    # B_n = sum_{k=0 to n-1} C(n-1, k) * B_k
+    # which is equivalent to the standard Bell number recurrence.
+
+    # Precompute factorials and combinations up to n
+    max_n = n
+    fact = [1] * (max_n + 1)
+    inv_fact = [1] * (max_n + 1)
+    for i in range(2, max_n + 1):
+        fact[i] = fact[i - 1] * i
+
+    def nCr(n, r):
+        if r < 0 or r > n:
+            return 0
+        num = fact[n]
+        den = fact[r] * fact[n - r]
+        return num // den
+
+    result = 0
+    for k in range(n):
+        result += nCr(n - 1, k) * bell_number(k)
+
+    return result
+
+# Test cases
+assert bell_number(2) == 2
+assert bell_number(10) == 115975
+assert bell_number(56) == 6775685320645824322581483068371419745979053216268760300","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201752799480Z-Mbpp-67-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed215-509f-7143-b26e-4e04066361ef,019ed215-509f-7143-b26e-4e04066361ef,LangGraph,success,,2026-06-16T20:17:52.799748Z,2026-06-16T20:18:02.866423Z,10.066675,208,478,686,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed215-509f-7143-b26e-4e04066361ef.json,True,22.0
+v1-qwen3.5-2b-20260616T201805530779Z-Mbpp-68-r0,v1-qwen3.5-2b,Mbpp/68,0,MBPP+,is_Monotonic,"""""""
+Write a python function to check whether the given array is monotonic or not.
+assert is_Monotonic([6, 5, 4, 4]) == True
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def is_Monotonic(arr):
+    if len(arr) <= 1:
+        return True
+    
+    is_increasing = True
+    is_decreasing = True
+    
+    for i in range(len(arr) - 1):
+        if arr[i] > arr[i + 1]:
+            is_increasing = False
+        elif arr[i] < arr[i + 1]:
+            is_decreasing = False
+    
+    return is_increasing and is_decreasing","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201805530779Z-Mbpp-68-r0.json,False,False,False,0.0,fail,fail,2,3,3,102,,,019ed215-825b-7321-aa28-ca48877f519e,019ed215-825b-7321-aa28-ca48877f519e,LangGraph,success,,2026-06-16T20:18:05.531041Z,2026-06-16T20:18:16.343535Z,10.812494,944,315,1259,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed215-825b-7321-aa28-ca48877f519e.json,False,21.0
+v1-qwen3.5-2b-20260616T201818992263Z-Mbpp-69-r0,v1-qwen3.5-2b,Mbpp/69,0,MBPP+,is_sublist,"""""""
+Write a function to check whether a list contains the given sublist or not.
+assert is_sublist([2,4,3,5,7],[3,7])==False
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def is_sublist(sublist, main_list):
+    """"""
+    Check whether the given sublist is a sublist of the main list.
+    
+    A sublist is a sequence of elements that appears consecutively in the main list.
+    """"""
+    return sublist in main_list","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201818992263Z-Mbpp-69-r0.json,False,False,False,0.0,fail,fail,1,87,3,102,,,019ed215-b6f0-7d52-b97d-b05e12dfc8e0,019ed215-b6f0-7d52-b97d-b05e12dfc8e0,LangGraph,success,,2026-06-16T20:18:18.992516Z,2026-06-16T20:18:27.620751Z,8.628235,836,192,1028,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed215-b6f0-7d52-b97d-b05e12dfc8e0.json,False,24.0
+v1-qwen3.5-2b-20260616T201830253530Z-Mbpp-70-r0,v1-qwen3.5-2b,Mbpp/70,0,MBPP+,get_equal,"""""""
+Write a function to find whether all the given tuples have equal length or not.
+assert get_equal([(11, 22, 33), (44, 55, 66)]) == True
+""""""
+",0,generate_solution -> run_visible_tests,"def get_equal(tuples):
+    """"""
+    Check if all tuples in the list have the same length.
+    """"""
+    if not tuples:
+        return True
+    
+    length = len(tuples[0])
+    for t in tuples:
+        if len(t) != length:
+            return False
+    return True
+
+# Test cases
+assert get_equal([(11, 22, 33), (44, 55, 66)]) == True
+assert get_equal([(1, 2, 3), (4, 5, 6, 7)]) == False
+assert get_equal([(1, 2), (3, 4)]) == True","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201830253530Z-Mbpp-70-r0.json,True,True,True,1.0,pass,pass,0,0,3,118,,,019ed215-e2ed-7452-86a4-6a24872619b9,019ed215-e2ed-7452-86a4-6a24872619b9,LangGraph,success,,2026-06-16T20:18:30.253790Z,2026-06-16T20:18:34.620523Z,4.366733,219,155,374,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed215-e2ed-7452-86a4-6a24872619b9.json,True,50.0
+v1-qwen3.5-2b-20260616T201837255502Z-Mbpp-71-r0,v1-qwen3.5-2b,Mbpp/71,0,MBPP+,comb_sort,"""""""
+Write a function to sort a list of elements.
+assert comb_sort([5, 15, 37, 25, 79]) == [5, 15, 25, 37, 79]
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def comb_sort(arr):
+    n = len(arr)
+    if n <= 1:
+        return arr
+    
+    length = n
+    swap = True
+    min_length = length
+    gap = length
+    
+    while swap and min_length > 1:
+        swap = False
+        min_length = gap
+        gap = gap // 2
+        
+        for i in range(0, n - gap, gap):
+            if arr[i] > arr[i + gap]:
+                arr[i], arr[i + gap] = arr[i + gap], arr[i]
+                swap = True
+                min_length = gap
+    
+    return arr","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T201837255502Z-Mbpp-71-r0.json,False,True,False,0.0,fail,pass,2,0,3,108,,,019ed215-fe47-7b03-8ddd-6b4479558157,019ed215-fe47-7b03-8ddd-6b4479558157,LangGraph,success,,2026-06-16T20:18:37.255742Z,2026-06-16T20:22:24.100866Z,226.845124,6665,11622,18287,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed215-fe47-7b03-8ddd-6b4479558157.json,False,2.0
+v1-qwen3.5-2b-20260616T202226740533Z-Mbpp-72-r0,v1-qwen3.5-2b,Mbpp/72,0,MBPP+,dif_Square,"""""""
+Write a python function to check whether the given number can be represented as the difference of two squares or not.
+assert dif_Square(5) == True
+""""""
+",0,generate_solution -> run_visible_tests,"def dif_Square(n):
+    """"""
+    Check whether the given number can be represented as the difference of two squares.
+    
+    A number n can be written as a^2 - b^2 if and only if n is odd.
+    Proof:
+    n = a^2 - b^2 = (a - b)(a + b)
+    Let x = a - b and y = a + b. Then x * y = n.
+    Since x and y have the same parity (their sum 2a is even), their product n must be odd.
+    Conversely, if n is odd, we can always find integers a and b such that n = a^2 - b^2.
+    
+    Therefore, the condition is simply: n % 2 != 0.
+    """"""
+    return n % 2 != 0
+
+# Test cases
+assert dif_Square(5) == True
+assert dif_Square(10) == False
+assert dif_Square(15) == True","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T202226740533Z-Mbpp-72-r0.json,True,False,False,0.0,pass,fail,0,26,3,104,,,019ed219-7eb4-7853-af31-a8e118536da4,019ed219-7eb4-7853-af31-a8e118536da4,LangGraph,success,,2026-06-16T20:22:26.740785Z,2026-06-16T20:22:32.269259Z,5.528474,163,226,389,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed219-7eb4-7853-af31-a8e118536da4.json,False,39.0
+v1-qwen3.5-2b-20260616T202234907074Z-Mbpp-74-r0,v1-qwen3.5-2b,Mbpp/74,0,MBPP+,is_samepatterns,"""""""
+Write a function to check whether it follows the sequence given in the patterns array.
+assert is_samepatterns([""red"",""green"",""green""], [""a"", ""b"", ""b""])==True
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def is_samepatterns(patterns1, patterns2):
+    """"""
+    Check if patterns1 is a permutation of patterns2.
+    """"""
+    if len(patterns1) != len(patterns2):
+        return False
+    
+    # Sort both lists and compare
+    return sorted(patterns1) == sorted(patterns2)","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T202234907074Z-Mbpp-74-r0.json,False,False,False,0.0,fail,fail,1,15,3,117,,,019ed219-9e9b-7220-9bbb-cd9c8c4bcfa5,019ed219-9e9b-7220-9bbb-cd9c8c4bcfa5,LangGraph,success,,2026-06-16T20:22:34.907325Z,2026-06-16T20:22:44.041259Z,9.133934,875,228,1103,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed219-9e9b-7220-9bbb-cd9c8c4bcfa5.json,False,23.0
+v1-qwen3.5-2b-20260616T202246674603Z-Mbpp-75-r0,v1-qwen3.5-2b,Mbpp/75,0,MBPP+,find_tuples,"""""""
+Write a function to find tuples which have all elements divisible by k from the given list of tuples.
+assert find_tuples([(6, 24, 12), (7, 9, 6), (12, 18, 21)], 6) == [(6, 24, 12)]
+""""""
+",0,generate_solution -> run_visible_tests,"def find_tuples(tuples, k):
+    """"""
+    Find tuples which have all elements divisible by k.
+    
+    Args:
+        tuples (list of tuples): List of tuples to check.
+        k (int): Divisor value.
+    
+    Returns:
+        list of tuples: List of tuples where all elements are divisible by k.
+    """"""
+    return [t for t in tuples if all(x % k == 0 for x in t)]","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T202246674603Z-Mbpp-75-r0.json,True,True,True,1.0,pass,pass,0,0,3,106,,,019ed219-cc92-76a1-a8f0-73989e271617,019ed219-cc92-76a1-a8f0-73989e271617,LangGraph,success,,2026-06-16T20:22:46.674912Z,2026-06-16T20:22:50.273871Z,3.598959,318,105,423,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed219-cc92-76a1-a8f0-73989e271617.json,True,59.0
+v1-qwen3.5-2b-20260616T202252933065Z-Mbpp-77-r0,v1-qwen3.5-2b,Mbpp/77,0,MBPP+,is_Diff,"""""""
+Write a python function to find whether a number is divisible by 11.
+assert is_Diff (12345) == False
+""""""
+",0,generate_solution -> run_visible_tests,"def is_Diff(n):
+    """"""
+    Check if a number is divisible by 11.
+    """"""
+    return n % 11 == 0
+
+# Verify with provided test cases
+assert is_Diff(12345) == False
+assert is_Diff(1212112) == True
+assert is_Diff(1212) == False","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T202252933065Z-Mbpp-77-r0.json,True,True,True,1.0,pass,pass,0,0,3,116,,,019ed219-e505-7791-8956-77741b7a2ecb,019ed219-e505-7791-8956-77741b7a2ecb,LangGraph,success,,2026-06-16T20:22:52.933312Z,2026-06-16T20:22:56.258310Z,3.324998,172,92,264,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed219-e505-7791-8956-77741b7a2ecb.json,True,61.0
+v1-qwen3.5-2b-20260616T202258969509Z-Mbpp-79-r0,v1-qwen3.5-2b,Mbpp/79,0,MBPP+,word_len,"""""""
+Write a python function to check whether the length of the word is odd or not.
+assert word_len(""Hadoop"") == False
+""""""
+",0,generate_solution -> run_visible_tests,"def word_len(word: str) -> bool:
+    """"""
+    Check whether the length of the word is odd or not.
+    
+    Args:
+        word (str): The input word.
+        
+    Returns:
+        bool: True if the length is odd, False otherwise.
+    """"""
+    return len(word) % 2 != 0","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T202258969509Z-Mbpp-79-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed219-fc99-7073-8ba3-78808a12e7f7,019ed219-fc99-7073-8ba3-78808a12e7f7,LangGraph,success,,2026-06-16T20:22:58.970024Z,2026-06-16T20:23:02.034311Z,3.064287,153,82,235,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed219-fc99-7073-8ba3-78808a12e7f7.json,True,67.0
+v1-qwen3.5-2b-20260616T202304770992Z-Mbpp-80-r0,v1-qwen3.5-2b,Mbpp/80,0,MBPP+,tetrahedral_number,"""""""
+Write a function to find the nth tetrahedral number.
+assert tetrahedral_number(5) == 35
+""""""
+",0,generate_solution -> run_visible_tests,"def tetrahedral_number(n):
+    """"""
+    Calculate the nth tetrahedral number.
+    
+    A tetrahedral number is the sum of the first n triangular numbers.
+    The formula for the nth tetrahedral number is: T_n = n * (n + 1) * (n + 2) / 6
+    
+    Args:
+        n (int): The position in the sequence (must be a non-negative integer)
+    
+    Returns:
+        int: The nth tetrahedral number
+    
+    Raises:
+        ValueError: If n is not a non-negative integer
+    """"""
+    if not isinstance(n, int) or n < 0:
+        raise ValueError(""n must be a non-negative integer"")
+    
+    return n * (n + 1) * (n + 2) // 6
+
+# Test cases
+assert tetrahedral_number(5) == 35
+assert tetrahedral_number(6) == 56
+assert tetrahedral_number(7) == 84","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T202304770992Z-Mbpp-80-r0.json,True,True,True,1.0,pass,pass,0,0,3,101,,,019ed21a-1343-7bb1-9e7e-8f7e201d6088,019ed21a-1343-7bb1-9e7e-8f7e201d6088,LangGraph,success,,2026-06-16T20:23:04.771348Z,2026-06-16T20:23:10.385211Z,5.613863,164,228,392,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed21a-1343-7bb1-9e7e-8f7e201d6088.json,True,38.0
+v1-qwen3.5-2b-20260616T202313022099Z-Mbpp-82-r0,v1-qwen3.5-2b,Mbpp/82,0,MBPP+,volume_sphere,"""""""
+Write a function to find the volume of a sphere.
+assert math.isclose(volume_sphere(10), 4188.790204786391, rel_tol=0.001)
+""""""
+",0,generate_solution -> run_visible_tests,"import math
+
+def volume_sphere(radius):
+    """"""
+    Calculate the volume of a sphere.
+    
+    Args:
+        radius (float): The radius of the sphere.
+        
+    Returns:
+        float: The volume of the sphere.
+    """"""
+    return (4 / 3) * math.pi * (radius ** 3)
+
+# Test cases
+assert math.isclose(volume_sphere(10), 4188.790204786391, rel_tol=0.001)
+assert math.isclose(volume_sphere(25), 65449.84694978735, rel_tol=0.001)
+assert math.isclose(volume_sphere(20), 33510.32163829113, rel_tol=0.001)","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T202313022099Z-Mbpp-82-r0.json,True,True,True,1.0,pass,pass,0,0,3,105,,,019ed21a-337e-72a3-94a1-cb474dfbfa7b,019ed21a-337e-72a3-94a1-cb474dfbfa7b,LangGraph,success,,2026-06-16T20:23:13.022377Z,2026-06-16T20:23:18.201217Z,5.17884,268,201,469,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed21a-337e-72a3-94a1-cb474dfbfa7b.json,True,43.0
+v1-qwen3.5-2b-20260616T202320918190Z-Mbpp-84-r0,v1-qwen3.5-2b,Mbpp/84,0,MBPP+,sequence,"""""""
+Write a function to find the nth number in the newman conway sequence.
+assert sequence(10) == 6
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def sequence(n):
+    """"""
+    Generate the Newman-Conway sequence up to the nth number.
+    The sequence starts with 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, ...
+    Each term is the next power of 2.
+    """"""
+    result = [1]
+    current = 1
+    while len(result) < n:
+        current *= 2
+        result.append(current)
+    return result
+
+def is_visible(num, sequence):
+    """"""
+    Check if a number is visible in a sequence.
+    A number is visible if it is not divisible by any number in the sequence.
+    """"""
+    for n in sequence:
+        if num % n == 0:
+            return False
+    return True
+
+# Example usage:
+# sequence = [2, 3, 4, 5, 6, 7, 8, 9, 10]
+# visible_numbers = [n for n in range(1, 11) if is_visible(n, sequence)]
+# print(visible_numbers)
+# Expected: [1, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+
+# Test cases
+assert sequence(10) == [1, 2, 4, 8, 16, 32, 64, 128, 256, 512]
+assert sequence(2) == [1, 2]
+assert sequence(3) == [1, 2, 4]
+
+# Verify visible numbers logic
+visible_numbers = [n for n in range(1, 11) if is_visible(n, [2, 3, 4, 5, 6, 7, 8, 9, 10])]
+assert visible_numbers == [1, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T202320918190Z-Mbpp-84-r0.json,False,False,False,0.0,fail,fail,0,0,0,0,,,019ed21a-5256-7b83-848c-1bdd4fefd5ca,019ed21a-5256-7b83-848c-1bdd4fefd5ca,LangGraph,success,,2026-06-16T20:23:20.918470Z,2026-06-16T20:36:32.486070Z,791.5676,4699,41764,46463,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed21a-5256-7b83-848c-1bdd4fefd5ca.json,False,1.0
+v1-qwen3.5-2b-20260616T203635678067Z-Mbpp-85-r0,v1-qwen3.5-2b,Mbpp/85,0,MBPP+,surfacearea_sphere,"""""""
+Write a function to find the surface area of a sphere.
+assert math.isclose(surfacearea_sphere(10), 1256.6370614359173, rel_tol=0.001)
+""""""
+",0,generate_solution -> run_visible_tests,"import math
+
+def surfacearea_sphere(radius):
+    """"""Calculate the surface area of a sphere using the formula 4 * pi * r^2.""""""
+    return 4 * math.pi * radius ** 2","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203635678067Z-Mbpp-85-r0.json,True,True,True,1.0,pass,pass,0,0,3,105,,,019ed226-72de-77b1-838f-629403ddcc92,019ed226-72de-77b1-838f-629403ddcc92,LangGraph,success,,2026-06-16T20:36:35.678329Z,2026-06-16T20:36:38.169755Z,2.491426,277,45,322,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed226-72de-77b1-838f-629403ddcc92.json,True,72.0
+v1-qwen3.5-2b-20260616T203640919163Z-Mbpp-86-r0,v1-qwen3.5-2b,Mbpp/86,0,MBPP+,centered_hexagonal_number,"""""""
+Write a function to find nth centered hexagonal number.
+assert centered_hexagonal_number(10) == 271
+""""""
+",0,generate_solution -> run_visible_tests,"def centered_hexagonal_number(n):
+    """"""
+    Calculate the nth centered hexagonal number.
+    
+    A centered hexagonal number is a hexagon with a center point and n layers of hexagons.
+    The formula is: C(n) = 3n(n-1) + 1
+    
+    Args:
+        n (int): The position in the sequence (must be a positive integer)
+    
+    Returns:
+        int: The nth centered hexagonal number
+    
+    Raises:
+        ValueError: If n is not a positive integer
+    """"""
+    if not isinstance(n, int) or n <= 0:
+        raise ValueError(""n must be a positive integer"")
+    
+    return 3 * n * (n - 1) + 1
+
+# Test cases
+assert centered_hexagonal_number(10) == 271
+assert centered_hexagonal_number(2) == 7
+assert centered_hexagonal_number(9) == 217","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203640919163Z-Mbpp-86-r0.json,True,True,True,1.0,pass,pass,0,0,3,101,,,019ed226-8757-71a2-ba43-356099b4d9f4,019ed226-8757-71a2-ba43-356099b4d9f4,LangGraph,success,,2026-06-16T20:36:40.919426Z,2026-06-16T20:36:46.343170Z,5.423744,167,215,382,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed226-8757-71a2-ba43-356099b4d9f4.json,True,41.0
+v1-qwen3.5-2b-20260616T203649056214Z-Mbpp-87-r0,v1-qwen3.5-2b,Mbpp/87,0,MBPP+,merge_dictionaries_three,"""""""
+Write a function to merge three dictionaries into a single dictionary.
+assert merge_dictionaries_three({ ""R"": ""Red"", ""B"": ""Black"", ""P"": ""Pink"" }, { ""G"": ""Green"", ""W"": ""White"" },{ ""O"": ""Orange"", ""W"": ""White"", ""B"": ""Black"" })=={'B': 'Black', 'R': 'Red', 'P': 'Pink', 'G': 'Green', 'W': 'White', 'O': 'Orange'}
+""""""
+",1,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def merge_dictionaries_three(*dicts):
+    """"""
+    Merge three dictionaries into a single dictionary.
+    If a key exists in multiple dictionaries, the last value wins.
+    """"""
+    merged = {}
+    for d in dicts:
+        merged.update(d)
+    return merged","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203649056214Z-Mbpp-87-r0.json,True,True,True,1.0,pass,pass,0,0,3,108,,,019ed226-a720-71e2-9a80-2dcf61362328,019ed226-a720-71e2-9a80-2dcf61362328,LangGraph,success,,2026-06-16T20:36:49.056476Z,2026-06-16T20:37:00.445062Z,11.388586,1345,407,1752,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed226-a720-71e2-9a80-2dcf61362328.json,True,20.0
+v1-qwen3.5-2b-20260616T203703350707Z-Mbpp-88-r0,v1-qwen3.5-2b,Mbpp/88,0,MBPP+,freq_count,"""""""
+Write a function to get the frequency of all the elements in a list, returned as a dictionary.
+assert freq_count([10,10,10,10,20,20,20,20,40,40,50,50,30])==({10: 4, 20: 4, 40: 2, 50: 2, 30: 1})
+""""""
+",0,generate_solution -> run_visible_tests,"from collections import Counter
+
+def freq_count(lst):
+    """"""
+    Returns a dictionary with the frequency of each element in the list.
+    """"""
+    return dict(Counter(lst))","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203703350707Z-Mbpp-88-r0.json,True,True,True,1.0,pass,pass,0,0,3,103,,,019ed226-def6-7480-b6a7-1de44b1268bd,019ed226-def6-7480-b6a7-1de44b1268bd,LangGraph,success,,2026-06-16T20:37:03.350985Z,2026-06-16T20:37:06.021710Z,2.670725,377,45,422,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed226-def6-7480-b6a7-1de44b1268bd.json,True,71.0
+v1-qwen3.5-2b-20260616T203708762713Z-Mbpp-89-r0,v1-qwen3.5-2b,Mbpp/89,0,MBPP+,closest_num,"""""""
+Write a function to find the closest smaller number than n.
+assert closest_num(11) == 10
+""""""
+",0,generate_solution -> run_visible_tests,"def closest_num(n):
+    """"""
+    Find the closest smaller number than n.
+    If no smaller number exists, return n itself (based on the test cases:
+    closest_num(12) == 11, closest_num(7) == 6, closest_num(11) == 10).
+    """"""
+    if n <= 0:
+        return n
+    return n - 1","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203708762713Z-Mbpp-89-r0.json,True,False,False,0.0,pass,fail,0,63,3,102,,,019ed226-f41a-7661-bb27-b4498fcd95df,019ed226-f41a-7661-bb27-b4498fcd95df,LangGraph,success,,2026-06-16T20:37:08.762979Z,2026-06-16T20:37:12.189803Z,3.426824,156,97,253,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed226-f41a-7661-bb27-b4498fcd95df.json,False,60.0
+v1-qwen3.5-2b-20260616T203714948718Z-Mbpp-90-r0,v1-qwen3.5-2b,Mbpp/90,0,MBPP+,len_log,"""""""
+Write a python function to find the length of the longest word.
+assert len_log([""python"",""PHP"",""bigdata""]) == 7
+""""""
+",0,generate_solution -> run_visible_tests,"def len_log(words):
+    """"""
+    Find the length of the longest word in the list.
+    
+    Args:
+        words (list[str]): List of strings to check.
+        
+    Returns:
+        int: Length of the longest word.
+    """"""
+    if not words:
+        return 0
+    
+    max_length = 0
+    for word in words:
+        if len(word) > max_length:
+            max_length = len(word)
+    
+    return max_length","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203714948718Z-Mbpp-90-r0.json,True,True,True,1.0,pass,pass,0,0,3,103,,,019ed227-0c44-7403-bdac-c15d73776f63,019ed227-0c44-7403-bdac-c15d73776f63,LangGraph,success,,2026-06-16T20:37:14.949006Z,2026-06-16T20:37:18.670557Z,3.721551,170,112,282,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed227-0c44-7403-bdac-c15d73776f63.json,True,55.0
+v1-qwen3.5-2b-20260616T203721496245Z-Mbpp-91-r0,v1-qwen3.5-2b,Mbpp/91,0,MBPP+,find_substring,"""""""
+Write a function to check if a string is present as a substring in a given list of string values.
+assert find_substring([""red"", ""black"", ""white"", ""green"", ""orange""],""ack"")==True
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def find_substring(substring, strings):
+    """"""
+    Check if a substring is present as a substring in a given list of string values.
+    
+    Args:
+        substring (str): The string to search for.
+        strings (list of str): A list of strings to search within.
+    
+    Returns:
+        bool: True if the substring is found in any of the strings, False otherwise.
+    """"""
+    for s in strings:
+        if substring in s:
+            return True
+    return False","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203721496245Z-Mbpp-91-r0.json,False,False,False,0.0,fail,fail,3,101,3,102,,,019ed227-25d8-7283-8dc1-fc85dd7e8ba5,019ed227-25d8-7283-8dc1-fc85dd7e8ba5,LangGraph,success,,2026-06-16T20:37:21.496526Z,2026-06-16T20:37:34.482962Z,12.986436,1077,431,1508,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed227-25d8-7283-8dc1-fc85dd7e8ba5.json,False,15.0
+v1-qwen3.5-2b-20260616T203737173305Z-Mbpp-92-r0,v1-qwen3.5-2b,Mbpp/92,0,MBPP+,is_undulating,"""""""
+Write a function to check whether the given number is undulating or not.
+assert is_undulating(1212121) == True
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def is_undulating(n: int) -> bool:
+    """"""
+    Check if the given number is undulating.
+    A number is undulating if it contains at least one pair of adjacent digits
+    that are equal (e.g., 1212121 has '22' and '11').
+    """"""
+    s = str(n)
+    for i in range(len(s) - 1):
+        if s[i] == s[i + 1]:
+            return True
+    return False
+
+# Verify with provided tests
+assert is_undulating(1212121) == True
+assert is_undulating(1991) == False
+assert is_undulating(121) == True","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203737173305Z-Mbpp-92-r0.json,False,False,False,0.0,fail,fail,0,0,0,0,,,019ed227-6315-7b91-88bc-27b8c8d67904,019ed227-6315-7b91-88bc-27b8c8d67904,LangGraph,success,,2026-06-16T20:37:37.173572Z,2026-06-16T20:37:51.278334Z,14.104762,950,500,1450,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed227-6315-7b91-88bc-27b8c8d67904.json,False,12.0
+v1-qwen3.5-2b-20260616T203754187199Z-Mbpp-93-r0,v1-qwen3.5-2b,Mbpp/93,0,MBPP+,power,"""""""
+Write a function to calculate the value of 'a' to the power 'b'.
+assert power(3,4) == 81
+""""""
+",0,generate_solution -> run_visible_tests,"def power(a, b):
+    """"""
+    Calculate a raised to the power of b.
+    """"""
+    if b == 0:
+        return 1
+    elif b == 1:
+        return a
+    elif b < 0:
+        return 1 / power(a, -b)
+    else:
+        result = 1
+        for _ in range(b):
+            result *= a
+        return result
+
+# Test cases
+assert power(3, 4) == 81
+assert power(2, 3) == 8
+assert power(5, 5) == 3125","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203754187199Z-Mbpp-93-r0.json,True,True,True,1.0,pass,pass,0,0,3,110,,,019ed227-a58b-7860-a65a-2a2a2dcee2a7,019ed227-a58b-7860-a65a-2a2a2dcee2a7,LangGraph,success,,2026-06-16T20:37:54.187460Z,2026-06-16T20:37:58.480416Z,4.292956,163,145,308,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed227-a58b-7860-a65a-2a2a2dcee2a7.json,True,51.0
+v1-qwen3.5-2b-20260616T203801385933Z-Mbpp-94-r0,v1-qwen3.5-2b,Mbpp/94,0,MBPP+,index_minimum,"""""""
+Given a list of tuples, write a function that returns the first value of the tuple with the smallest second value.
+assert index_minimum([('Rash', 143), ('Manjeet', 200), ('Varsha', 100)]) == 'Varsha'
+""""""
+",0,generate_solution -> run_visible_tests,"def index_minimum(tuples):
+    """"""
+    Given a list of tuples, returns the first value of the tuple with the smallest second value.
+    
+    Args:
+        tuples (list): List of tuples where each tuple is (name, value).
+    
+    Returns:
+        str: The name of the tuple with the smallest second value.
+    
+    Raises:
+        ValueError: If the input list is empty.
+    """"""
+    if not tuples:
+        raise ValueError(""Input list cannot be empty"")
+    
+    # Find the tuple with the minimum second value
+    min_tuple = min(tuples, key=lambda x: x[1])
+    
+    # Return the first value (index 0) of that tuple
+    return min_tuple[0]","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203801385933Z-Mbpp-94-r0.json,True,True,True,1.0,pass,pass,0,0,3,106,,,019ed227-c1aa-7fe2-8e24-9fc65528ec0c,019ed227-c1aa-7fe2-8e24-9fc65528ec0c,LangGraph,success,,2026-06-16T20:38:01.386209Z,2026-06-16T20:38:06.050959Z,4.66475,270,168,438,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed227-c1aa-7fe2-8e24-9fc65528ec0c.json,True,46.0
+v1-qwen3.5-2b-20260616T203808700976Z-Mbpp-95-r0,v1-qwen3.5-2b,Mbpp/95,0,MBPP+,Find_Min_Length,"""""""
+Write a python function to find the length of the smallest list in a list of lists.
+assert Find_Min_Length([[1],[1,2]]) == 1
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def Find_Min_Length(lists):
+    if not lists:
+        return 0
+    
+    min_length = len(lists[0])
+    for length in lists:
+        if length < min_length:
+            min_length = length
+    return min_length","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203808700976Z-Mbpp-95-r0.json,False,False,False,0.0,fail,fail,3,105,3,105,,,019ed227-de3d-7a91-b76a-9e5760a3bd19,019ed227-de3d-7a91-b76a-9e5760a3bd19,LangGraph,success,,2026-06-16T20:38:08.701231Z,2026-06-16T20:38:17.117766Z,8.416535,881,185,1066,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed227-de3d-7a91-b76a-9e5760a3bd19.json,False,26.0
+v1-qwen3.5-2b-20260616T203819795254Z-Mbpp-96-r0,v1-qwen3.5-2b,Mbpp/96,0,MBPP+,divisor,"""""""
+Write a python function to find the number of divisors of a given integer.
+assert divisor(15) == 4
+""""""
+",0,generate_solution -> run_visible_tests,"def divisor(n):
+    """"""
+    Find the number of divisors of a given integer.
+    
+    Args:
+        n (int): The integer to find divisors for.
+        
+    Returns:
+        int: The count of divisors of n.
+    """"""
+    if n <= 0:
+        return 0
+    
+    count = 0
+    # Check for 1 and n
+    if n > 1:
+        count += 2
+    
+    # Check for divisors from 2 to sqrt(n)
+    i = 2
+    while i * i <= n:
+        if n % i == 0:
+            count += 1  # i is a divisor
+            # If i != n/i, then n/i is also a divisor
+            if i != n // i:
+                count += 1
+        i += 1
+    
+    return count
+
+# Test cases
+assert divisor(15) == 4
+assert divisor(12) == 6
+assert divisor(9) == 3","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203819795254Z-Mbpp-96-r0.json,True,False,False,0.0,pass,fail,0,1,3,101,,,019ed228-0993-7cc0-8ac2-5c18474d2e50,019ed228-0993-7cc0-8ac2-5c18474d2e50,LangGraph,success,,2026-06-16T20:38:19.795523Z,2026-06-16T20:38:25.460828Z,5.665305,152,232,384,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed228-0993-7cc0-8ac2-5c18474d2e50.json,False,36.0
+v1-qwen3.5-2b-20260616T203828219819Z-Mbpp-97-r0,v1-qwen3.5-2b,Mbpp/97,0,MBPP+,frequency_lists,"""""""
+Write a function to find frequency of each element in a flattened list of lists, returned in a dictionary.
+assert frequency_lists([[1, 2, 3, 2], [4, 5, 6, 2], [7, 8, 9, 5]])=={1: 1, 2: 3, 3: 1, 4: 1, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1}
+""""""
+",0,generate_solution -> run_visible_tests,"from collections import Counter
+
+def frequency_lists(data):
+    """"""
+    Find frequency of each element in a flattened list of lists.
+    
+    Args:
+        data: A list of lists containing integers.
+        
+    Returns:
+        A dictionary with elements as keys and their frequencies as values.
+    """"""
+    flattened = []
+    for sublist in data:
+        flattened.extend(sublist)
+    
+    return dict(Counter(flattened))","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203828219819Z-Mbpp-97-r0.json,True,True,True,1.0,pass,pass,0,0,3,103,,,019ed228-2a7c-7f13-a7ff-6901e8d159a2,019ed228-2a7c-7f13-a7ff-6901e8d159a2,LangGraph,success,,2026-06-16T20:38:28.220188Z,2026-06-16T20:38:31.924968Z,3.70478,506,101,607,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed228-2a7c-7f13-a7ff-6901e8d159a2.json,True,56.0
+v1-qwen3.5-2b-20260616T203834583788Z-Mbpp-98-r0,v1-qwen3.5-2b,Mbpp/98,0,MBPP+,multiply_num,"""""""
+Write a function to multiply all the numbers in a list and divide with the length of the list.
+assert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)
+""""""
+",0,generate_solution -> run_visible_tests,"import math
+
+def multiply_num(numbers):
+    """"""
+    Multiply all numbers in the list and divide by the length of the list.
+    """"""
+    if not numbers:
+        return 0.0
+    
+    product = 1.0
+    for num in numbers:
+        product *= num
+    
+    return product / len(numbers)
+
+# Test cases
+assert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)
+assert math.isclose(multiply_num((-10,-20,-30)), -2000.0, rel_tol=0.001)
+assert math.isclose(multiply_num((19,15,18)), 1710.0, rel_tol=0.001)","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203834583788Z-Mbpp-98-r0.json,True,True,True,1.0,pass,pass,0,0,3,110,,,019ed228-4358-7391-89eb-33ad6682105e,019ed228-4358-7391-89eb-33ad6682105e,LangGraph,success,,2026-06-16T20:38:34.584045Z,2026-06-16T20:38:39.593530Z,5.009485,267,190,457,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed228-4358-7391-89eb-33ad6682105e.json,True,44.0
+v1-qwen3.5-2b-20260616T203842254827Z-Mbpp-99-r0,v1-qwen3.5-2b,Mbpp/99,0,MBPP+,decimal_to_binary,"""""""
+Write a function to convert the given decimal number to its binary equivalent, represented as a string with no leading zeros.
+assert decimal_to_binary(8) == '1000'
+""""""
+",0,generate_solution -> run_visible_tests,"def decimal_to_binary(n: int) -> str:
+    """"""Convert a decimal number to its binary equivalent as a string without leading zeros.""""""
+    if n == 0:
+        return '0'
+    
+    binary = ''
+    while n > 0:
+        binary = str(n % 2) + binary
+        n //= 2
+    
+    return binary","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203842254827Z-Mbpp-99-r0.json,True,False,False,0.0,pass,fail,0,51,3,104,,,019ed228-614f-78e0-b4fa-4649c8d8a1b0,019ed228-614f-78e0-b4fa-4649c8d8a1b0,LangGraph,success,,2026-06-16T20:38:42.255093Z,2026-06-16T20:38:45.421725Z,3.166632,183,85,268,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed228-614f-78e0-b4fa-4649c8d8a1b0.json,False,65.0
+v1-qwen3.5-2b-20260616T203848205963Z-Mbpp-100-r0,v1-qwen3.5-2b,Mbpp/100,0,MBPP+,next_smallest_palindrome,"""""""
+Write a function to find the next smallest palindrome of a specified integer, returned as an integer.
+assert next_smallest_palindrome(99)==101
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def next_smallest_palindrome(n: int) -> int:
+    """"""
+    Find the next smallest palindrome greater than or equal to n.
+    """"""
+    if n <= 0:
+        return 1
+
+    # Generate palindromes starting from n
+    current = n
+    while True:
+        if is_palindrome(current):
+            return current
+        current += 1
+
+    # Fallback (should not be reached for positive integers)
+    return 1
+
+def is_palindrome(num: int) -> bool:
+    s = str(num)
+    return s == s[::-1]","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203848205963Z-Mbpp-100-r0.json,False,False,False,0.0,fail,fail,2,16,3,102,,,019ed228-788e-7030-9249-52a71539ebae,019ed228-788e-7030-9249-52a71539ebae,LangGraph,success,,2026-06-16T20:38:48.206223Z,2026-06-16T20:39:00.706783Z,12.50056,959,404,1363,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed228-788e-7030-9249-52a71539ebae.json,False,16.0
+v1-qwen3.5-2b-20260616T203903434946Z-Mbpp-101-r0,v1-qwen3.5-2b,Mbpp/101,0,MBPP+,kth_element,"""""""
+Write a function to find the kth element in the given array using 1-based indexing.
+assert kth_element([12,3,5,7,19], 2) == 3
+""""""
+",0,generate_solution -> run_visible_tests,"def kth_element(arr, k):
+    """"""
+    Find the kth element in the given array using 1-based indexing.
+    
+    Args:
+        arr (list): The input array of numbers.
+        k (int): The 1-based index of the element to find.
+    
+    Returns:
+        int: The kth element in the array.
+    
+    Raises:
+        ValueError: If k is not within the valid range.
+    """"""
+    if k < 1 or k > len(arr):
+        raise ValueError(f""k must be between 1 and {len(arr)}, got {k}"")
+    
+    return arr[k - 1]
+
+# Test cases
+assert kth_element([12,3,5,7,19], 2) == 3
+assert kth_element([17,24,8,23], 3) == 8
+assert kth_element([16,21,25,36,4], 4) == 36","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203903434946Z-Mbpp-101-r0.json,True,True,True,1.0,pass,pass,0,0,3,104,,,019ed228-b40b-7862-8f47-58242cdc892f,019ed228-b40b-7862-8f47-58242cdc892f,LangGraph,success,,2026-06-16T20:39:03.435200Z,2026-06-16T20:39:09.060183Z,5.624983,217,227,444,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed228-b40b-7862-8f47-58242cdc892f.json,True,37.0
+v1-qwen3.5-2b-20260616T203911729113Z-Mbpp-102-r0,v1-qwen3.5-2b,Mbpp/102,0,MBPP+,snake_to_camel,"""""""
+Write a function to convert a snake case string to camel case string.
+assert snake_to_camel('python_program')=='PythonProgram'
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def snake_to_camel(snake_str: str) -> str:
+    """"""
+    Convert a snake_case string to camelCase string.
+    
+    Args:
+        snake_str: A string in snake_case format.
+        
+    Returns:
+        A string in camelCase format.
+    """"""
+    if not snake_str:
+        return """"
+    
+    # Split on underscores
+    parts = snake_str.split('_')
+    
+    # First part is all lowercase
+    first_part = parts[0]
+    
+    # Join the first part
+    result = first_part
+    
+    # Iterate over the remaining parts
+    for part in parts[1:]:
+        # If the part is not empty and not the first part, capitalize the first letter
+        if part:
+            # Check if the part starts with a lowercase letter
+            if part[0].islower():
+                # Capitalize the first letter
+                result += part[0].upper() + part[1:]
+            else:
+                # If it starts with uppercase, just append it
+                result += part
+    
+    return result","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203911729113Z-Mbpp-102-r0.json,False,False,False,0.0,fail,fail,3,109,3,110,,,019ed228-d471-7d13-948a-66614e8332bc,019ed228-d471-7d13-948a-66614e8332bc,LangGraph,success,,2026-06-16T20:39:11.729373Z,2026-06-16T20:39:29.562263Z,17.83289,1159,710,1869,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed228-d471-7d13-948a-66614e8332bc.json,False,9.0
+v1-qwen3.5-2b-20260616T203932224047Z-Mbpp-103-r0,v1-qwen3.5-2b,Mbpp/103,0,MBPP+,eulerian_num,"""""""
+Write a function to find the Eulerian number a(n, m).
+assert eulerian_num(3, 1) == 4
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def eulerian_num(n, m):
+    """"""
+    Compute the Eulerian number a(n, m).
+    
+    The Eulerian number a(n, m) counts the number of permutations of {1, ..., n}
+    with exactly m ascents.
+    
+    Formula: a(n, m) = sum_{k=0}^{m} (-1)^k * C(n, k) * (n - k + 1)^m
+    where C(n, k) is the binomial coefficient.
+    """"""
+    from math import comb
+    
+    if m < 0 or m > n:
+        return 0
+    
+    total = 0
+    for k in range(m + 1):
+        term = comb(n, k) * (n - k + 1) ** m
+        if k % 2 == 0:
+            total += term
+        else:
+            total -= term
+    return total
+
+# Verify with provided test cases
+assert eulerian_num(3, 1) == 4
+assert eulerian_num(4, 1) == 11
+assert eulerian_num(5, 3) == 26","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203932224047Z-Mbpp-103-r0.json,False,False,False,0.0,fail,fail,0,0,0,0,,,019ed229-2480-7062-8c24-c9fe3abd74a9,019ed229-2480-7062-8c24-c9fe3abd74a9,LangGraph,success,,2026-06-16T20:39:32.224322Z,2026-06-16T20:39:51.129178Z,18.904856,1114,774,1888,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed229-2480-7062-8c24-c9fe3abd74a9.json,False,8.0
+v1-qwen3.5-2b-20260616T203953786026Z-Mbpp-104-r0,v1-qwen3.5-2b,Mbpp/104,0,MBPP+,sort_sublists,"""""""
+Write a function to sort each sublist of strings in a given list of lists.
+assert sort_sublists(([""green"", ""orange""], [""black"", ""white""], [""white"", ""black"", ""orange""]))==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def sort_sublists(data):
+    """"""
+    Sort each sublist of strings in a given list of lists.
+    """"""
+    return [[item for item in sublist] for sublist in data]","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T203953786026Z-Mbpp-104-r0.json,False,False,False,0.0,fail,fail,3,112,3,121,,,019ed229-78ba-7053-8b29-e5e26f235f0c,019ed229-78ba-7053-8b29-e5e26f235f0c,LangGraph,success,,2026-06-16T20:39:53.786283Z,2026-06-16T20:40:01.671647Z,7.885364,1175,141,1316,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed229-78ba-7053-8b29-e5e26f235f0c.json,False,28.0
+v1-qwen3.5-2b-20260616T204004360162Z-Mbpp-105-r0,v1-qwen3.5-2b,Mbpp/105,0,MBPP+,count,"""""""
+Write a python function to count true booleans in the given list.
+assert count([True,False,True]) == 2
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def count(*args):
+    return sum(bool(x) for x in args)","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204004360162Z-Mbpp-105-r0.json,False,False,False,0.0,fail,fail,3,83,3,103,,,019ed229-a208-7141-9c1b-0b8483d7b44d,019ed229-a208-7141-9c1b-0b8483d7b44d,LangGraph,success,,2026-06-16T20:40:04.360430Z,2026-06-16T20:40:10.600081Z,6.239651,677,69,746,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed229-a208-7141-9c1b-0b8483d7b44d.json,False,33.0
+v1-qwen3.5-2b-20260616T204013294256Z-Mbpp-106-r0,v1-qwen3.5-2b,Mbpp/106,0,MBPP+,add_lists,"""""""
+Write a function to append the given list to the given tuples.
+assert add_lists([5, 6, 7], (9, 10)) == (9, 10, 5, 6, 7)
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def add_lists(list_of_ints, tuple_of_ints):
+    """"""
+    Appends the list of integers to the tuple of integers.
+    
+    Args:
+        list_of_ints (list): A list of integers to be appended.
+        tuple_of_ints (tuple): A tuple of integers to which the list will be appended.
+    
+    Returns:
+        tuple: A new tuple containing the original tuple followed by the list elements.
+    """"""
+    return tuple_of_ints + list_of_ints","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204013294256Z-Mbpp-106-r0.json,False,False,False,0.0,fail,fail,3,115,3,115,,,019ed229-c4ee-7cc2-b980-baaa560ef57b,019ed229-c4ee-7cc2-b980-baaa560ef57b,LangGraph,success,,2026-06-16T20:40:13.294536Z,2026-06-16T20:40:24.892550Z,11.598014,1192,350,1542,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed229-c4ee-7cc2-b980-baaa560ef57b.json,False,19.0
+v1-qwen3.5-2b-20260616T204027560545Z-Mbpp-108-r0,v1-qwen3.5-2b,Mbpp/108,0,MBPP+,merge_sorted_list,"""""""
+Write a function to merge three lists into a single sorted list.
+assert merge_sorted_list([25, 24, 15, 4, 5, 29, 110],[19, 20, 11, 56, 25, 233, 154],[24, 26, 54, 48])==[4, 5, 11, 15, 19, 20, 24, 24, 25, 25, 26, 29, 48, 54, 56, 110, 154, 233]
+""""""
+",0,generate_solution -> run_visible_tests,"def merge_sorted_list(*lists):
+    """"""
+    Merge three lists into a single sorted list.
+    
+    Args:
+        *lists: Variable number of lists to merge.
+        
+    Returns:
+        A single sorted list containing all elements from the input lists.
+    """"""
+    merged = []
+    for lst in lists:
+        merged.extend(lst)
+    
+    return sorted(merged)","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204027560545Z-Mbpp-108-r0.json,True,True,True,1.0,pass,pass,0,0,3,118,,,019ed229-fca8-7be0-ba93-dc0d3d8311f4,019ed229-fca8-7be0-ba93-dc0d3d8311f4,LangGraph,success,,2026-06-16T20:40:27.560806Z,2026-06-16T20:40:31.248949Z,3.688143,703,92,795,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed229-fca8-7be0-ba93-dc0d3d8311f4.json,True,57.0
+v1-qwen3.5-2b-20260616T204033905845Z-Mbpp-109-r0,v1-qwen3.5-2b,Mbpp/109,0,MBPP+,odd_Equivalent,"""""""
+Write a python function to find the number of numbers with an odd value when rotating a binary string the given number of times.
+assert odd_Equivalent(""011001"",6) == 3
+""""""
+",0,generate_solution -> run_visible_tests,"def odd_Equivalent(s: str, n: int) -> int:
+    """"""
+    Find the number of numbers with an odd value when rotating a binary string the given number of times.
+    
+    The value of a binary string is the integer it represents.
+    We need to count how many rotations result in an odd integer.
+    """"""
+    if not s:
+        return 0
+    
+    # Convert the binary string to an integer
+    val = int(s, 2)
+    
+    # Calculate the total number of rotations
+    total_rotations = len(s)
+    
+    # Count how many rotations result in an odd value
+    odd_count = 0
+    
+    for i in range(total_rotations):
+        rotated_val = int(s[i:] + s[:i], 2)
+        if rotated_val % 2 == 1:
+            odd_count += 1
+            
+    return odd_count
+
+# Test cases
+assert odd_Equivalent(""011001"", 6) == 3
+assert odd_Equivalent(""11011"", 5) == 4
+assert odd_Equivalent(""1010"", 4) == 2","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204033905845Z-Mbpp-109-r0.json,True,False,False,0.0,pass,fail,0,101,3,102,,,019ed22a-1572-7200-b440-219e15048a3c,019ed22a-1572-7200-b440-219e15048a3c,LangGraph,success,,2026-06-16T20:40:33.906118Z,2026-06-16T20:40:40.163888Z,6.25777,199,262,461,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed22a-1572-7200-b440-219e15048a3c.json,False,32.0
+v1-qwen3.5-2b-20260616T204042823243Z-Mbpp-111-r0,v1-qwen3.5-2b,Mbpp/111,0,MBPP+,common_in_nested_lists,"""""""
+Write a function to find the common elements in given nested lists.
+assert set(common_in_nested_lists([[12, 18, 23, 25, 45], [7, 12, 18, 24, 28], [1, 5, 8, 12, 15, 16, 18]]))==set([18, 12])
+""""""
+",0,generate_solution -> run_visible_tests,"def common_in_nested_lists(lists):
+    """"""
+    Find the common elements in given nested lists.
+    
+    Args:
+        lists: A list of lists of integers.
+        
+    Returns:
+        A set of integers representing the common elements across all lists.
+    """"""
+    if not lists:
+        return set()
+    
+    # Start with the first list as the initial set of common elements
+    common_elements = set(lists[0])
+    
+    # Iterate through the remaining lists
+    for list_item in lists[1:]:
+        # Find the intersection of the current common_elements with the current list
+        common_elements = common_elements.intersection(list_item)
+    
+    return common_elements","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204042823243Z-Mbpp-111-r0.json,True,True,True,1.0,pass,pass,0,0,3,110,,,019ed22a-3847-7102-a313-754b900d66b8,019ed22a-3847-7102-a313-754b900d66b8,LangGraph,success,,2026-06-16T20:40:42.823503Z,2026-06-16T20:40:47.370604Z,4.547101,399,156,555,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed22a-3847-7102-a313-754b900d66b8.json,True,48.0
+v1-qwen3.5-2b-20260616T204050025470Z-Mbpp-113-r0,v1-qwen3.5-2b,Mbpp/113,0,MBPP+,check_integer,"""""""
+Write a function to check if a string represents an integer or not.
+assert check_integer(""python"")==False
+""""""
+",0,generate_solution -> run_visible_tests,"def check_integer(s: str) -> bool:
+    """"""
+    Check if a string represents an integer.
+    """"""
+    return s.isdigit() or s.startswith('-') and s[1:].isdigit()","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204050025470Z-Mbpp-113-r0.json,True,False,False,0.0,pass,fail,0,10,3,121,,,019ed22a-5469-79b1-9680-875daa69df4c,019ed22a-5469-79b1-9680-875daa69df4c,LangGraph,success,,2026-06-16T20:40:50.025759Z,2026-06-16T20:40:52.511908Z,2.486149,149,50,199,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed22a-5469-79b1-9680-875daa69df4c.json,False,73.0
+v1-qwen3.5-2b-20260616T204055215346Z-Mbpp-116-r0,v1-qwen3.5-2b,Mbpp/116,0,MBPP+,tuple_to_int,"""""""
+Write a function to convert a given tuple of positive integers into a single integer.
+assert tuple_to_int((1,2,3))==123
+""""""
+",0,generate_solution -> run_visible_tests,"def tuple_to_int(t):
+    return int("""".join(str(x) for x in t))","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204055215346Z-Mbpp-116-r0.json,True,True,True,1.0,pass,pass,0,0,3,109,,,019ed22a-68af-7ae1-963d-9d45aaed3751,019ed22a-68af-7ae1-963d-9d45aaed3751,LangGraph,success,,2026-06-16T20:40:55.215603Z,2026-06-16T20:40:57.315666Z,2.100063,176,27,203,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed22a-68af-7ae1-963d-9d45aaed3751.json,True,75.0
+v1-qwen3.5-2b-20260616T204100025515Z-Mbpp-118-r0,v1-qwen3.5-2b,Mbpp/118,0,MBPP+,string_to_list,"""""""
+Write a function to convert a string to a list of strings split on the space character.
+assert string_to_list(""python programming"")==['python','programming']
+""""""
+",0,generate_solution -> run_visible_tests,"def string_to_list(s: str) -> list[str]:
+    """"""Convert a string to a list of strings split on the space character.""""""
+    return s.split("" "")","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204100025515Z-Mbpp-118-r0.json,True,True,True,1.0,pass,pass,0,0,3,106,,,019ed22a-7b79-7e43-91e7-6282e81c72c8,019ed22a-7b79-7e43-91e7-6282e81c72c8,LangGraph,success,,2026-06-16T20:41:00.025782Z,2026-06-16T20:41:02.411296Z,2.385514,181,42,223,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed22a-7b79-7e43-91e7-6282e81c72c8.json,True,74.0
+v1-qwen3.5-2b-20260616T204105129748Z-Mbpp-119-r0,v1-qwen3.5-2b,Mbpp/119,0,MBPP+,search,"""""""
+Write a python function to find the element that appears only once in a sorted array.
+assert search([1,1,2,2,3]) == 3
+""""""
+",0,generate_solution -> run_visible_tests,"def search(arr):
+    """"""
+    Find the element that appears only once in a sorted array.
+    
+    Args:
+        arr (list): A sorted list of integers.
+        
+    Returns:
+        int: The element that appears only once.
+    """"""
+    if not arr:
+        return None
+    
+    # Count occurrences of each element
+    counts = {}
+    for num in arr:
+        counts[num] = counts.get(num, 0) + 1
+    
+    # Find the element with count == 1
+    for num, count in counts.items():
+        if count == 1:
+            return num
+
+# Test cases
+assert search([1,1,2,2,3]) == 3
+assert search([1,1,3,3,4,4,5,5,7,7,8]) == 8
+assert search([1,2,2,3,3,4,4]) == 1","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204105129748Z-Mbpp-119-r0.json,True,False,False,0.0,pass,fail,0,79,3,107,,,019ed22a-8f69-7aa3-bead-ed9a39bf26be,019ed22a-8f69-7aa3-bead-ed9a39bf26be,LangGraph,success,,2026-06-16T20:41:05.130009Z,2026-06-16T20:41:10.498915Z,5.368906,199,213,412,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed22a-8f69-7aa3-bead-ed9a39bf26be.json,False,42.0
+v1-qwen3.5-2b-20260616T204113162831Z-Mbpp-120-r0,v1-qwen3.5-2b,Mbpp/120,0,MBPP+,max_product_tuple,"""""""
+Write a function to find the maximum absolute product between numbers in pairs of tuples within a given list.
+assert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"import math
+from typing import List, Tuple
+
+def max_product_tuple(tuples: List[Tuple[int, int]]) -> int:
+    """"""
+    Find the maximum absolute product between numbers in pairs of tuples within a given list.
+    
+    Args:
+        tuples: A list of tuples, each containing two integers.
+        
+    Returns:
+        The maximum absolute product of any pair of numbers from any two tuples.
+    """"""
+    max_product = 0
+    
+    for t1 in tuples:
+        for t2 in tuples:
+            if t1 == t2:
+                continue
+            product = abs(t1[0] * t1[1] * t2[0] * t2[1])
+            if product > max_product:
+                max_product = product
+                
+    return max_product
+
+# Test cases
+assert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)]) == 36
+assert math.isclose(max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)]), 36, rel_tol=0.001)
+assert math.isclose(max_product_tuple([(10, 20), (15, 2), (5, 10)]), 200, rel_tol=0.001)
+assert math.isclose(max_product_tuple([(11, 44), (10, 15), (20, 5), (12, 9)]), 484, rel_tol=0.001)","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204113162831Z-Mbpp-120-r0.json,False,False,False,0.0,fail,fail,0,0,0,0,,,019ed22a-aecb-7fd2-83cf-7c7005f808f4,019ed22a-aecb-7fd2-83cf-7c7005f808f4,LangGraph,success,,2026-06-16T20:41:13.163108Z,2026-06-16T20:41:37.624728Z,24.46162,1675,1080,2755,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed22a-aecb-7fd2-83cf-7c7005f808f4.json,False,6.0
+v1-qwen3.5-2b-20260616T204140294301Z-Mbpp-123-r0,v1-qwen3.5-2b,Mbpp/123,0,MBPP+,amicable_numbers_sum,"""""""
+Write a function to sum all amicable numbers from 1 to a specified number.
+assert amicable_numbers_sum(999)==504
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def amicable_numbers_sum(n):
+    """"""
+    Sum all amicable numbers from 1 to n.
+    
+    An amicable pair (a, b) is a pair of two different natural numbers a and b
+    such that the sum of the proper divisors of a is equal to b, and the sum of
+    the proper divisors of b is equal to a.
+    
+    Args:
+        n (int): The upper bound of the range to check for amicable numbers.
+        
+    Returns:
+        int: The sum of all amicable numbers found in the range [1, n].
+    """"""
+    def proper_divisor_sum(n):
+        if n <= 1:
+            return 0
+        sum_div = 1  # 1 is always a proper divisor for n > 1
+        # Check divisors from 2 up to sqrt(n)
+        i = 2
+        while i * i <= n:
+            if n % i == 0:
+                sum_div += i
+                if i != n // i:
+                    sum_div += n // i
+            i += 1
+        return sum_div
+
+    # Find all amicable numbers up to n
+    amicable_list = set()
+    for i in range(1, n + 1):
+        a = proper_divisor_sum(i)
+        if a != i and a <= n:
+            b = proper_divisor_sum(a)
+            if b != a and b <= n:
+                amicable_list.add(i)
+                amicable_list.add(b)
+    
+    return sum(amicable_list)
+
+# Test cases
+assert amicable_numbers_sum(999) == 504
+assert amicable_numbers_sum(9999) == 31626
+assert amicable_numbers_sum(99) == 0","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204140294301Z-Mbpp-123-r0.json,False,False,False,0.0,fail,fail,0,0,0,0,,,019ed22b-18c6-7ed1-9b67-c497df3be7a8,019ed22b-18c6-7ed1-9b67-c497df3be7a8,LangGraph,success,,2026-06-16T20:41:40.294561Z,2026-06-16T20:42:07.658928Z,27.364367,1433,1227,2660,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed22b-18c6-7ed1-9b67-c497df3be7a8.json,False,5.0
+v1-qwen3.5-2b-20260616T204211767540Z-Mbpp-124-r0,v1-qwen3.5-2b,Mbpp/124,0,MBPP+,angle_complex,"""""""
+Write a function to get the angle of a complex number.
+assert math.isclose(angle_complex(0,1j), 1.5707963267948966, rel_tol=0.001)
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"import math
+
+def angle_complex(z):
+    """"""
+    Calculate the angle of a complex number z in radians.
+    
+    The angle is measured from the positive real axis in the counter-clockwise direction.
+    """"""
+    return math.atan2(z.imag, z.real)","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204211767540Z-Mbpp-124-r0.json,False,False,False,0.0,fail,fail,3,116,3,116,,,019ed22b-93b7-7bc0-84a7-bbbc704b8443,019ed22b-93b7-7bc0-84a7-bbbc704b8443,LangGraph,success,,2026-06-16T20:42:11.767807Z,2026-06-16T20:42:20.376982Z,8.609175,1140,182,1322,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed22b-93b7-7bc0-84a7-bbbc704b8443.json,False,25.0
+v1-qwen3.5-2b-20260616T204223122285Z-Mbpp-125-r0,v1-qwen3.5-2b,Mbpp/125,0,MBPP+,find_length,"""""""
+Write a function to find the maximum difference between the number of 0s and number of 1s in any sub-string of the given binary string.
+assert find_length(""11000010001"") == 6
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def find_length(s: str) -> int:
+    """"""
+    Find the maximum difference between the number of 0s and number of 1s in any sub-string.
+    """"""
+    n = len(s)
+    max_diff = 0
+    current_diff = 0
+
+    # Initialize with the first character
+    current_diff = 1 if s[0] == '0' else -1
+
+    for i in range(1, n):
+        if s[i] == '0':
+            current_diff += 1
+        else:
+            current_diff -= 1
+
+        max_diff = max(max_diff, current_diff)
+
+    return max_diff","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204223122285Z-Mbpp-125-r0.json,False,False,False,0.0,fail,fail,3,18,3,102,,,019ed22b-c012-7192-8cde-f9623e6263e9,019ed22b-c012-7192-8cde-f9623e6263e9,LangGraph,success,,2026-06-16T20:42:23.122578Z,2026-06-16T20:42:36.622866Z,13.500288,1084,447,1531,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed22b-c012-7192-8cde-f9623e6263e9.json,False,14.0
+v1-qwen3.5-2b-20260616T204239328457Z-Mbpp-126-r0,v1-qwen3.5-2b,Mbpp/126,0,MBPP+,sum,"""""""
+Write a python function to find the sum of common divisors of two given numbers.
+assert sum(10,15) == 6
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def sum(a, b):
+    """"""
+    Find the sum of common divisors of two given numbers.
+    """"""
+    def gcd(x, y):
+        while y:
+            x, y = y, x % y
+        return x
+
+    def common_divisors(n):
+        divs = []
+        for i in range(1, n + 1):
+            if n % i == 0:
+                divs.append(i)
+        return divs
+
+    common = set(common_divisors(a)) & set(common_divisors(b))
+    return sum(common)
+
+assert sum(10, 15) == 6
+assert sum(100, 150) == 93
+assert sum(4, 6) == 3","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204239328457Z-Mbpp-126-r0.json,False,False,False,0.0,fail,fail,0,0,0,0,,,019ed22b-ff60-7383-aca6-087413b99ddf,019ed22b-ff60-7383-aca6-087413b99ddf,LangGraph,success,,2026-06-16T20:42:39.328736Z,2026-06-16T20:42:54.862609Z,15.533873,958,548,1506,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed22b-ff60-7383-aca6-087413b99ddf.json,False,11.0
+v1-qwen3.5-2b-20260616T204257681144Z-Mbpp-127-r0,v1-qwen3.5-2b,Mbpp/127,0,MBPP+,multiply_int,"""""""
+Write a function to multiply two integers.
+assert multiply_int(10,20)==200
+""""""
+",0,generate_solution -> run_visible_tests,"def multiply_int(a: int, b: int) -> int:
+    """"""Multiply two integers.""""""
+    return a * b
+
+# Verify the provided tests
+assert multiply_int(10, 20) == 200
+assert multiply_int(5, 10) == 50
+assert multiply_int(4, 8) == 32","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204257681144Z-Mbpp-127-r0.json,True,True,True,1.0,pass,pass,0,0,3,104,,,019ed22c-4711-7c03-a411-de4a3958be38,019ed22c-4711-7c03-a411-de4a3958be38,LangGraph,success,,2026-06-16T20:42:57.681440Z,2026-06-16T20:43:00.953871Z,3.272431,158,85,243,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed22c-4711-7c03-a411-de4a3958be38.json,True,62.0
+v1-qwen3.5-2b-20260616T204303888930Z-Mbpp-128-r0,v1-qwen3.5-2b,Mbpp/128,0,MBPP+,long_words,"""""""
+Write a function to find words that are longer than n characters from a given list of words.
+assert long_words(3,""python is a programming language"")==['python','programming','language']
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def long_words(n, words):
+    """"""
+    Find words that are longer than n characters from a given list of words.
+    
+    Args:
+        n (int): Threshold length for words to be considered.
+        words (list): List of words to check.
+    
+    Returns:
+        list: List of words that are strictly longer than n characters.
+    """"""
+    return [word for word in words if len(word) > n]
+
+# Example usage and assertions
+assert long_words(3, ""python is a programming language"") == ['python', 'programming', 'language']
+assert long_words(2, ""writing a program"") == ['writing', 'program']
+assert long_words(5, ""sorting list"") == ['sorting']","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204303888930Z-Mbpp-128-r0.json,False,False,False,0.0,fail,fail,0,0,0,0,,,019ed22c-5f51-7230-ae94-2638bd1ee9c6,019ed22c-5f51-7230-ae94-2638bd1ee9c6,LangGraph,success,,2026-06-16T20:43:03.889210Z,2026-06-16T20:43:17.821542Z,13.932332,977,491,1468,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed22c-5f51-7230-ae94-2638bd1ee9c6.json,False,13.0
+v1-qwen3.5-2b-20260616T204320507606Z-Mbpp-129-r0,v1-qwen3.5-2b,Mbpp/129,0,MBPP+,magic_square_test,"""""""
+Write a function to calculate whether the matrix is a magic square.
+assert magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])==True
+""""""
+",2,generate_solution -> run_visible_tests -> debug_solution -> run_visible_tests -> debug_solution -> run_visible_tests,"def magic_square_test(matrix):
+    """"""
+    Check if the given matrix is a magic square.
+    A magic square is a square grid filled with distinct positive integers 
+    (usually 1 to n^2) where the sum of the numbers in each row, column, 
+    and both main diagonals are the same.
+    """"""
+    n = len(matrix)
+    
+    # Check if n is a perfect square
+    if int(n**0.5) ** 2 != n:
+        return False
+    
+    # Check if all elements are positive integers
+    for row in matrix:
+        if not all(isinstance(x, int) and x > 0 for x in row):
+            return False
+    
+    # Check if all elements are distinct
+    seen = set()
+    for row in matrix:
+        for x in row:
+            if x in seen:
+                return False
+            seen.add(x)
+    
+    # Check if all elements are in the range [1, n^2]
+    for row in matrix:
+        for x in row:
+            if not (1 <= x <= n * n):
+                return False
+    
+    # Calculate the expected magic constant
+    # Sum of all elements
+    total_sum = sum(sum(row) for row in matrix)
+    expected_sum = total_sum / n
+    
+    # Check if all rows, columns, and diagonals sum to the expected value
+    for row in matrix:
+        if sum(row) != expected_sum:
+            return False
+    
+    for col in range(n):
+        current_sum = 0
+        for i in range(n):
+            current_sum += matrix[i][col]
+        if current_sum != expected_sum:
+            return False
+    
+    # Check main diagonal
+    if sum(matrix[i][i] for i in range(n)) != expected_sum:
+        return False
+    
+    # Check anti-diagonal
+    if sum(matrix[i][n - 1 - i] for i in range(n)) != expected_sum:
+        return False
+    
+    return True","{""debug_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""model"": ""qwen3.5:2b"", ""provider"": ""ollama"", ""reasoning"": false, ""temperature"": 0, ""thinking"": false}}","{""debug_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}, ""generate_solution"": {""reasoning"": false, ""temperature"": 0, ""thinking"": false}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/evals/v1-qwen3.5-2b-20260616T204320507606Z-Mbpp-129-r0.json,False,False,False,0.0,fail,fail,1,2,3,104,,,019ed22c-a03b-73a2-b9ab-e35871dce412,019ed22c-a03b-73a2-b9ab-e35871dce412,LangGraph,success,,2026-06-16T20:43:20.507881Z,2026-06-16T20:43:49.574267Z,29.066386,1917,1322,3239,0.0,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-qwen3.5-2b/traces/019ed22c-a03b-73a2-b9ab-e35871dce412.json,False,4.0
