@@ -1,0 +1,799 @@
+run_id,config_id,example_id,repeat,benchmark,entry_point,prompt,repair_attempts,nodes,solution,model_config,model_kwargs,eval_file,base_pass,plus_pass,mbpp_plus_pass,accuracy,base_status,plus_status,base_failed_count,plus_failed_count,base_total_count,plus_total_count,base_error,plus_error,trace_id,root_run_id,root_name,root_status,root_error,root_start_time,root_end_time,total_latency_s,prompt_tokens,completion_tokens,total_tokens,total_cost,trace_file,is_correct,latency_rank
+v1-gpt5.5-20260616T210818253237Z-Mbpp-2-r0,v1-gpt5.5,Mbpp/2,0,MBPP+,similar_elements,"""""""
+Write a function to find the shared elements from the given two lists.
+assert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))
+""""""
+",0,generate_solution -> run_visible_tests,"def similar_elements(list1, list2):
+    return tuple(sorted(set(list1) & set(list2)))","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T210818253237Z-Mbpp-2-r0.json,True,True,True,1.0,pass,pass,0,0,3,108,,,019ed243-7ace-7ee0-8a6b-fe79a0b4ee48,019ed243-7ace-7ee0-8a6b-fe79a0b4ee48,LangGraph,success,,2026-06-16T21:08:18.254565Z,2026-06-16T21:08:25.416806Z,7.162241,233,189,422,0.006835,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed243-7ace-7ee0-8a6b-fe79a0b4ee48.json,True,32.0
+v1-gpt5.5-20260616T210828333834Z-Mbpp-3-r0,v1-gpt5.5,Mbpp/3,0,MBPP+,is_not_prime,"""""""
+Write a python function to identify non-prime numbers.
+assert is_not_prime(2) == False
+""""""
+",0,generate_solution -> run_visible_tests,"def is_not_prime(n):
+    if n <= 1:
+        return True
+    if n == 2:
+        return False
+    if n % 2 == 0:
+        return True
+    for i in range(3, int(n ** 0.5) + 1, 2):
+        if n % i == 0:
+            return True
+    return False","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T210828333834Z-Mbpp-3-r0.json,True,True,True,1.0,pass,pass,0,0,5,103,,,019ed243-a22e-7da3-978f-205863b21fdc,019ed243-a22e-7da3-978f-205863b21fdc,LangGraph,success,,2026-06-16T21:08:28.334116Z,2026-06-16T21:08:33.697312Z,5.363196,156,187,343,0.00639,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed243-a22e-7da3-978f-205863b21fdc.json,True,37.0
+v1-gpt5.5-20260616T210836293230Z-Mbpp-4-r0,v1-gpt5.5,Mbpp/4,0,MBPP+,heap_queue_largest,"""""""
+Write a function to find the n largest integers from a given list of numbers, returned in descending order.
+assert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],3)==[85, 75, 65]
+""""""
+",0,generate_solution -> run_visible_tests,"import heapq
+
+def heap_queue_largest(nums, n):
+    return heapq.nlargest(n, nums)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T210836293230Z-Mbpp-4-r0.json,True,True,True,1.0,pass,pass,0,0,3,106,,,019ed243-c145-7d01-8b45-31831b69a6ea,019ed243-c145-7d01-8b45-31831b69a6ea,LangGraph,success,,2026-06-16T21:08:36.293498Z,2026-06-16T21:08:41.054168Z,4.76067,286,117,403,0.00494,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed243-c145-7d01-8b45-31831b69a6ea.json,True,40.0
+v1-gpt5.5-20260616T210843575486Z-Mbpp-6-r0,v1-gpt5.5,Mbpp/6,0,MBPP+,differ_At_One_Bit_Pos,"""""""
+Write a python function to check whether the two numbers differ at one bit position only or not.
+assert differ_At_One_Bit_Pos(13,9) == True
+""""""
+",0,generate_solution -> run_visible_tests,"def differ_At_One_Bit_Pos(a, b):
+    x = a ^ b
+    return x != 0 and (x & (x - 1)) == 0","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T210843575486Z-Mbpp-6-r0.json,True,True,True,1.0,pass,pass,0,0,6,108,,,019ed243-ddb7-7271-b86d-169b1290477b,019ed243-ddb7-7271-b86d-169b1290477b,LangGraph,success,,2026-06-16T21:08:43.575751Z,2026-06-16T21:08:49.078846Z,5.503095,231,178,409,0.006495,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed243-ddb7-7271-b86d-169b1290477b.json,True,36.0
+v1-gpt5.5-20260616T210851599111Z-Mbpp-7-r0,v1-gpt5.5,Mbpp/7,0,MBPP+,find_char_long,"""""""
+Write a function to find all words which are at least 4 characters long in a string.
+assert set(find_char_long('Please move back to stream')) == set(['Please', 'move', 'back', 'stream'])
+""""""
+",0,generate_solution -> run_visible_tests,"import re
+
+def find_char_long(text):
+    return re.findall(r""\b\w{4,}\b"", text)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T210851599111Z-Mbpp-7-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed243-fd0f-71b2-8f59-7099c2652922,019ed243-fd0f-71b2-8f59-7099c2652922,LangGraph,success,,2026-06-16T21:08:51.599380Z,2026-06-16T21:09:00.605052Z,9.005672,211,240,451,0.008255,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed243-fd0f-71b2-8f59-7099c2652922.json,True,23.0
+v1-gpt5.5-20260616T210903199089Z-Mbpp-8-r0,v1-gpt5.5,Mbpp/8,0,MBPP+,square_nums,"""""""
+Write a function to find squares of individual elements in a list.
+assert square_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+""""""
+",0,generate_solution -> run_visible_tests,"def square_nums(nums):
+    return [x * x for x in nums]","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T210903199089Z-Mbpp-8-r0.json,True,True,True,1.0,pass,pass,0,0,3,103,,,019ed244-2a5f-7553-b605-ba26fb944e14,019ed244-2a5f-7553-b605-ba26fb944e14,LangGraph,success,,2026-06-16T21:09:03.199365Z,2026-06-16T21:09:06.926881Z,3.727516,257,52,309,0.002845,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed244-2a5f-7553-b605-ba26fb944e14.json,True,65.0
+v1-gpt5.5-20260616T210909458362Z-Mbpp-9-r0,v1-gpt5.5,Mbpp/9,0,MBPP+,find_Rotations,"""""""
+Write a python function to find the minimum number of rotations (greater than 0) required to get the same string.
+assert find_Rotations(""aaaa"") == 1
+""""""
+",0,generate_solution -> run_visible_tests,"def find_Rotations(s):
+    if not s:
+        return 0
+    return (s + s).find(s, 1)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T210909458362Z-Mbpp-9-r0.json,True,True,True,1.0,pass,pass,0,0,3,101,,,019ed244-42d2-78a1-9a53-abcaf90692c0,019ed244-42d2-78a1-9a53-abcaf90692c0,LangGraph,success,,2026-06-16T21:09:09.458636Z,2026-06-16T21:09:21.385360Z,11.926724,158,439,597,0.01396,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed244-42d2-78a1-9a53-abcaf90692c0.json,True,15.0
+v1-gpt5.5-20260616T210924053857Z-Mbpp-11-r0,v1-gpt5.5,Mbpp/11,0,MBPP+,remove_Occ,"""""""
+Write a python function to remove first and last occurrence of a given character from the string.
+assert remove_Occ(""hello"",""l"") == ""heo""
+""""""
+",0,generate_solution -> run_visible_tests,"def remove_Occ(string, char):
+    first = string.find(char)
+    if first == -1 or char == """":
+        return string
+
+    last = string.rfind(char)
+
+    if first == last:
+        return string[:first] + string[first + len(char):]
+
+    return string[:first] + string[first + len(char):last] + string[last + len(char):]","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T210924053857Z-Mbpp-11-r0.json,True,True,True,1.0,pass,pass,0,0,3,103,,,019ed244-7bd6-7b21-9e61-129794eebb90,019ed244-7bd6-7b21-9e61-129794eebb90,LangGraph,success,,2026-06-16T21:09:24.054275Z,2026-06-16T21:09:33.568018Z,9.513743,157,404,561,0.012905,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed244-7bd6-7b21-9e61-129794eebb90.json,True,22.0
+v1-gpt5.5-20260616T210936056058Z-Mbpp-12-r0,v1-gpt5.5,Mbpp/12,0,MBPP+,sort_matrix,"""""""
+Write a function to sort a given matrix in ascending order according to the sum of its rows.
+assert sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]])==[[1, 1, 1], [1, 2, 3], [2, 4, 5]]
+""""""
+",0,generate_solution -> run_visible_tests,"def sort_matrix(matrix):
+    return sorted(matrix, key=sum)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T210936056058Z-Mbpp-12-r0.json,True,True,True,1.0,pass,pass,0,0,3,106,,,019ed244-aab8-7e61-9712-f9c1a3cf4c6d,019ed244-aab8-7e61-9712-f9c1a3cf4c6d,LangGraph,success,,2026-06-16T21:09:36.056318Z,2026-06-16T21:09:40.326698Z,4.27038,329,107,436,0.004855,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed244-aab8-7e61-9712-f9c1a3cf4c6d.json,True,50.0
+v1-gpt5.5-20260616T210942920015Z-Mbpp-14-r0,v1-gpt5.5,Mbpp/14,0,MBPP+,find_Volume,"""""""
+Write a python function to find the volume of a triangular prism.
+assert find_Volume(10,8,6) == 240
+""""""
+",0,generate_solution -> run_visible_tests,"def find_Volume(l, b, h):
+    return (l * b * h) / 2","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T210942920015Z-Mbpp-14-r0.json,True,True,True,1.0,pass,pass,0,0,3,108,,,019ed244-c588-7b90-ae8b-f7578d483b56,019ed244-c588-7b90-ae8b-f7578d483b56,LangGraph,success,,2026-06-16T21:09:42.920347Z,2026-06-16T21:09:48.467689Z,5.547342,163,153,316,0.005405,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed244-c588-7b90-ae8b-f7578d483b56.json,True,35.0
+v1-gpt5.5-20260616T210950988984Z-Mbpp-16-r0,v1-gpt5.5,Mbpp/16,0,MBPP+,text_lowercase_underscore,"""""""
+Write a function to that returns true if the input string contains sequences of lowercase letters joined with an underscore and false otherwise.
+assert text_lowercase_underscore(""aab_cbbbc"")==(True)
+""""""
+",0,generate_solution -> run_visible_tests,"import re
+
+def text_lowercase_underscore(text):
+    return bool(re.fullmatch(r""[a-z]+_[a-z]+"", text))","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T210950988984Z-Mbpp-16-r0.json,True,False,False,0.0,pass,fail,0,24,3,113,,,019ed244-e50d-7c41-aebf-7c0f2c9eb545,019ed244-e50d-7c41-aebf-7c0f2c9eb545,LangGraph,success,,2026-06-16T21:09:50.989257Z,2026-06-16T21:09:57.329634Z,6.340377,174,231,405,0.0078,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed244-e50d-7c41-aebf-7c0f2c9eb545.json,False,33.0
+v1-gpt5.5-20260616T210959896791Z-Mbpp-17-r0,v1-gpt5.5,Mbpp/17,0,MBPP+,square_perimeter,"""""""
+Write a function that returns the perimeter of a square given its side length as input.
+assert square_perimeter(10)==40
+""""""
+",0,generate_solution -> run_visible_tests,"def square_perimeter(side_length):
+    return 4 * side_length","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T210959896791Z-Mbpp-17-r0.json,True,True,True,1.0,pass,pass,0,0,3,101,,,019ed245-07d9-70c1-9c90-b4c4750b440b,019ed245-07d9-70c1-9c90-b4c4750b440b,LangGraph,success,,2026-06-16T21:09:59.897282Z,2026-06-16T21:10:03.479777Z,3.582495,138,49,187,0.00216,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed245-07d9-70c1-9c90-b4c4750b440b.json,True,69.0
+v1-gpt5.5-20260616T211006002863Z-Mbpp-18-r0,v1-gpt5.5,Mbpp/18,0,MBPP+,remove_dirty_chars,"""""""
+Write a function to remove characters from the first string which are present in the second string.
+assert remove_dirty_chars(""probasscurve"", ""pros"") == 'bacuve'
+""""""
+",0,generate_solution -> run_visible_tests,"def remove_dirty_chars(string, dirty_chars):
+    dirty_set = set(dirty_chars)
+    return """".join(char for char in string if char not in dirty_set)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211006002863Z-Mbpp-18-r0.json,True,True,True,1.0,pass,pass,0,0,3,104,,,019ed245-1fb3-7bc2-9244-4b715a2ba1ec,019ed245-1fb3-7bc2-9244-4b715a2ba1ec,LangGraph,success,,2026-06-16T21:10:06.003132Z,2026-06-16T21:10:10.052977Z,4.049845,174,84,258,0.00339,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed245-1fb3-7bc2-9244-4b715a2ba1ec.json,True,57.0
+v1-gpt5.5-20260616T211012611795Z-Mbpp-19-r0,v1-gpt5.5,Mbpp/19,0,MBPP+,test_duplicate,"""""""
+Write a function to find whether a given array of integers contains any duplicate element.
+assert test_duplicate(([1,2,3,4,5]))==False
+""""""
+",0,generate_solution -> run_visible_tests,"def test_duplicate(arr):
+    return len(arr) != len(set(arr))","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211012611795Z-Mbpp-19-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed245-3984-7073-bc52-b4af97c430e4,019ed245-3984-7073-bc52-b4af97c430e4,LangGraph,success,,2026-06-16T21:10:12.612073Z,2026-06-16T21:10:16.184670Z,3.572597,177,55,232,0.002535,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed245-3984-7073-bc52-b4af97c430e4.json,True,70.0
+v1-gpt5.5-20260616T211018724743Z-Mbpp-20-r0,v1-gpt5.5,Mbpp/20,0,MBPP+,is_woodall,"""""""
+Write a function to check if the given number is woodball or not.
+assert is_woodall(383) == True
+""""""
+",0,generate_solution -> run_visible_tests,"def is_woodall(num):
+    if not isinstance(num, int) or num < 1:
+        return False
+
+    n = 1
+    while True:
+        woodall = n * (2 ** n) - 1
+        if woodall == num:
+            return True
+        if woodall > num:
+            return False
+        n += 1","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211018724743Z-Mbpp-20-r0.json,True,True,True,1.0,pass,pass,0,0,3,101,,,019ed245-5164-7d90-a15b-f64f7fcfae13,019ed245-5164-7d90-a15b-f64f7fcfae13,LangGraph,success,,2026-06-16T21:10:18.725018Z,2026-06-16T21:10:28.435778Z,9.71076,145,407,552,0.012935,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed245-5164-7d90-a15b-f64f7fcfae13.json,True,21.0
+v1-gpt5.5-20260616T211031024759Z-Mbpp-56-r0,v1-gpt5.5,Mbpp/56,0,MBPP+,check,"""""""
+Write a python function to check if a given number is one less than twice its reverse.
+assert check(70) == False
+""""""
+",0,generate_solution -> run_visible_tests,"def check(n):
+    rev = int(str(abs(n))[::-1])
+    if n < 0:
+        rev = -rev
+    return n == 2 * rev - 1","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211031024759Z-Mbpp-56-r0.json,True,True,True,1.0,pass,pass,0,0,3,125,,,019ed245-8171-78e2-8944-96d774e0966f,019ed245-8171-78e2-8944-96d774e0966f,LangGraph,success,,2026-06-16T21:10:31.025030Z,2026-06-16T21:10:43.555718Z,12.530688,133,168,301,0.005705,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed245-8171-78e2-8944-96d774e0966f.json,True,14.0
+v1-gpt5.5-20260616T211046083066Z-Mbpp-57-r0,v1-gpt5.5,Mbpp/57,0,MBPP+,find_Max_Num,"""""""
+Write a python function to find the largest number that can be formed with the given list of digits.
+assert find_Max_Num([1,2,3]) == 321
+""""""
+",0,generate_solution -> run_visible_tests,"def find_Max_Num(lst):
+    return int("""".join(map(str, sorted(lst, reverse=True)))) if lst else 0","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211046083066Z-Mbpp-57-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed245-bc43-7b70-a832-e8f2a2855ed6,019ed245-bc43-7b70-a832-e8f2a2855ed6,LangGraph,success,,2026-06-16T21:10:46.083308Z,2026-06-16T21:10:50.703889Z,4.620581,171,128,299,0.004695,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed245-bc43-7b70-a832-e8f2a2855ed6.json,True,44.0
+v1-gpt5.5-20260616T211053241235Z-Mbpp-58-r0,v1-gpt5.5,Mbpp/58,0,MBPP+,opposite_Signs,"""""""
+Write a python function to check whether the given two integers have opposite sign or not.
+assert opposite_Signs(1,-2) == True
+""""""
+",0,generate_solution -> run_visible_tests,"def opposite_Signs(x, y):
+    return (x < 0 < y) or (y < 0 < x)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211053241235Z-Mbpp-58-r0.json,True,True,True,1.0,pass,pass,0,0,4,105,,,019ed245-d839-7402-8111-10ab9791b927,019ed245-d839-7402-8111-10ab9791b927,LangGraph,success,,2026-06-16T21:10:53.241514Z,2026-06-16T21:11:14.132377Z,20.890863,162,67,229,0.00282,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed245-d839-7402-8111-10ab9791b927.json,True,3.0
+v1-gpt5.5-20260616T211116645210Z-Mbpp-59-r0,v1-gpt5.5,Mbpp/59,0,MBPP+,is_octagonal,"""""""
+Write a function to find the nth octagonal number.
+assert is_octagonal(5) == 65
+""""""
+",0,generate_solution -> run_visible_tests,"def is_octagonal(n):
+    return n * (3 * n - 2)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211116645210Z-Mbpp-59-r0.json,True,True,True,1.0,pass,pass,0,0,3,101,,,019ed246-33a5-7052-9023-1cf5cfe86eec,019ed246-33a5-7052-9023-1cf5cfe86eec,LangGraph,success,,2026-06-16T21:11:16.645473Z,2026-06-16T21:11:20.786274Z,4.140801,140,82,222,0.00316,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed246-33a5-7052-9023-1cf5cfe86eec.json,True,53.0
+v1-gpt5.5-20260616T211123322649Z-Mbpp-61-r0,v1-gpt5.5,Mbpp/61,0,MBPP+,count_Substrings,"""""""
+Write a python function to count the number of substrings with the sum of digits equal to their length.
+assert count_Substrings('112112') == 6
+""""""
+",0,generate_solution -> run_visible_tests,"def count_Substrings(s):
+    count = {0: 1}
+    prefix_sum = 0
+    result = 0
+
+    for ch in s:
+        prefix_sum += int(ch) - 1
+        result += count.get(prefix_sum, 0)
+        count[prefix_sum] = count.get(prefix_sum, 0) + 1
+
+    return result","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211123322649Z-Mbpp-61-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed246-4dba-7623-bbab-7e8e27cfa629,019ed246-4dba-7623-bbab-7e8e27cfa629,LangGraph,success,,2026-06-16T21:11:23.322895Z,2026-06-16T21:11:34.168232Z,10.845337,154,406,560,0.01295,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed246-4dba-7623-bbab-7e8e27cfa629.json,True,17.0
+v1-gpt5.5-20260616T211137135924Z-Mbpp-62-r0,v1-gpt5.5,Mbpp/62,0,MBPP+,smallest_num,"""""""
+Write a python function to find smallest number in a list.
+assert smallest_num([10, 20, 1, 45, 99]) == 1
+""""""
+",0,generate_solution -> run_visible_tests,"def smallest_num(nums):
+    return min(nums)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211137135924Z-Mbpp-62-r0.json,True,True,True,1.0,pass,pass,0,0,3,101,,,019ed246-83b0-73e0-82b3-5a9c02c71ee4,019ed246-83b0-73e0-82b3-5a9c02c71ee4,LangGraph,success,,2026-06-16T21:11:37.136181Z,2026-06-16T21:11:40.943416Z,3.807235,175,70,245,0.002975,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed246-83b0-73e0-82b3-5a9c02c71ee4.json,True,63.0
+v1-gpt5.5-20260616T211143656989Z-Mbpp-63-r0,v1-gpt5.5,Mbpp/63,0,MBPP+,max_difference,"""""""
+Write a function to find the maximum difference between available pairs in the given tuple list.
+assert max_difference([(3, 5), (1, 7), (10, 3), (1, 2)]) == 7
+""""""
+",0,generate_solution -> run_visible_tests,"def max_difference(test_list):
+    return max(abs(a - b) for a, b in test_list)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211143656989Z-Mbpp-63-r0.json,True,True,True,1.0,pass,pass,0,0,3,121,,,019ed246-9d29-7c92-a2c7-10b16f502e86,019ed246-9d29-7c92-a2c7-10b16f502e86,LangGraph,success,,2026-06-16T21:11:43.657262Z,2026-06-16T21:11:50.895761Z,7.238499,225,233,458,0.008115,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed246-9d29-7c92-a2c7-10b16f502e86.json,True,31.0
+v1-gpt5.5-20260616T211153659750Z-Mbpp-64-r0,v1-gpt5.5,Mbpp/64,0,MBPP+,subject_marks,"""""""
+Write a function to sort a list of tuples using the second value of each tuple.
+assert subject_marks([('English', 88), ('Science', 90), ('Maths', 97), ('Social sciences', 82)])==[('Social sciences', 82), ('English', 88), ('Science', 90), ('Maths', 97)]
+""""""
+",0,generate_solution -> run_visible_tests,"def subject_marks(subjects):
+    return sorted(subjects, key=lambda x: x[1])","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211153659750Z-Mbpp-64-r0.json,True,True,True,1.0,pass,pass,0,0,3,117,,,019ed246-c43b-7ed1-9a73-7c4cfb0a6bc1,019ed246-c43b-7ed1-9a73-7c4cfb0a6bc1,LangGraph,success,,2026-06-16T21:11:53.660018Z,2026-06-16T21:11:56.719517Z,3.059499,300,61,361,0.00333,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed246-c43b-7ed1-9a73-7c4cfb0a6bc1.json,True,74.0
+v1-gpt5.5-20260616T211159335277Z-Mbpp-65-r0,v1-gpt5.5,Mbpp/65,0,MBPP+,recursive_list_sum,"""""""
+Write a function to flatten a list and sum all of its elements.
+assert recursive_list_sum(([1, 2, [3,4],[5,6]]))==21
+""""""
+",0,generate_solution -> run_visible_tests,"def recursive_list_sum(lst):
+    if isinstance(lst, (list, tuple)):
+        return sum(recursive_list_sum(item) for item in lst)
+    return lst","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211159335277Z-Mbpp-65-r0.json,True,True,True,1.0,pass,pass,0,0,3,112,,,019ed246-da67-7f53-9ecc-49a33c9e6807,019ed246-da67-7f53-9ecc-49a33c9e6807,LangGraph,success,,2026-06-16T21:11:59.335538Z,2026-06-16T21:12:07.024772Z,7.689234,191,310,501,0.010255,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed246-da67-7f53-9ecc-49a33c9e6807.json,True,26.0
+v1-gpt5.5-20260616T211209591209Z-Mbpp-66-r0,v1-gpt5.5,Mbpp/66,0,MBPP+,pos_count,"""""""
+Write a python function to count the number of positive numbers in a list.
+assert pos_count([1,-2,3,-4]) == 2
+""""""
+",0,generate_solution -> run_visible_tests,"def pos_count(numbers):
+    return sum(1 for num in numbers if num > 0)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211209591209Z-Mbpp-66-r0.json,True,True,True,1.0,pass,pass,0,0,3,107,,,019ed247-0277-71c1-a477-3e2858f3d36d,019ed247-0277-71c1-a477-3e2858f3d36d,LangGraph,success,,2026-06-16T21:12:09.591495Z,2026-06-16T21:12:13.120846Z,3.529351,163,56,219,0.002495,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed247-0277-71c1-a477-3e2858f3d36d.json,True,71.0
+v1-gpt5.5-20260616T211215694094Z-Mbpp-67-r0,v1-gpt5.5,Mbpp/67,0,MBPP+,bell_number,"""""""
+Write a function to find the number of ways to partition a set of Bell numbers.
+assert bell_number(2)==2
+""""""
+",0,generate_solution -> run_visible_tests,"def bell_number(n):
+    if n < 0:
+        raise ValueError(""n must be non-negative"")
+
+    row = [1]
+    for i in range(1, n + 1):
+        new_row = [row[-1]]
+        for j in range(1, i + 1):
+            new_row.append(new_row[j - 1] + row[j - 1])
+        row = new_row
+
+    return row[0]","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211215694094Z-Mbpp-67-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed247-1a4e-72b3-b476-db4dd90422d3,019ed247-1a4e-72b3-b476-db4dd90422d3,LangGraph,success,,2026-06-16T21:12:15.694359Z,2026-06-16T21:12:26.556382Z,10.862023,152,542,694,0.01702,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed247-1a4e-72b3-b476-db4dd90422d3.json,True,16.0
+v1-gpt5.5-20260616T211229134624Z-Mbpp-68-r0,v1-gpt5.5,Mbpp/68,0,MBPP+,is_Monotonic,"""""""
+Write a python function to check whether the given array is monotonic or not.
+assert is_Monotonic([6, 5, 4, 4]) == True
+""""""
+",0,generate_solution -> run_visible_tests,"def is_Monotonic(arr):
+    return all(arr[i] <= arr[i + 1] for i in range(len(arr) - 1)) or all(arr[i] >= arr[i + 1] for i in range(len(arr) - 1))","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211229134624Z-Mbpp-68-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed247-4ece-7011-8f66-d9ea870ba5d4,019ed247-4ece-7011-8f66-d9ea870ba5d4,LangGraph,success,,2026-06-16T21:12:29.134905Z,2026-06-16T21:12:33.190802Z,4.055897,184,110,294,0.00422,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed247-4ece-7011-8f66-d9ea870ba5d4.json,True,56.0
+v1-gpt5.5-20260616T211235798697Z-Mbpp-69-r0,v1-gpt5.5,Mbpp/69,0,MBPP+,is_sublist,"""""""
+Write a function to check whether a list contains the given sublist or not.
+assert is_sublist([2,4,3,5,7],[3,7])==False
+""""""
+",0,generate_solution -> run_visible_tests,"def is_sublist(lst, sublst):
+    if not sublst:
+        return True
+    if len(sublst) > len(lst):
+        return False
+
+    n = len(sublst)
+    for i in range(len(lst) - n + 1):
+        if lst[i:i + n] == sublst:
+            return True
+    return False","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211235798697Z-Mbpp-69-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed247-68d6-7711-89eb-efc7cc5268dd,019ed247-68d6-7711-89eb-efc7cc5268dd,LangGraph,success,,2026-06-16T21:12:35.798976Z,2026-06-16T21:12:43.049696Z,7.25072,189,205,394,0.007095,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed247-68d6-7711-89eb-efc7cc5268dd.json,True,30.0
+v1-gpt5.5-20260616T211245585293Z-Mbpp-70-r0,v1-gpt5.5,Mbpp/70,0,MBPP+,get_equal,"""""""
+Write a function to find whether all the given tuples have equal length or not.
+assert get_equal([(11, 22, 33), (44, 55, 66)]) == True
+""""""
+",0,generate_solution -> run_visible_tests,"def get_equal(tuples):
+    return len({len(t) for t in tuples}) <= 1","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211245585293Z-Mbpp-70-r0.json,True,True,True,1.0,pass,pass,0,0,3,118,,,019ed247-8f11-7920-99a5-866f70f1dc3e,019ed247-8f11-7920-99a5-866f70f1dc3e,LangGraph,success,,2026-06-16T21:12:45.585549Z,2026-06-16T21:12:50.202164Z,4.616615,193,115,308,0.004415,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed247-8f11-7920-99a5-866f70f1dc3e.json,True,45.0
+v1-gpt5.5-20260616T211252753247Z-Mbpp-71-r0,v1-gpt5.5,Mbpp/71,0,MBPP+,comb_sort,"""""""
+Write a function to sort a list of elements.
+assert comb_sort([5, 15, 37, 25, 79]) == [5, 15, 25, 37, 79]
+""""""
+",0,generate_solution -> run_visible_tests,"def comb_sort(elements):
+    arr = list(elements)
+    gap = len(arr)
+    shrink = 1.3
+    swapped = True
+
+    while gap > 1 or swapped:
+        gap = max(1, int(gap / shrink))
+        swapped = False
+
+        for i in range(len(arr) - gap):
+            if arr[i] > arr[i + gap]:
+                arr[i], arr[i + gap] = arr[i + gap], arr[i]
+                swapped = True
+
+    return arr","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211252753247Z-Mbpp-71-r0.json,True,True,True,1.0,pass,pass,0,0,3,108,,,019ed247-ab11-7712-b225-6f0e6f385035,019ed247-ab11-7712-b225-6f0e6f385035,LangGraph,success,,2026-06-16T21:12:52.753491Z,2026-06-16T21:13:06.974554Z,14.221063,224,627,851,0.01993,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed247-ab11-7712-b225-6f0e6f385035.json,True,9.0
+v1-gpt5.5-20260616T211309493582Z-Mbpp-72-r0,v1-gpt5.5,Mbpp/72,0,MBPP+,dif_Square,"""""""
+Write a python function to check whether the given number can be represented as the difference of two squares or not.
+assert dif_Square(5) == True
+""""""
+",0,generate_solution -> run_visible_tests,"def dif_Square(n):
+    return n % 4 != 2","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211309493582Z-Mbpp-72-r0.json,True,True,True,1.0,pass,pass,0,0,3,104,,,019ed247-ec75-7b71-a60a-caa77d779cac,019ed247-ec75-7b71-a60a-caa77d779cac,LangGraph,success,,2026-06-16T21:13:09.493843Z,2026-06-16T21:13:22.638477Z,13.144634,147,457,604,0.014445,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed247-ec75-7b71-a60a-caa77d779cac.json,True,13.0
+v1-gpt5.5-20260616T211325162250Z-Mbpp-74-r0,v1-gpt5.5,Mbpp/74,0,MBPP+,is_samepatterns,"""""""
+Write a function to check whether it follows the sequence given in the patterns array.
+assert is_samepatterns([""red"",""green"",""green""], [""a"", ""b"", ""b""])==True
+""""""
+",0,generate_solution -> run_visible_tests,"def is_samepatterns(colors, patterns):
+    if len(colors) != len(patterns):
+        return False
+
+    color_to_pattern = {}
+    pattern_to_color = {}
+
+    for color, pattern in zip(colors, patterns):
+        if color in color_to_pattern:
+            if color_to_pattern[color] != pattern:
+                return False
+        else:
+            color_to_pattern[color] = pattern
+
+        if pattern in pattern_to_color:
+            if pattern_to_color[pattern] != color:
+                return False
+        else:
+            pattern_to_color[pattern] = color
+
+    return True","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211325162250Z-Mbpp-74-r0.json,True,False,False,0.0,pass,fail,0,2,3,117,,,019ed248-29aa-76f3-a626-f7b4740e9986,019ed248-29aa-76f3-a626-f7b4740e9986,LangGraph,success,,2026-06-16T21:13:25.162520Z,2026-06-16T21:13:32.604414Z,7.441894,189,254,443,0.008565,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed248-29aa-76f3-a626-f7b4740e9986.json,False,29.0
+v1-gpt5.5-20260616T211335103397Z-Mbpp-75-r0,v1-gpt5.5,Mbpp/75,0,MBPP+,find_tuples,"""""""
+Write a function to find tuples which have all elements divisible by k from the given list of tuples.
+assert find_tuples([(6, 24, 12), (7, 9, 6), (12, 18, 21)], 6) == [(6, 24, 12)]
+""""""
+",0,generate_solution -> run_visible_tests,"def find_tuples(tuple_list, k):
+    return [tup for tup in tuple_list if all(x % k == 0 for x in tup)]","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211335103397Z-Mbpp-75-r0.json,True,True,True,1.0,pass,pass,0,0,3,106,,,019ed248-507f-7fb3-88c3-47d02bd94a5f,019ed248-507f-7fb3-88c3-47d02bd94a5f,LangGraph,success,,2026-06-16T21:13:35.103663Z,2026-06-16T21:13:39.748001Z,4.644338,282,126,408,0.00519,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed248-507f-7fb3-88c3-47d02bd94a5f.json,True,43.0
+v1-gpt5.5-20260616T211342255405Z-Mbpp-77-r0,v1-gpt5.5,Mbpp/77,0,MBPP+,is_Diff,"""""""
+Write a python function to find whether a number is divisible by 11.
+assert is_Diff (12345) == False
+""""""
+",0,generate_solution -> run_visible_tests,"def is_Diff(n):
+    return n % 11 == 0","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211342255405Z-Mbpp-77-r0.json,True,True,True,1.0,pass,pass,0,0,3,116,,,019ed248-6c6f-7121-bb8a-503d6859a30f,019ed248-6c6f-7121-bb8a-503d6859a30f,LangGraph,success,,2026-06-16T21:13:42.255677Z,2026-06-16T21:13:46.513214Z,4.257537,145,121,266,0.004355,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed248-6c6f-7121-bb8a-503d6859a30f.json,True,51.0
+v1-gpt5.5-20260616T211349007852Z-Mbpp-79-r0,v1-gpt5.5,Mbpp/79,0,MBPP+,word_len,"""""""
+Write a python function to check whether the length of the word is odd or not.
+assert word_len(""Hadoop"") == False
+""""""
+",0,generate_solution -> run_visible_tests,"def word_len(word):
+    return len(word) % 2 == 1","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211349007852Z-Mbpp-79-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed248-86d0-7900-b55a-fe99e2504090,019ed248-86d0-7900-b55a-fe99e2504090,LangGraph,success,,2026-06-16T21:13:49.008116Z,2026-06-16T21:13:52.611394Z,3.603278,139,69,208,0.002765,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed248-86d0-7900-b55a-fe99e2504090.json,True,67.0
+v1-gpt5.5-20260616T211355121417Z-Mbpp-80-r0,v1-gpt5.5,Mbpp/80,0,MBPP+,tetrahedral_number,"""""""
+Write a function to find the nth tetrahedral number.
+assert tetrahedral_number(5) == 35
+""""""
+",0,generate_solution -> run_visible_tests,"def tetrahedral_number(n):
+    return n * (n + 1) * (n + 2) // 6","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211355121417Z-Mbpp-80-r0.json,True,True,True,1.0,pass,pass,0,0,3,101,,,019ed248-9eb1-7953-8d69-86e8db0eb923,019ed248-9eb1-7953-8d69-86e8db0eb923,LangGraph,success,,2026-06-16T21:13:55.121681Z,2026-06-16T21:13:59.046527Z,3.924846,140,104,244,0.00382,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed248-9eb1-7953-8d69-86e8db0eb923.json,True,59.0
+v1-gpt5.5-20260616T211401567624Z-Mbpp-82-r0,v1-gpt5.5,Mbpp/82,0,MBPP+,volume_sphere,"""""""
+Write a function to find the volume of a sphere.
+assert math.isclose(volume_sphere(10), 4188.790204786391, rel_tol=0.001)
+""""""
+",0,generate_solution -> run_visible_tests,"import math
+
+def volume_sphere(radius):
+    return (4 / 3) * math.pi * radius ** 3","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211401567624Z-Mbpp-82-r0.json,True,True,True,1.0,pass,pass,0,0,3,105,,,019ed248-b7df-79d2-9a9a-2332737c254e,019ed248-b7df-79d2-9a9a-2332737c254e,LangGraph,success,,2026-06-16T21:14:01.567888Z,2026-06-16T21:14:04.915712Z,3.347824,203,63,266,0.002905,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed248-b7df-79d2-9a9a-2332737c254e.json,True,73.0
+v1-gpt5.5-20260616T211407450228Z-Mbpp-84-r0,v1-gpt5.5,Mbpp/84,0,MBPP+,sequence,"""""""
+Write a function to find the nth number in the newman conway sequence.
+assert sequence(10) == 6
+""""""
+",0,generate_solution -> run_visible_tests,"def sequence(n):
+    if n <= 0:
+        raise ValueError(""n must be a positive integer"")
+    if n <= 2:
+        return 1
+
+    a = [0] * (n + 1)
+    a[1] = a[2] = 1
+
+    for i in range(3, n + 1):
+        prev = a[i - 1]
+        a[i] = a[prev] + a[i - prev]
+
+    return a[n]","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211407450228Z-Mbpp-84-r0.json,True,True,True,1.0,pass,pass,0,0,3,108,,,019ed248-ceda-7b62-83cd-a78f68a5511e,019ed248-ceda-7b62-83cd-a78f68a5511e,LangGraph,success,,2026-06-16T21:14:07.450505Z,2026-06-16T21:14:21.911037Z,14.460532,135,625,760,0.019425,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed248-ceda-7b62-83cd-a78f68a5511e.json,True,8.0
+v1-gpt5.5-20260616T211425385204Z-Mbpp-85-r0,v1-gpt5.5,Mbpp/85,0,MBPP+,surfacearea_sphere,"""""""
+Write a function to find the surface area of a sphere.
+assert math.isclose(surfacearea_sphere(10), 1256.6370614359173, rel_tol=0.001)
+""""""
+",0,generate_solution -> run_visible_tests,"import math
+
+def surfacearea_sphere(radius):
+    return 4 * math.pi * radius ** 2","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211425385204Z-Mbpp-85-r0.json,True,True,True,1.0,pass,pass,0,0,3,105,,,019ed249-14e9-7e90-8f1c-40a60a970273,019ed249-14e9-7e90-8f1c-40a60a970273,LangGraph,success,,2026-06-16T21:14:25.385479Z,2026-06-16T21:14:28.885007Z,3.499528,212,67,279,0.00307,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed249-14e9-7e90-8f1c-40a60a970273.json,True,72.0
+v1-gpt5.5-20260616T211431416987Z-Mbpp-86-r0,v1-gpt5.5,Mbpp/86,0,MBPP+,centered_hexagonal_number,"""""""
+Write a function to find nth centered hexagonal number.
+assert centered_hexagonal_number(10) == 271
+""""""
+",0,generate_solution -> run_visible_tests,"def centered_hexagonal_number(n):
+    return 3 * n * (n - 1) + 1","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211431416987Z-Mbpp-86-r0.json,True,True,True,1.0,pass,pass,0,0,3,101,,,019ed249-2c79-75e2-87ef-3a19f4fc3554,019ed249-2c79-75e2-87ef-3a19f4fc3554,LangGraph,success,,2026-06-16T21:14:31.417237Z,2026-06-16T21:14:35.521224Z,4.103987,145,113,258,0.004115,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed249-2c79-75e2-87ef-3a19f4fc3554.json,True,55.0
+v1-gpt5.5-20260616T211438049696Z-Mbpp-87-r0,v1-gpt5.5,Mbpp/87,0,MBPP+,merge_dictionaries_three,"""""""
+Write a function to merge three dictionaries into a single dictionary.
+assert merge_dictionaries_three({ ""R"": ""Red"", ""B"": ""Black"", ""P"": ""Pink"" }, { ""G"": ""Green"", ""W"": ""White"" },{ ""O"": ""Orange"", ""W"": ""White"", ""B"": ""Black"" })=={'B': 'Black', 'R': 'Red', 'P': 'Pink', 'G': 'Green', 'W': 'White', 'O': 'Orange'}
+""""""
+",0,generate_solution -> run_visible_tests,"def merge_dictionaries_three(dict1, dict2, dict3):
+    result = {}
+    for d in (dict1, dict2, dict3):
+        for key, value in d.items():
+            if key not in result:
+                result[key] = value
+    return result","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211438049696Z-Mbpp-87-r0.json,True,True,True,1.0,pass,pass,0,0,3,108,,,019ed249-4661-7d62-b295-6a54efa379a0,019ed249-4661-7d62-b295-6a54efa379a0,LangGraph,success,,2026-06-16T21:14:38.049954Z,2026-06-16T21:14:46.340266Z,8.290312,465,302,767,0.011385,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed249-4661-7d62-b295-6a54efa379a0.json,True,24.0
+v1-gpt5.5-20260616T211448846427Z-Mbpp-88-r0,v1-gpt5.5,Mbpp/88,0,MBPP+,freq_count,"""""""
+Write a function to get the frequency of all the elements in a list, returned as a dictionary.
+assert freq_count([10,10,10,10,20,20,20,20,40,40,50,50,30])==({10: 4, 20: 4, 40: 2, 50: 2, 30: 1})
+""""""
+",0,generate_solution -> run_visible_tests,"def freq_count(lst):
+    freq = {}
+    for item in lst:
+        freq[item] = freq.get(item, 0) + 1
+    return freq","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211448846427Z-Mbpp-88-r0.json,True,True,True,1.0,pass,pass,0,0,3,103,,,019ed249-708e-7422-a090-734bfd75f57e,019ed249-708e-7422-a090-734bfd75f57e,LangGraph,success,,2026-06-16T21:14:48.846694Z,2026-06-16T21:14:53.187976Z,4.341282,325,102,427,0.004685,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed249-708e-7422-a090-734bfd75f57e.json,True,49.0
+v1-gpt5.5-20260616T211455814792Z-Mbpp-89-r0,v1-gpt5.5,Mbpp/89,0,MBPP+,closest_num,"""""""
+Write a function to find the closest smaller number than n.
+assert closest_num(11) == 10
+""""""
+",0,generate_solution -> run_visible_tests,"def closest_num(n):
+    return n - 1","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211455814792Z-Mbpp-89-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed249-8bc7-7d31-833d-b61b34e0f25c,019ed249-8bc7-7d31-833d-b61b34e0f25c,LangGraph,success,,2026-06-16T21:14:55.815035Z,2026-06-16T21:14:59.674646Z,3.859611,136,109,245,0.00395,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed249-8bc7-7d31-833d-b61b34e0f25c.json,True,62.0
+v1-gpt5.5-20260616T211502256400Z-Mbpp-90-r0,v1-gpt5.5,Mbpp/90,0,MBPP+,len_log,"""""""
+Write a python function to find the length of the longest word.
+assert len_log([""python"",""PHP"",""bigdata""]) == 7
+""""""
+",0,generate_solution -> run_visible_tests,"def len_log(words):
+    return max((len(word) for word in words), default=0)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211502256400Z-Mbpp-90-r0.json,True,True,True,1.0,pass,pass,0,0,3,103,,,019ed249-a4f0-7170-9702-8d9f61796a09,019ed249-a4f0-7170-9702-8d9f61796a09,LangGraph,success,,2026-06-16T21:15:02.256654Z,2026-06-16T21:15:06.128188Z,3.871534,156,92,248,0.00354,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed249-a4f0-7170-9702-8d9f61796a09.json,True,61.0
+v1-gpt5.5-20260616T211508693165Z-Mbpp-91-r0,v1-gpt5.5,Mbpp/91,0,MBPP+,find_substring,"""""""
+Write a function to check if a string is present as a substring in a given list of string values.
+assert find_substring([""red"", ""black"", ""white"", ""green"", ""orange""],""ack"")==True
+""""""
+",0,generate_solution -> run_visible_tests,"def find_substring(str_list, substring):
+    return any(substring in s for s in str_list)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211508693165Z-Mbpp-91-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed249-be15-7323-b5a6-027c3259e2d1,019ed249-be15-7323-b5a6-027c3259e2d1,LangGraph,success,,2026-06-16T21:15:08.693432Z,2026-06-16T21:15:12.851901Z,4.158469,202,99,301,0.00398,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed249-be15-7323-b5a6-027c3259e2d1.json,True,52.0
+v1-gpt5.5-20260616T211515394104Z-Mbpp-92-r0,v1-gpt5.5,Mbpp/92,0,MBPP+,is_undulating,"""""""
+Write a function to check whether the given number is undulating or not.
+assert is_undulating(1212121) == True
+""""""
+",0,generate_solution -> run_visible_tests,"def is_undulating(n):
+    s = str(n)
+    if s.startswith(""-""):
+        return False
+    if len(s) < 3:
+        return False
+    if s[0] == s[1]:
+        return False
+    return all(s[i] == s[i % 2] for i in range(len(s)))","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211515394104Z-Mbpp-92-r0.json,True,False,False,0.0,pass,fail,0,69,3,101,,,019ed249-d842-7523-ad40-f57699f5f1e7,019ed249-d842-7523-ad40-f57699f5f1e7,LangGraph,success,,2026-06-16T21:15:15.394369Z,2026-06-16T21:15:31.666615Z,16.272246,150,592,742,0.01851,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed249-d842-7523-ad40-f57699f5f1e7.json,False,6.0
+v1-gpt5.5-20260616T211534232286Z-Mbpp-93-r0,v1-gpt5.5,Mbpp/93,0,MBPP+,power,"""""""
+Write a function to calculate the value of 'a' to the power 'b'.
+assert power(3,4) == 81
+""""""
+",0,generate_solution -> run_visible_tests,"def power(a, b):
+    return a ** b","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211534232286Z-Mbpp-93-r0.json,True,True,True,1.0,pass,pass,0,0,3,110,,,019ed24a-21d8-7112-bc93-072c764020e1,019ed24a-21d8-7112-bc93-072c764020e1,LangGraph,success,,2026-06-16T21:15:34.232549Z,2026-06-16T21:15:38.888438Z,4.655889,145,100,245,0.003725,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24a-21d8-7112-bc93-072c764020e1.json,True,42.0
+v1-gpt5.5-20260616T211541409686Z-Mbpp-94-r0,v1-gpt5.5,Mbpp/94,0,MBPP+,index_minimum,"""""""
+Given a list of tuples, write a function that returns the first value of the tuple with the smallest second value.
+assert index_minimum([('Rash', 143), ('Manjeet', 200), ('Varsha', 100)]) == 'Varsha'
+""""""
+",0,generate_solution -> run_visible_tests,"def index_minimum(test_list):
+    return min(test_list, key=lambda x: x[1])[0]","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211541409686Z-Mbpp-94-r0.json,True,True,True,1.0,pass,pass,0,0,3,106,,,019ed24a-3de1-7643-882d-55d590e19b78,019ed24a-3de1-7643-882d-55d590e19b78,LangGraph,success,,2026-06-16T21:15:41.409944Z,2026-06-16T21:15:48.974386Z,7.564442,235,200,435,0.007175,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24a-3de1-7643-882d-55d590e19b78.json,True,28.0
+v1-gpt5.5-20260616T211551500241Z-Mbpp-95-r0,v1-gpt5.5,Mbpp/95,0,MBPP+,Find_Min_Length,"""""""
+Write a python function to find the length of the smallest list in a list of lists.
+assert Find_Min_Length([[1],[1,2]]) == 1
+""""""
+",0,generate_solution -> run_visible_tests,"def Find_Min_Length(lst):
+    return min(len(x) for x in lst)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211551500241Z-Mbpp-95-r0.json,True,True,True,1.0,pass,pass,0,0,3,105,,,019ed24a-654c-7230-9cd6-ac2f7959842a,019ed24a-654c-7230-9cd6-ac2f7959842a,LangGraph,success,,2026-06-16T21:15:51.500514Z,2026-06-16T21:15:55.458338Z,3.957824,183,96,279,0.003795,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24a-654c-7230-9cd6-ac2f7959842a.json,True,58.0
+v1-gpt5.5-20260616T211557992469Z-Mbpp-96-r0,v1-gpt5.5,Mbpp/96,0,MBPP+,divisor,"""""""
+Write a python function to find the number of divisors of a given integer.
+assert divisor(15) == 4
+""""""
+",0,generate_solution -> run_visible_tests,"def divisor(n):
+    n = abs(n)
+    if n == 0:
+        return 0
+
+    count = 0
+    i = 1
+    while i * i <= n:
+        if n % i == 0:
+            count += 1 if i * i == n else 2
+        i += 1
+
+    return count","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211557992469Z-Mbpp-96-r0.json,True,True,True,1.0,pass,pass,0,0,3,101,,,019ed24a-7ea8-7722-a0c9-edc5231bd13c,019ed24a-7ea8-7722-a0c9-edc5231bd13c,LangGraph,success,,2026-06-16T21:15:57.992755Z,2026-06-16T21:16:08.565521Z,10.572766,135,433,568,0.013665,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24a-7ea8-7722-a0c9-edc5231bd13c.json,True,18.0
+v1-gpt5.5-20260616T211611141808Z-Mbpp-97-r0,v1-gpt5.5,Mbpp/97,0,MBPP+,frequency_lists,"""""""
+Write a function to find frequency of each element in a flattened list of lists, returned in a dictionary.
+assert frequency_lists([[1, 2, 3, 2], [4, 5, 6, 2], [7, 8, 9, 5]])=={1: 1, 2: 3, 3: 1, 4: 1, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1}
+""""""
+",0,generate_solution -> run_visible_tests,"def frequency_lists(list_of_lists):
+    frequencies = {}
+    for sublist in list_of_lists:
+        for element in sublist:
+            frequencies[element] = frequencies.get(element, 0) + 1
+    return frequencies","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211611141808Z-Mbpp-97-r0.json,True,True,True,1.0,pass,pass,0,0,3,103,,,019ed24a-b206-7a60-bb31-26c656931132,019ed24a-b206-7a60-bb31-26c656931132,LangGraph,success,,2026-06-16T21:16:11.142082Z,2026-06-16T21:16:16.173226Z,5.031144,461,157,618,0.007015,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24a-b206-7a60-bb31-26c656931132.json,True,39.0
+v1-gpt5.5-20260616T211618705030Z-Mbpp-98-r0,v1-gpt5.5,Mbpp/98,0,MBPP+,multiply_num,"""""""
+Write a function to multiply all the numbers in a list and divide with the length of the list.
+assert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)
+""""""
+",0,generate_solution -> run_visible_tests,"def multiply_num(nums):
+    product = 1
+    for num in nums:
+        product *= num
+    return product / len(nums)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211618705030Z-Mbpp-98-r0.json,True,True,True,1.0,pass,pass,0,0,3,110,,,019ed24a-cf91-7650-b64d-fc7931e50572,019ed24a-cf91-7650-b64d-fc7931e50572,LangGraph,success,,2026-06-16T21:16:18.705282Z,2026-06-16T21:16:22.383712Z,3.67843,229,95,324,0.003995,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24a-cf91-7650-b64d-fc7931e50572.json,True,66.0
+v1-gpt5.5-20260616T211624940356Z-Mbpp-99-r0,v1-gpt5.5,Mbpp/99,0,MBPP+,decimal_to_binary,"""""""
+Write a function to convert the given decimal number to its binary equivalent, represented as a string with no leading zeros.
+assert decimal_to_binary(8) == '1000'
+""""""
+",0,generate_solution -> run_visible_tests,"def decimal_to_binary(n):
+    if n == 0:
+        return ""0""
+    if n < 0:
+        return ""-"" + decimal_to_binary(-n)
+    
+    binary = """"
+    while n > 0:
+        binary = str(n % 2) + binary
+        n //= 2
+    return binary","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211624940356Z-Mbpp-99-r0.json,True,True,True,1.0,pass,pass,0,0,3,104,,,019ed24a-e7ec-79b1-a444-86d7616a8b30,019ed24a-e7ec-79b1-a444-86d7616a8b30,LangGraph,success,,2026-06-16T21:16:24.940612Z,2026-06-16T21:16:29.520134Z,4.579522,155,162,317,0.005635,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24a-e7ec-79b1-a444-86d7616a8b30.json,True,46.0
+v1-gpt5.5-20260616T211632219066Z-Mbpp-100-r0,v1-gpt5.5,Mbpp/100,0,MBPP+,next_smallest_palindrome,"""""""
+Write a function to find the next smallest palindrome of a specified integer, returned as an integer.
+assert next_smallest_palindrome(99)==101
+""""""
+",0,generate_solution -> run_visible_tests,"def next_smallest_palindrome(num):
+    target = num + 1
+
+    if target <= 0:
+        return 0
+
+    s = str(target)
+    length = len(s)
+    half = (length + 1) // 2
+
+    def make_palindrome(prefix, total_length):
+        if total_length % 2 == 0:
+            return prefix + prefix[::-1]
+        return prefix + prefix[-2::-1]
+
+    prefix = s[:half]
+    palindrome = make_palindrome(prefix, length)
+
+    if int(palindrome) >= target:
+        return int(palindrome)
+
+    prefix = str(int(prefix) + 1)
+
+    if len(prefix) > half:
+        return int(""1"" + (""0"" * (length - 1)) + ""1"")
+
+    return int(make_palindrome(prefix, length))","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211632219066Z-Mbpp-100-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed24b-045b-7133-a814-ec217992fc3a,019ed24b-045b-7133-a814-ec217992fc3a,LangGraph,success,,2026-06-16T21:16:32.219481Z,2026-06-16T21:16:49.840367Z,17.620886,152,697,849,0.02167,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24b-045b-7133-a814-ec217992fc3a.json,True,5.0
+v1-gpt5.5-20260616T211652364362Z-Mbpp-101-r0,v1-gpt5.5,Mbpp/101,0,MBPP+,kth_element,"""""""
+Write a function to find the kth element in the given array using 1-based indexing.
+assert kth_element([12,3,5,7,19], 2) == 3
+""""""
+",0,generate_solution -> run_visible_tests,"def kth_element(arr, k):
+    return arr[k - 1]","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211652364362Z-Mbpp-101-r0.json,True,True,True,1.0,pass,pass,0,0,3,104,,,019ed24b-530c-7460-b833-c6df8aa871ed,019ed24b-530c-7460-b833-c6df8aa871ed,LangGraph,success,,2026-06-16T21:16:52.364612Z,2026-06-16T21:16:56.485179Z,4.120567,184,127,311,0.00473,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24b-530c-7460-b833-c6df8aa871ed.json,True,54.0
+v1-gpt5.5-20260616T211659027189Z-Mbpp-102-r0,v1-gpt5.5,Mbpp/102,0,MBPP+,snake_to_camel,"""""""
+Write a function to convert a snake case string to camel case string.
+assert snake_to_camel('python_program')=='PythonProgram'
+""""""
+",0,generate_solution -> run_visible_tests,"def snake_to_camel(s):
+    return ''.join(word.capitalize() for word in s.split('_') if word)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211659027189Z-Mbpp-102-r0.json,True,False,False,0.0,pass,fail,0,100,3,110,,,019ed24b-6d13-74b1-9707-f3a589d20503,019ed24b-6d13-74b1-9707-f3a589d20503,LangGraph,success,,2026-06-16T21:16:59.027454Z,2026-06-16T21:17:07.041475Z,8.014021,155,234,389,0.007795,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24b-6d13-74b1-9707-f3a589d20503.json,False,25.0
+v1-gpt5.5-20260616T211709727188Z-Mbpp-103-r0,v1-gpt5.5,Mbpp/103,0,MBPP+,eulerian_num,"""""""
+Write a function to find the Eulerian number a(n, m).
+assert eulerian_num(3, 1) == 4
+""""""
+",0,generate_solution -> run_visible_tests,"def eulerian_num(n, m):
+    if n < 0 or m < 0:
+        return 0
+    if n == 0:
+        return 1 if m == 0 else 0
+    if m >= n:
+        return 0
+
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
+
+    for i in range(1, n + 1):
+        for j in range(0, min(i, m + 1)):
+            val = 0
+            if j > 0:
+                val += (i - j) * dp[i - 1][j - 1]
+            val += (j + 1) * dp[i - 1][j]
+            dp[i][j] = val
+
+    return dp[n][m]","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211709727188Z-Mbpp-103-r0.json,True,False,False,0.0,pass,fail,0,2,3,101,,,019ed24b-96df-7d52-9d99-cf7300c07bd4,019ed24b-96df-7d52-9d99-cf7300c07bd4,LangGraph,success,,2026-06-16T21:17:09.727443Z,2026-06-16T21:17:23.426691Z,13.699248,160,707,867,0.02201,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24b-96df-7d52-9d99-cf7300c07bd4.json,False,10.0
+v1-gpt5.5-20260616T211726121528Z-Mbpp-104-r0,v1-gpt5.5,Mbpp/104,0,MBPP+,sort_sublists,"""""""
+Write a function to sort each sublist of strings in a given list of lists.
+assert sort_sublists(([""green"", ""orange""], [""black"", ""white""], [""white"", ""black"", ""orange""]))==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]
+""""""
+",0,generate_solution -> run_visible_tests,"def sort_sublists(input_list):
+    return [sorted(sublist) for sublist in input_list]","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211726121528Z-Mbpp-104-r0.json,True,True,True,1.0,pass,pass,0,0,3,121,,,019ed24b-d6ea-7fc3-a80a-a43994b737b2,019ed24b-d6ea-7fc3-a80a-a43994b737b2,LangGraph,success,,2026-06-16T21:17:26.122201Z,2026-06-16T21:17:32.301551Z,6.17935,293,169,462,0.006535,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24b-d6ea-7fc3-a80a-a43994b737b2.json,True,34.0
+v1-gpt5.5-20260616T211735047121Z-Mbpp-105-r0,v1-gpt5.5,Mbpp/105,0,MBPP+,count,"""""""
+Write a python function to count true booleans in the given list.
+assert count([True,False,True]) == 2
+""""""
+",0,generate_solution -> run_visible_tests,"def count(lst):
+    return sum(1 for item in lst if item is True)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211735047121Z-Mbpp-105-r0.json,True,True,True,1.0,pass,pass,0,0,3,103,,,019ed24b-f9c7-74a2-81c5-5fd155b0e5ba,019ed24b-f9c7-74a2-81c5-5fd155b0e5ba,LangGraph,success,,2026-06-16T21:17:35.047400Z,2026-06-16T21:17:39.440840Z,4.39344,148,104,252,0.00386,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24b-f9c7-74a2-81c5-5fd155b0e5ba.json,True,48.0
+v1-gpt5.5-20260616T211741985385Z-Mbpp-106-r0,v1-gpt5.5,Mbpp/106,0,MBPP+,add_lists,"""""""
+Write a function to append the given list to the given tuples.
+assert add_lists([5, 6, 7], (9, 10)) == (9, 10, 5, 6, 7)
+""""""
+",0,generate_solution -> run_visible_tests,"def add_lists(list1, tuple1):
+    return tuple1 + tuple(list1)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211741985385Z-Mbpp-106-r0.json,True,True,True,1.0,pass,pass,0,0,3,115,,,019ed24c-14e1-7762-b9c3-56a11cb2342c,019ed24c-14e1-7762-b9c3-56a11cb2342c,LangGraph,success,,2026-06-16T21:17:41.985646Z,2026-06-16T21:17:45.779300Z,3.793654,233,73,306,0.003355,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24c-14e1-7762-b9c3-56a11cb2342c.json,True,64.0
+v1-gpt5.5-20260616T211748329751Z-Mbpp-108-r0,v1-gpt5.5,Mbpp/108,0,MBPP+,merge_sorted_list,"""""""
+Write a function to merge three lists into a single sorted list.
+assert merge_sorted_list([25, 24, 15, 4, 5, 29, 110],[19, 20, 11, 56, 25, 233, 154],[24, 26, 54, 48])==[4, 5, 11, 15, 19, 20, 24, 24, 25, 25, 26, 29, 48, 54, 56, 110, 154, 233]
+""""""
+",0,generate_solution -> run_visible_tests,"def merge_sorted_list(list1, list2, list3):
+    return sorted(list1 + list2 + list3)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211748329751Z-Mbpp-108-r0.json,True,True,True,1.0,pass,pass,0,0,3,118,,,019ed24c-2daa-7882-aad2-af7187e2f281,019ed24c-2daa-7882-aad2-af7187e2f281,LangGraph,success,,2026-06-16T21:17:48.330049Z,2026-06-16T21:17:52.220498Z,3.890449,574,101,675,0.0059,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24c-2daa-7882-aad2-af7187e2f281.json,True,60.0
+v1-gpt5.5-20260616T211754885924Z-Mbpp-109-r0,v1-gpt5.5,Mbpp/109,0,MBPP+,odd_Equivalent,"""""""
+Write a python function to find the number of numbers with an odd value when rotating a binary string the given number of times.
+assert odd_Equivalent(""011001"",6) == 3
+""""""
+",0,generate_solution -> run_visible_tests,"def odd_Equivalent(s, n):
+    if not s or n <= 0:
+        return 0
+
+    length = len(s)
+    full_cycles, remainder = divmod(n, length)
+    return full_cycles * s.count('1') + s[:remainder].count('1')","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211754885924Z-Mbpp-109-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed24c-4746-7482-a6db-b1b6f3c03af4,019ed24c-4746-7482-a6db-b1b6f3c03af4,LangGraph,success,,2026-06-16T21:17:54.886212Z,2026-06-16T21:18:35.918616Z,41.032404,166,1618,1784,0.04937,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24c-4746-7482-a6db-b1b6f3c03af4.json,True,2.0
+v1-gpt5.5-20260616T211838452549Z-Mbpp-111-r0,v1-gpt5.5,Mbpp/111,0,MBPP+,common_in_nested_lists,"""""""
+Write a function to find the common elements in given nested lists.
+assert set(common_in_nested_lists([[12, 18, 23, 25, 45], [7, 12, 18, 24, 28], [1, 5, 8, 12, 15, 16, 18]]))==set([18, 12])
+""""""
+",0,generate_solution -> run_visible_tests,"def common_in_nested_lists(nested_lists):
+    if not nested_lists:
+        return []
+
+    common = set(nested_lists[0])
+    for sublist in nested_lists[1:]:
+        common &= set(sublist)
+        if not common:
+            return []
+
+    result = []
+    seen = set()
+    for item in nested_lists[0]:
+        if item in common and item not in seen:
+            result.append(item)
+            seen.add(item)
+
+    return result","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211838452549Z-Mbpp-111-r0.json,True,True,True,1.0,pass,pass,0,0,3,110,,,019ed24c-f174-7aa0-ac06-48013fc68c9c,019ed24c-f174-7aa0-ac06-48013fc68c9c,LangGraph,success,,2026-06-16T21:18:38.452837Z,2026-06-16T21:18:56.897592Z,18.444755,343,572,915,0.018875,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24c-f174-7aa0-ac06-48013fc68c9c.json,True,4.0
+v1-gpt5.5-20260616T211859400749Z-Mbpp-113-r0,v1-gpt5.5,Mbpp/113,0,MBPP+,check_integer,"""""""
+Write a function to check if a string represents an integer or not.
+assert check_integer(""python"")==False
+""""""
+",0,generate_solution -> run_visible_tests,"def check_integer(s):
+    if not isinstance(s, str):
+        return False
+
+    s = s.strip()
+    if not s:
+        return False
+
+    if s[0] in ""+-"":
+        return len(s) > 1 and s[1:].isdigit()
+
+    return s.isdigit()","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211859400749Z-Mbpp-113-r0.json,True,False,False,0.0,pass,fail,0,4,3,121,,,019ed24d-4348-7d11-85e5-ab9251aa4ebf,019ed24d-4348-7d11-85e5-ab9251aa4ebf,LangGraph,success,,2026-06-16T21:18:59.401007Z,2026-06-16T21:19:14.518831Z,15.117824,131,584,715,0.018175,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24d-4348-7d11-85e5-ab9251aa4ebf.json,False,7.0
+v1-gpt5.5-20260616T211917029654Z-Mbpp-116-r0,v1-gpt5.5,Mbpp/116,0,MBPP+,tuple_to_int,"""""""
+Write a function to convert a given tuple of positive integers into a single integer.
+assert tuple_to_int((1,2,3))==123
+""""""
+",0,generate_solution -> run_visible_tests,"def tuple_to_int(nums):
+    return int("""".join(map(str, nums)))","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211917029654Z-Mbpp-116-r0.json,True,True,True,1.0,pass,pass,0,0,3,109,,,019ed24d-8825-73f1-b991-c24652dfdf5e,019ed24d-8825-73f1-b991-c24652dfdf5e,LangGraph,success,,2026-06-16T21:19:17.029937Z,2026-06-16T21:19:21.564014Z,4.534077,157,135,292,0.004835,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24d-8825-73f1-b991-c24652dfdf5e.json,True,47.0
+v1-gpt5.5-20260616T211924098583Z-Mbpp-118-r0,v1-gpt5.5,Mbpp/118,0,MBPP+,string_to_list,"""""""
+Write a function to convert a string to a list of strings split on the space character.
+assert string_to_list(""python programming"")==['python','programming']
+""""""
+",0,generate_solution -> run_visible_tests,"def string_to_list(string):
+    return string.split("" "")","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211924098583Z-Mbpp-118-r0.json,True,True,True,1.0,pass,pass,0,0,3,106,,,019ed24d-a3c2-76c0-96ef-538932f0b9d7,019ed24d-a3c2-76c0-96ef-538932f0b9d7,LangGraph,success,,2026-06-16T21:19:24.098850Z,2026-06-16T21:19:28.762061Z,4.663211,164,87,251,0.00343,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24d-a3c2-76c0-96ef-538932f0b9d7.json,True,41.0
+v1-gpt5.5-20260616T211931275234Z-Mbpp-119-r0,v1-gpt5.5,Mbpp/119,0,MBPP+,search,"""""""
+Write a python function to find the element that appears only once in a sorted array.
+assert search([1,1,2,2,3]) == 3
+""""""
+",0,generate_solution -> run_visible_tests,"def search(arr):
+    left, right = 0, len(arr) - 1
+
+    while left < right:
+        mid = (left + right) // 2
+
+        if mid % 2 == 1:
+            mid -= 1
+
+        if arr[mid] == arr[mid + 1]:
+            left = mid + 2
+        else:
+            right = mid
+
+    return arr[left]","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211931275234Z-Mbpp-119-r0.json,True,False,False,0.0,pass,fail,0,66,3,107,,,019ed24d-bfcb-7380-8a02-bd2736b0b8b8,019ed24d-bfcb-7380-8a02-bd2736b0b8b8,LangGraph,success,,2026-06-16T21:19:31.275479Z,2026-06-16T21:19:38.879376Z,7.603897,184,265,449,0.00887,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24d-bfcb-7380-8a02-bd2736b0b8b8.json,False,27.0
+v1-gpt5.5-20260616T211941388646Z-Mbpp-120-r0,v1-gpt5.5,Mbpp/120,0,MBPP+,max_product_tuple,"""""""
+Write a function to find the maximum absolute product between numbers in pairs of tuples within a given list.
+assert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36
+""""""
+",0,generate_solution -> run_visible_tests,"def max_product_tuple(tuples_list):
+    return max(abs(a * b) for a, b in tuples_list)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211941388646Z-Mbpp-120-r0.json,True,True,True,1.0,pass,pass,0,0,3,113,,,019ed24d-e74c-7ad0-b479-451d6c665bbc,019ed24d-e74c-7ad0-b479-451d6c665bbc,LangGraph,success,,2026-06-16T21:19:41.388908Z,2026-06-16T21:19:46.488393Z,5.099485,251,159,410,0.006025,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24d-e74c-7ad0-b479-451d6c665bbc.json,True,38.0
+v1-gpt5.5-20260616T211949006862Z-Mbpp-123-r0,v1-gpt5.5,Mbpp/123,0,MBPP+,amicable_numbers_sum,"""""""
+Write a function to sum all amicable numbers from 1 to a specified number.
+assert amicable_numbers_sum(999)==504
+""""""
+",0,generate_solution -> run_visible_tests,"def amicable_numbers_sum(n):
+    if n < 2:
+        return 0
+
+    divisor_sums = [0] * (n + 1)
+    for divisor in range(1, n // 2 + 1):
+        for multiple in range(divisor * 2, n + 1, divisor):
+            divisor_sums[multiple] += divisor
+
+    memo = {}
+
+    def sum_proper_divisors(x):
+        if x <= n:
+            return divisor_sums[x]
+        if x in memo:
+            return memo[x]
+
+        original = x
+        total = 1
+
+        p = 2
+        while p * p <= x:
+            if x % p == 0:
+                term = 1
+                power = 1
+                while x % p == 0:
+                    x //= p
+                    power *= p
+                    term += power
+                total *= term
+            p += 1 if p == 2 else 2
+
+        if x > 1:
+            total *= (1 + x)
+
+        memo[original] = total - original
+        return memo[original]
+
+    total_sum = 0
+    for a in range(2, n + 1):
+        b = divisor_sums[a]
+        if b != a and b > 0 and sum_proper_divisors(b) == a:
+            total_sum += a
+
+    return total_sum","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T211949006862Z-Mbpp-123-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed24e-050f-7ce1-828e-d002418d9236,019ed24e-050f-7ce1-828e-d002418d9236,LangGraph,success,,2026-06-16T21:19:49.007116Z,2026-06-16T21:20:49.253842Z,60.246726,145,1269,1414,0.038795,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24e-050f-7ce1-828e-d002418d9236.json,True,1.0
+v1-gpt5.5-20260616T212053260193Z-Mbpp-124-r0,v1-gpt5.5,Mbpp/124,0,MBPP+,angle_complex,"""""""
+Write a function to get the angle of a complex number.
+assert math.isclose(angle_complex(0,1j), 1.5707963267948966, rel_tol=0.001)
+""""""
+",0,generate_solution -> run_visible_tests,"import cmath
+
+def angle_complex(real, imag):
+    if isinstance(imag, complex):
+        z = real + imag
+    else:
+        z = complex(real, imag)
+    return cmath.phase(z)","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T212053260193Z-Mbpp-124-r0.json,True,True,True,1.0,pass,pass,0,0,3,116,,,019ed24f-000c-7973-9fd5-04cda3ef74f3,019ed24f-000c-7973-9fd5-04cda3ef74f3,LangGraph,success,,2026-06-16T21:20:53.260458Z,2026-06-16T21:21:06.744540Z,13.484082,215,565,780,0.018025,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24f-000c-7973-9fd5-04cda3ef74f3.json,True,11.0
+v1-gpt5.5-20260616T212109400281Z-Mbpp-125-r0,v1-gpt5.5,Mbpp/125,0,MBPP+,find_length,"""""""
+Write a function to find the maximum difference between the number of 0s and number of 1s in any sub-string of the given binary string.
+assert find_length(""11000010001"") == 6
+""""""
+",0,generate_solution -> run_visible_tests,"def find_length(string):
+    if not string:
+        return 0
+
+    max_diff = float(""-inf"")
+    current = 0
+
+    for ch in string:
+        value = 1 if ch == ""0"" else -1
+        current = max(value, current + value)
+        max_diff = max(max_diff, current)
+
+    return max_diff","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T212109400281Z-Mbpp-125-r0.json,True,True,True,1.0,pass,pass,0,0,3,102,,,019ed24f-3f18-7b22-8991-da2c1d467e91,019ed24f-3f18-7b22-8991-da2c1d467e91,LangGraph,success,,2026-06-16T21:21:09.400543Z,2026-06-16T21:21:22.654060Z,13.253517,166,384,550,0.01235,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24f-3f18-7b22-8991-da2c1d467e91.json,True,12.0
+v1-gpt5.5-20260616T212125429929Z-Mbpp-126-r0,v1-gpt5.5,Mbpp/126,0,MBPP+,sum,"""""""
+Write a python function to find the sum of common divisors of two given numbers.
+assert sum(10,15) == 6
+""""""
+",0,generate_solution -> run_visible_tests,"import math
+
+def sum(a, b):
+    g = math.gcd(abs(a), abs(b))
+    if g == 0:
+        return 0
+
+    total = 0
+    i = 1
+    while i * i <= g:
+        if g % i == 0:
+            total += i
+            if i != g // i:
+                total += g // i
+        i += 1
+
+    return total","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T212125429929Z-Mbpp-126-r0.json,True,True,True,1.0,pass,pass,0,0,3,107,,,019ed24f-7db6-7000-9c1f-734bfe8b9212,019ed24f-7db6-7000-9c1f-734bfe8b9212,LangGraph,success,,2026-06-16T21:21:25.430204Z,2026-06-16T21:21:35.589801Z,10.159597,144,406,550,0.0129,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24f-7db6-7000-9c1f-734bfe8b9212.json,True,20.0
+v1-gpt5.5-20260616T212138602187Z-Mbpp-127-r0,v1-gpt5.5,Mbpp/127,0,MBPP+,multiply_int,"""""""
+Write a function to multiply two integers.
+assert multiply_int(10,20)==200
+""""""
+",0,generate_solution -> run_visible_tests,"def multiply_int(a, b):
+    return a * b","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T212138602187Z-Mbpp-127-r0.json,True,True,True,1.0,pass,pass,0,0,3,104,,,019ed24f-b12a-76d3-b90c-bb6f63f32b37,019ed24f-b12a-76d3-b90c-bb6f63f32b37,LangGraph,success,,2026-06-16T21:21:38.602723Z,2026-06-16T21:21:41.581924Z,2.979201,132,37,169,0.00177,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24f-b12a-76d3-b90c-bb6f63f32b37.json,True,75.0
+v1-gpt5.5-20260616T212144143664Z-Mbpp-128-r0,v1-gpt5.5,Mbpp/128,0,MBPP+,long_words,"""""""
+Write a function to find words that are longer than n characters from a given list of words.
+assert long_words(3,""python is a programming language"")==['python','programming','language']
+""""""
+",0,generate_solution -> run_visible_tests,"def long_words(n, text):
+    return [word for word in text.split() if len(word) > n]","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T212144143664Z-Mbpp-128-r0.json,True,True,True,1.0,pass,pass,0,0,3,104,,,019ed24f-c6cf-7093-9da1-004f7e0fd435,019ed24f-c6cf-7093-9da1-004f7e0fd435,LangGraph,success,,2026-06-16T21:21:44.143920Z,2026-06-16T21:21:47.746981Z,3.603061,170,73,243,0.00304,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24f-c6cf-7093-9da1-004f7e0fd435.json,True,68.0
+v1-gpt5.5-20260616T212150436766Z-Mbpp-129-r0,v1-gpt5.5,Mbpp/129,0,MBPP+,magic_square_test,"""""""
+Write a function to calculate whether the matrix is a magic square.
+assert magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])==True
+""""""
+",0,generate_solution -> run_visible_tests,"def magic_square_test(matrix):
+    if not matrix or not isinstance(matrix, list):
+        return False
+
+    n = len(matrix)
+
+    if any(not isinstance(row, list) or len(row) != n for row in matrix):
+        return False
+
+    target = sum(matrix[0])
+
+    for row in matrix:
+        if sum(row) != target:
+            return False
+
+    for col in range(n):
+        if sum(matrix[row][col] for row in range(n)) != target:
+            return False
+
+    if sum(matrix[i][i] for i in range(n)) != target:
+        return False
+
+    if sum(matrix[i][n - 1 - i] for i in range(n)) != target:
+        return False
+
+    return True","{""debug_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}, ""generate_solution"": {""model"": ""gpt-5.5"", ""provider"": ""openai"", ""temperature"": 0}}","{""debug_solution"": {""temperature"": 0}, ""generate_solution"": {""temperature"": 0}}",/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/evals/v1-gpt5.5-20260616T212150436766Z-Mbpp-129-r0.json,True,True,True,1.0,pass,pass,0,0,3,104,,,019ed24f-df65-7911-a489-ab36e7ff5645,019ed24f-df65-7911-a489-ab36e7ff5645,LangGraph,success,,2026-06-16T21:21:50.437027Z,2026-06-16T21:22:00.797944Z,10.360917,276,353,629,0.01197,/Users/chris/Documents/GitHub/workflow-rag-agent/CODE-WORKFLOW/analysis/v1-gpt5.5/traces/019ed24f-df65-7911-a489-ab36e7ff5645.json,True,19.0
