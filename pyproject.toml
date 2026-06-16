@@ -7,6 +7,7 @@ requires-python = ">=3.13,<3.14"
 dependencies = [
     "datasets>=4.4.1",
     "dotenv>=0.9.9",
+    "evalplus>=0.3.1",
     "langchain-anthropic>=1.2.0",
     "langchain-ollama>=1.1.0",
     "langchain-text-splitters>=1.1.2",

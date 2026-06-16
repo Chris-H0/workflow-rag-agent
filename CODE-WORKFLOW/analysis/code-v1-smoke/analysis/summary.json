@@ -1,0 +1,36 @@
+{
+  "config_id": "code-v1-smoke",
+  "run_count": 1,
+  "eval_count": 1,
+  "trace_count": 1,
+  "component_count": 5,
+  "latency_s": {
+    "mean": 3.807161,
+    "median": 3.807161,
+    "min": 3.807161,
+    "max": 3.807161,
+    "p90": 3.807161,
+    "p95": 3.807161
+  },
+  "correctness": {
+    "base_pass": 1.0,
+    "plus_pass": 1.0,
+    "mbpp_plus_pass": 1.0,
+    "accuracy": 1.0,
+    "base_failed_count": 0.0,
+    "plus_failed_count": 0.0,
+    "repair_attempts": 0.0
+  },
+  "root_status_counts": {
+    "success": 1
+  },
+  "model_config_counts": {
+    "{\"debug_solution\": {\"model\": \"gpt-4.1-mini\", \"provider\": \"openai\", \"temperature\": 0}, \"generate_solution\": {\"model\": \"gpt-4.1-mini\", \"provider\": \"openai\", \"temperature\": 0}}": 1
+  },
+  "problems": {
+    "benchmark": "MBPP+",
+    "loaded_count": 5,
+    "evaluated_count": 1
+  },
+  "warnings": []
+}
