@@ -1,0 +1,2578 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>v2-gpt5.5 analysis</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 32px; color: #1f2933; }
+    h1, h2 { margin-bottom: 0.35rem; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0 28px; font-size: 13px; }
+    th, td { border: 1px solid #d9e2ec; padding: 7px 9px; text-align: left; vertical-align: top; }
+    th { background: #f0f4f8; }
+    img { max-width: 100%; border: 1px solid #d9e2ec; margin: 8px 0 28px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .card { border: 1px solid #d9e2ec; padding: 14px; border-radius: 6px; background: #fbfcfd; }
+    .warning { color: #9f580a; }
+    code { background: #f0f4f8; padding: 2px 4px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <h1>v2-gpt5.5 Analysis</h1>
+  <p>Generated from <code>traces/*.json</code> and <code>evals/*.json</code>. Root latency is end-to-end LangGraph wall time; MBPP+ pass means both base and plus tests passed after the agent finalized its solution.</p>
+
+  <div class="grid">
+    <div class="card"><h2>Run Counts</h2><table><tr><th>runs</th><td>75</td></tr><tr><th>evals</th><td>75</td></tr><tr><th>traces</th><td>75</td></tr><tr><th>components</th><td>825</td></tr></table></div>
+    <div class="card"><h2>Latency Seconds</h2><table><tr><th>mean</th><td>19.569</td></tr><tr><th>median</th><td>16.314</td></tr><tr><th>min</th><td>9.507</td></tr><tr><th>max</th><td>54.676</td></tr><tr><th>p90</th><td>30.039</td></tr><tr><th>p95</th><td>38.387</td></tr></table></div>
+    <div class="card"><h2>Correctness</h2><table><tr><th>base_pass</th><td>1.0</td></tr><tr><th>plus_pass</th><td>0.893</td></tr><tr><th>mbpp_plus_pass</th><td>0.893</td></tr><tr><th>accuracy</th><td>0.893</td></tr><tr><th>base_failed_count</th><td>0.0</td></tr><tr><th>plus_failed_count</th><td>4.12</td></tr><tr><th>generated_test_pass</th><td>0.987</td></tr><tr><th>generated_test_failed_count</th><td>0.013</td></tr><tr><th>revision_count</th><td>0.0</td></tr></table></div>
+  </div>
+
+  <h2>Configured Models By Node</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>node</th>
+      <th>model</th>
+      <th>provider</th>
+      <th>model_kwargs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>generate_tests</td>
+      <td>gpt-5.5</td>
+      <td>openai</td>
+      <td>{"temperature": 0}</td>
+    </tr>
+    <tr>
+      <td>implement_solution</td>
+      <td>gpt-5.5</td>
+      <td>openai</td>
+      <td>{"temperature": 0}</td>
+    </tr>
+    <tr>
+      <td>review_solution</td>
+      <td>gpt-5.5</td>
+      <td>openai</td>
+      <td>{"temperature": 0}</td>
+    </tr>
+    <tr>
+      <td>understand_and_plan</td>
+      <td>gpt-5.5</td>
+      <td>openai</td>
+      <td>{"temperature": 0}</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Observed LLM Models In Traces</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>langgraph_node</th>
+      <th>model_provider</th>
+      <th>model_type</th>
+      <th>model_name</th>
+      <th>calls</th>
+      <th>duration_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>generate_tests</td>
+      <td>openai</td>
+      <td>chat</td>
+      <td>gpt-5.5</td>
+      <td>75</td>
+      <td>346.525083</td>
+      <td>50631</td>
+      <td>0.716305</td>
+    </tr>
+    <tr>
+      <td>implement_solution</td>
+      <td>openai</td>
+      <td>chat</td>
+      <td>gpt-5.5</td>
+      <td>75</td>
+      <td>278.057118</td>
+      <td>41463</td>
+      <td>0.540240</td>
+    </tr>
+    <tr>
+      <td>review_solution</td>
+      <td>openai</td>
+      <td>chat</td>
+      <td>gpt-5.5</td>
+      <td>75</td>
+      <td>287.652370</td>
+      <td>61136</td>
+      <td>0.602655</td>
+    </tr>
+    <tr>
+      <td>understand_and_plan</td>
+      <td>openai</td>
+      <td>chat</td>
+      <td>gpt-5.5</td>
+      <td>75</td>
+      <td>551.208643</td>
+      <td>39989</td>
+      <td>0.985245</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Warnings</h2>
+  <p>No warnings.</p>
+
+  <section><h2>Latency By Run</h2><img src="latency_by_run.png" alt="Latency By Run"></section>
+<section><h2>Latency Breakdown By Run</h2><img src="latency_breakdown_by_run.png" alt="Latency Breakdown By Run"></section>
+<section><h2>Latency Breakdown By Node</h2><img src="latency_breakdown_by_node.png" alt="Latency Breakdown By Node"></section>
+<section><h2>Accuracy Vs Latency</h2><img src="accuracy_vs_latency.png" alt="Accuracy Vs Latency"></section>
+<section><h2>Tokens Vs Latency</h2><img src="tokens_vs_latency.png" alt="Tokens Vs Latency"></section>
+
+  <h2>Correct Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+      <th>base_pass</th>
+      <th>plus_pass</th>
+      <th>mbpp_plus_pass</th>
+      <th>accuracy</th>
+      <th>generated_test_pass</th>
+      <th>generated_test_status</th>
+      <th>revision_count</th>
+      <th>review_decision</th>
+      <th>base_failed_count</th>
+      <th>plus_failed_count</th>
+      <th>generated_test_failed_count</th>
+      <th>generated_test_total_count</th>
+      <th>prompt</th>
+      <th>review_comments</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Mbpp/109</td>
+      <td>0</td>
+      <td>54.676241</td>
+      <td>5080</td>
+      <td>0.104800</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8</td>
+      <td>"""\nWrite a python function to find the number of numbers with an odd value when rotating a binary string the given number of times.\nassert odd_Equivalent("011001",6) == 3\n"""\n</td>
+      <td>Solution matches the core property: a rotated binary value is odd iff the final bit is 1. Handles provided case and reasonable edge cases.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/124</td>
+      <td>0</td>
+      <td>48.867754</td>
+      <td>4589</td>
+      <td>0.098845</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to get the angle of a complex number.\nassert math.isclose(angle_complex(0,1j), 1.5707963267948966, rel_tol=0.001)\n"""\n</td>
+      <td>Solution matches the required signature and correctly computes the phase of the complex value formed by x + y; generated tests cover key quadrants and pass.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/100</td>
+      <td>0</td>
+      <td>48.315285</td>
+      <td>4636</td>
+      <td>0.085330</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>10</td>
+      <td>"""\nWrite a function to find the next smallest palindrome of a specified integer, returned as an integer.\nassert next_smallest_palindrome(99)==101\n"""\n</td>
+      <td>Solution correctly returns the smallest palindrome strictly greater than the input for tested and relevant edge cases, including single digits, existing palindromes, and all-9 values.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/125</td>
+      <td>0</td>
+      <td>41.444197</td>
+      <td>3765</td>
+      <td>0.069925</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to find the maximum difference between the number of 0s and number of 1s in any sub-string of the given binary string.\nassert find_length("11000010001") == 6\n"""\n</td>
+      <td>Solution correctly maps the problem to maximum subarray sum with non-empty substrings and handles expected edge cases. Signature matches the required entry point.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/56</td>
+      <td>0</td>
+      <td>37.077463</td>
+      <td>3369</td>
+      <td>0.065570</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a python function to check if a given number is one less than twice its reverse.\nassert check(70) == False\n"""\n</td>
+      <td>Solution correctly implements the required condition for non-negative integers and handles trailing zeros; generated tests pass.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/123</td>
+      <td>0</td>
+      <td>31.177431</td>
+      <td>4017</td>
+      <td>0.066160</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8</td>
+      <td>"""\nWrite a function to sum all amicable numbers from 1 to a specified number.\nassert amicable_numbers_sum(999)==504\n"""\n</td>
+      <td>Solution correctly implements amicable number detection, handles edge cases, avoids perfect numbers, and passes the generated tests.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/79</td>
+      <td>0</td>
+      <td>30.021456</td>
+      <td>1622</td>
+      <td>0.020235</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a python function to check whether the length of the word is odd or not.\nassert word_len("Hadoop") == False\n"""\n</td>
+      <td>Solution correctly implements the required odd-length check with the expected signature and handles relevant edge cases like empty strings.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/67</td>
+      <td>0</td>
+      <td>29.073110</td>
+      <td>3566</td>
+      <td>0.057855</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to find the number of ways to partition a set of Bell numbers.\nassert bell_number(2)==2\n"""\n</td>
+      <td>The solution correctly computes Bell numbers using Bell triangle dynamic programming, handles n=0, matches expected assertions, and is compatible with the required entry point.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/61</td>
+      <td>0</td>
+      <td>28.874773</td>
+      <td>3246</td>
+      <td>0.052155</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>9</td>
+      <td>"""\nWrite a python function to count the number of substrings with the sum of digits equal to their length.\nassert count_Substrings('112112') == 6\n"""\n</td>
+      <td>Solution correctly transforms the condition to zero-sum subarrays and counts them efficiently with prefix sums. Signature and edge cases are appropriate.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/71</td>
+      <td>0</td>
+      <td>27.389797</td>
+      <td>3332</td>
+      <td>0.048260</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to sort a list of elements.\nassert comb_sort([5, 15, 37, 25, 79]) == [5, 15, 25, 37, 79]\n"""\n</td>
+      <td>Solution correctly implements comb sort, matches the required signature, handles empty/singleton lists, duplicates, negatives, and returns the sorted list.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/72</td>
+      <td>0</td>
+      <td>26.502505</td>
+      <td>2976</td>
+      <td>0.049780</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>10</td>
+      <td>"""\nWrite a python function to check whether the given number can be represented as the difference of two squares or not.\nassert dif_Square(5) == True\n"""\n</td>
+      <td>Solution is mathematically correct for integer inputs and matches expected behavior, including edge cases like 0 and numbers congruent to 2 modulo 4.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/84</td>
+      <td>0</td>
+      <td>25.604104</td>
+      <td>3324</td>
+      <td>0.055645</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a function to find the nth number in the newman conway sequence.\nassert sequence(10) == 6\n"""\n</td>
+      <td>Solution correctly implements the Newman-Conway recurrence iteratively with appropriate base cases and passes the generated tests. Raising ValueError for non-positive n is reasonable and unlikely to affect standard positive-input tests.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/20</td>
+      <td>0</td>
+      <td>24.680350</td>
+      <td>2784</td>
+      <td>0.043245</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>10</td>
+      <td>"""\nWrite a function to check if the given number is woodball or not.\nassert is_woodall(383) == True\n"""\n</td>
+      <td>Solution correctly checks positive integers of the form k * 2^k - 1, handles non-positive inputs, and stops once values exceed n.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/120</td>
+      <td>0</td>
+      <td>24.604129</td>
+      <td>2890</td>
+      <td>0.049050</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the maximum absolute product between numbers in pairs of tuples within a given list.\nassert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36\n"""\n</td>
+      <td>Solution correctly computes the maximum absolute product for each tuple pair, handles negatives and zeros, and matches the required entry point.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/9</td>
+      <td>0</td>
+      <td>24.509130</td>
+      <td>2812</td>
+      <td>0.044685</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a python function to find the minimum number of rotations (greater than 0) required to get the same string.\nassert find_Rotations("aaaa") == 1\n"""\n</td>
+      <td>Solution correctly returns the smallest positive rotation count for non-empty strings, handles periodic and non-periodic cases, and includes a reasonable empty-string behavior.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/129</td>
+      <td>0</td>
+      <td>24.167749</td>
+      <td>3374</td>
+      <td>0.048495</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8</td>
+      <td>"""\nWrite a function to calculate whether the matrix is a magic square.\nassert magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])==True\n"""\n</td>
+      <td>Solution correctly validates square shape and checks row, column, and diagonal sums. It matches the task requirements and generated tests pass.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/63</td>
+      <td>0</td>
+      <td>23.354705</td>
+      <td>2501</td>
+      <td>0.039830</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the maximum difference between available pairs in the given tuple list.\nassert max_difference([(3, 5), (1, 7), (10, 3), (1, 2)]) == 7\n"""\n</td>
+      <td>Solution is concise, matches the required entry point, and correctly computes the maximum absolute difference for each pair in the tuple list. Generated tests pass.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/11</td>
+      <td>0</td>
+      <td>22.992830</td>
+      <td>2814</td>
+      <td>0.042695</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a python function to remove first and last occurrence of a given character from the string.\nassert remove_Occ("hello","l") == "heo"\n"""\n</td>
+      <td>Solution matches the required behavior, handles absent characters, single occurrence, multiple occurrences, and empty strings appropriately.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/70</td>
+      <td>0</td>
+      <td>22.816169</td>
+      <td>2737</td>
+      <td>0.041985</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to find whether all the given tuples have equal length or not.\nassert get_equal([(11, 22, 33), (44, 55, 66)]) == True\n"""\n</td>
+      <td>Solution correctly checks all tuple lengths against the first item, handles empty and single-item inputs, and passes the generated tests. Ready for submission.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/57</td>
+      <td>0</td>
+      <td>22.457368</td>
+      <td>2164</td>
+      <td>0.031145</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a python function to find the largest number that can be formed with the given list of digits.\nassert find_Max_Num([1,2,3]) == 321\n"""\n</td>
+      <td>Solution correctly sorts digits descending, concatenates, converts to int, and handles empty input and all-zero cases.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/2</td>
+      <td>0</td>
+      <td>22.225545</td>
+      <td>2445</td>
+      <td>0.035325</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the shared elements from the given two lists.\nassert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n"""\n</td>
+      <td>Solution is correct for the task, matches the required signature, handles typical iterable inputs with hashable elements, and passes generated tests.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/96</td>
+      <td>0</td>
+      <td>20.942799</td>
+      <td>2655</td>
+      <td>0.038950</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a python function to find the number of divisors of a given integer.\nassert divisor(15) == 4\n"""\n</td>
+      <td>Solution correctly counts positive divisors for the specified positive integer inputs, handles perfect squares and n=1, and matches the required signature.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/101</td>
+      <td>0</td>
+      <td>20.432771</td>
+      <td>2835</td>
+      <td>0.043550</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to find the kth element in the given array using 1-based indexing.\nassert kth_element([12,3,5,7,19], 2) == 3\n"""\n</td>
+      <td>Solution correctly implements 1-based indexing and handles invalid k values safely without affecting expected valid inputs.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/94</td>
+      <td>0</td>
+      <td>19.009984</td>
+      <td>2604</td>
+      <td>0.039420</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nGiven a list of tuples, write a function that returns the first value of the tuple with the smallest second value.\nassert index_minimum([('Rash', 143), ('Manjeet', 200), ('Varsha', 100)]) == 'Varsha'\n"""\n</td>
+      <td>Solution is concise and correct for the specified task. It returns the first element of the tuple with the minimum second element and handles ties by preserving first occurrence via min.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/126</td>
+      <td>0</td>
+      <td>18.473002</td>
+      <td>2712</td>
+      <td>0.038685</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>9</td>
+      <td>"""\nWrite a python function to find the sum of common divisors of two given numbers.\nassert sum(10,15) == 6\n"""\n</td>
+      <td>Solution correctly computes gcd and sums its positive divisors, handles tested and reasonable edge cases including zero and negative inputs, and matches required entry point.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/69</td>
+      <td>0</td>
+      <td>17.872576</td>
+      <td>2830</td>
+      <td>0.038875</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8</td>
+      <td>"""\nWrite a function to check whether a list contains the given sublist or not.\nassert is_sublist([2,4,3,5,7],[3,7])==False\n"""\n</td>
+      <td>Solution correctly checks for a contiguous sublist, handles empty inputs and length edge cases, and matches the required entry point.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/98</td>
+      <td>0</td>
+      <td>17.632342</td>
+      <td>2425</td>
+      <td>0.034000</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a function to multiply all the numbers in a list and divide with the length of the list.\nassert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)\n"""\n</td>
+      <td>The implementation correctly computes the product of all input numbers and divides by the number of elements, matching the required behavior and tests. Signature is compatible and edge cases like zeros, negatives, floats, and single-element inputs are handled naturally.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/3</td>
+      <td>0</td>
+      <td>17.412766</td>
+      <td>2491</td>
+      <td>0.032880</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>10</td>
+      <td>"""\nWrite a python function to identify non-prime numbers.\nassert is_not_prime(2) == False\n"""\n</td>
+      <td>Solution correctly identifies non-prime integers, handles edge cases including &lt;=1, even numbers, and divisibility up to sqrt(n). Generated tests pass.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/6</td>
+      <td>0</td>
+      <td>16.766591</td>
+      <td>2449</td>
+      <td>0.032045</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a python function to check whether the two numbers differ at one bit position only or not.\nassert differ_At_One_Bit_Pos(13,9) == True\n"""\n</td>
+      <td>Solution correctly uses XOR and power-of-two check to detect exactly one differing bit for non-negative integers, matches expected signature, and handles equal numbers and tested edge cases.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/99</td>
+      <td>0</td>
+      <td>16.313823</td>
+      <td>2354</td>
+      <td>0.031295</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8</td>
+      <td>"""\nWrite a function to convert the given decimal number to its binary equivalent, represented as a string with no leading zeros.\nassert decimal_to_binary(8) == '1000'\n"""\n</td>
+      <td>Solution correctly converts non-negative integers to binary strings with no leading zeros and handles 0 explicitly. Extra negative handling does not affect expected behavior.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/65</td>
+      <td>0</td>
+      <td>16.005356</td>
+      <td>2284</td>
+      <td>0.028820</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a function to flatten a list and sum all of its elements.\nassert recursive_list_sum(([1, 2, [3,4],[5,6]]))==21\n"""\n</td>
+      <td>Solution matches the required signature and correctly recursively sums numeric elements in nested lists, including empty and deeply nested cases.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/116</td>
+      <td>0</td>
+      <td>15.842083</td>
+      <td>2191</td>
+      <td>0.033405</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to convert a given tuple of positive integers into a single integer.\nassert tuple_to_int((1,2,3))==123\n"""\n</td>
+      <td>Solution correctly concatenates tuple elements in order and converts to an integer; signature and expected behavior match the task.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/75</td>
+      <td>0</td>
+      <td>15.838660</td>
+      <td>2574</td>
+      <td>0.033370</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find tuples which have all elements divisible by k from the given list of tuples.\nassert find_tuples([(6, 24, 12), (7, 9, 6), (12, 18, 21)], 6) == [(6, 24, 12)]\n"""\n</td>
+      <td>Solution correctly filters tuples where all elements are divisible by nonzero k, matches expected signature, and passes generated tests.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/68</td>
+      <td>0</td>
+      <td>15.335214</td>
+      <td>2693</td>
+      <td>0.033865</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8</td>
+      <td>"""\nWrite a python function to check whether the given array is monotonic or not.\nassert is_Monotonic([6, 5, 4, 4]) == True\n"""\n</td>
+      <td>Solution correctly checks both non-decreasing and non-increasing monotonicity, handles equality and empty/single-element lists, and matches the required signature.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/4</td>
+      <td>0</td>
+      <td>15.112258</td>
+      <td>2470</td>
+      <td>0.030575</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to find the n largest integers from a given list of numbers, returned in descending order.\nassert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],3)==[85, 75, 65]\n"""\n</td>
+      <td>Solution is correct and matches the required entry point. It handles descending order, duplicates, empty input, n &lt;= 0, and n larger than the list length using heapq.nlargest.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/87</td>
+      <td>0</td>
+      <td>15.020876</td>
+      <td>2684</td>
+      <td>0.035420</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8</td>
+      <td>"""\nWrite a function to merge three dictionaries into a single dictionary.\nassert merge_dictionaries_three({ "R": "Red", "B": "Black", "P": "Pink" }, { "G": "Green", "W": "White" },{ "O": "Orange", "W": "White", "B": "Black" })=={'B': 'Black', 'R': 'Red', 'P': 'Pink', 'G': 'Green', 'W': 'White', 'O': 'Orange'}\n"""\n</td>
+      <td>The solution correctly merges three dictionaries in order without modifying inputs, handles empty dictionaries and duplicate-key precedence as expected, and matches the required entry point.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/89</td>
+      <td>0</td>
+      <td>14.763363</td>
+      <td>1751</td>
+      <td>0.027130</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the closest smaller number than n.\nassert closest_num(11) == 10\n"""\n</td>
+      <td>Solution is simple and correct for the stated integer predecessor interpretation; tests pass and signature matches.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/111</td>
+      <td>0</td>
+      <td>14.583130</td>
+      <td>2613</td>
+      <td>0.034440</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a function to find the common elements in given nested lists.\nassert set(common_in_nested_lists([[12, 18, 23, 25, 45], [7, 12, 18, 24, 28], [1, 5, 8, 12, 15, 16, 18]]))==set([18, 12])\n"""\n</td>
+      <td>Solution correctly computes the intersection across nested lists, handles empty inputs and empty inner lists, and matches the expected signature and return behavior.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/59</td>
+      <td>0</td>
+      <td>14.445755</td>
+      <td>1618</td>
+      <td>0.022465</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the nth octagonal number.\nassert is_octagonal(5) == 65\n"""\n</td>
+      <td>Solution correctly implements the nth octagonal number formula n * (3n - 2) and matches expected behavior.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/88</td>
+      <td>0</td>
+      <td>14.225346</td>
+      <td>2355</td>
+      <td>0.028225</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to get the frequency of all the elements in a list, returned as a dictionary.\nassert freq_count([10,10,10,10,20,20,20,20,40,40,50,50,30])==({10: 4, 20: 4, 40: 2, 50: 2, 30: 1})\n"""\n</td>
+      <td>The implementation correctly counts frequencies using a dictionary, matches the required signature, passes the provided and generated tests, and handles expected edge cases like empty lists and hashable element types.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/86</td>
+      <td>0</td>
+      <td>13.633946</td>
+      <td>1840</td>
+      <td>0.027150</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find nth centered hexagonal number.\nassert centered_hexagonal_number(10) == 271\n"""\n</td>
+      <td>The implementation uses the correct standard formula and matches expected behavior for the task.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/104</td>
+      <td>0</td>
+      <td>13.359893</td>
+      <td>2402</td>
+      <td>0.031035</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to sort each sublist of strings in a given list of lists.\nassert sort_sublists((["green", "orange"], ["black", "white"], ["white", "black", "orange"]))==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]\n"""\n</td>
+      <td>Solution correctly returns a new list with each inner iterable sorted, matches the required signature and expected behavior, and passes generated tests.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/97</td>
+      <td>0</td>
+      <td>13.205148</td>
+      <td>2774</td>
+      <td>0.031995</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a function to find frequency of each element in a flattened list of lists, returned in a dictionary.\nassert frequency_lists([[1, 2, 3, 2], [4, 5, 6, 2], [7, 8, 9, 5]])=={1: 1, 2: 3, 3: 1, 4: 1, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1}\n"""\n</td>
+      <td>Solution correctly flattens the list of lists and counts hashable elements with the required signature and expected behavior, including empty inputs.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/128</td>
+      <td>0</td>
+      <td>13.199512</td>
+      <td>2181</td>
+      <td>0.027030</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a function to find words that are longer than n characters from a given list of words.\nassert long_words(3,"python is a programming language")==['python','programming','language']\n"""\n</td>
+      <td>Solution matches the required behavior and signature, correctly returns words with length strictly greater than n, preserves order, and handles whitespace/empty input appropriately.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/14</td>
+      <td>0</td>
+      <td>13.183821</td>
+      <td>1852</td>
+      <td>0.023360</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a python function to find the volume of a triangular prism.\nassert find_Volume(10,8,6) == 240\n"""\n</td>
+      <td>Solution correctly implements triangular prism volume formula with expected entry point and passes relevant tests.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/95</td>
+      <td>0</td>
+      <td>13.010913</td>
+      <td>1912</td>
+      <td>0.024210</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>4</td>
+      <td>"""\nWrite a python function to find the length of the smallest list in a list of lists.\nassert Find_Min_Length([[1],[1,2]]) == 1\n"""\n</td>
+      <td>Solution is concise and correct for the specified task and typical non-empty inputs. It handles empty inner lists appropriately by returning 0.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/18</td>
+      <td>0</td>
+      <td>12.869681</td>
+      <td>1991</td>
+      <td>0.024055</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a function to remove characters from the first string which are present in the second string.\nassert remove_dirty_chars("probasscurve", "pros") == 'bacuve'\n"""\n</td>
+      <td>Solution correctly removes all characters from the first string that appear in the second string, handles empty inputs and duplicates, and matches the required signature.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/64</td>
+      <td>0</td>
+      <td>12.782714</td>
+      <td>2337</td>
+      <td>0.028160</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to sort a list of tuples using the second value of each tuple.\nassert subject_marks([('English', 88), ('Science', 90), ('Maths', 97), ('Social sciences', 82)])==[('Social sciences', 82), ('English', 88), ('Science', 90), ('Maths', 97)]\n"""\n</td>
+      <td>Solution correctly sorts the list of tuples by the second element, matches the required signature, handles edge cases, and passes generated tests.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/106</td>
+      <td>0</td>
+      <td>12.536629</td>
+      <td>2104</td>
+      <td>0.028245</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to append the given list to the given tuples.\nassert add_lists([5, 6, 7], (9, 10)) == (9, 10, 5, 6, 7)\n"""\n</td>
+      <td>Solution is correct, concise, preserves inputs, and matches the required behavior and entry point.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/91</td>
+      <td>0</td>
+      <td>12.507542</td>
+      <td>1967</td>
+      <td>0.024935</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to check if a string is present as a substring in a given list of string values.\nassert find_substring(["red", "black", "white", "green", "orange"],"ack")==True\n"""\n</td>
+      <td>Solution is correct, concise, matches the required signature, and handles expected cases including empty lists and empty substrings consistently with Python substring semantics.</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Incorrect Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+      <th>base_pass</th>
+      <th>plus_pass</th>
+      <th>mbpp_plus_pass</th>
+      <th>accuracy</th>
+      <th>generated_test_pass</th>
+      <th>generated_test_status</th>
+      <th>revision_count</th>
+      <th>review_decision</th>
+      <th>base_failed_count</th>
+      <th>plus_failed_count</th>
+      <th>generated_test_failed_count</th>
+      <th>generated_test_total_count</th>
+      <th>prompt</th>
+      <th>review_comments</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Mbpp/103</td>
+      <td>0</td>
+      <td>33.158138</td>
+      <td>4400</td>
+      <td>0.077250</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>9</td>
+      <td>"""\nWrite a function to find the Eulerian number a(n, m).\nassert eulerian_num(3, 1) == 4\n"""\n</td>
+      <td>Solution correctly implements the Eulerian number recurrence with appropriate base cases and handles negative/out-of-range inputs. Generated tests pass and no revision is needed.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/16</td>
+      <td>0</td>
+      <td>30.050409</td>
+      <td>3174</td>
+      <td>0.053645</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>24</td>
+      <td>0</td>
+      <td>11</td>
+      <td>"""\nWrite a function to that returns true if the input string contains sequences of lowercase letters joined with an underscore and false otherwise.\nassert text_lowercase_underscore("aab_cbbbc")==(True)\n"""\n</td>
+      <td>Solution matches the intended full-string pattern of lowercase letters, one underscore, then lowercase letters; tests pass and signature is compatible.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/113</td>
+      <td>0</td>
+      <td>28.568959</td>
+      <td>2969</td>
+      <td>0.052270</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>4</td>
+      <td>0</td>
+      <td>10</td>
+      <td>"""\nWrite a function to check if a string represents an integer or not.\nassert check_integer("python")==False\n"""\n</td>
+      <td>Solution matches the task, handles empty strings, optional signs, whitespace, and non-string inputs appropriately. Generated tests pass.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/102</td>
+      <td>0</td>
+      <td>25.986051</td>
+      <td>3060</td>
+      <td>0.049750</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>106</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to convert a snake case string to camel case string.\nassert snake_to_camel('python_program')=='PythonProgram'\n"""\n</td>
+      <td>Solution matches the required signature and expected behavior for snake_case to CamelCase, including the provided assertion and reasonable edge cases.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/92</td>
+      <td>0</td>
+      <td>20.436061</td>
+      <td>2730</td>
+      <td>0.039925</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>69</td>
+      <td>0</td>
+      <td>10</td>
+      <td>"""\nWrite a function to check whether the given number is undulating or not.\nassert is_undulating(1212121) == True\n"""\n</td>
+      <td>Solution correctly implements the undulating number definition for integer inputs, handles negatives and short numbers, and matches expected edge cases.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/119</td>
+      <td>0</td>
+      <td>17.972131</td>
+      <td>3016</td>
+      <td>0.040330</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>66</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a python function to find the element that appears only once in a sorted array.\nassert search([1,1,2,2,3]) == 3\n"""\n</td>
+      <td>Solution is correct for the stated sorted-array assumption where every other element appears exactly twice. It handles single-element arrays and unique values at beginning, middle, or end with O(log n) time and O(1) space.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/74</td>
+      <td>0</td>
+      <td>17.949385</td>
+      <td>3248</td>
+      <td>0.045140</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to check whether it follows the sequence given in the patterns array.\nassert is_samepatterns(["red","green","green"], ["a", "b", "b"])==True\n"""\n</td>
+      <td>Solution correctly enforces a bijective mapping between sequence items and pattern symbols, handles unequal lengths and empty inputs, and matches the required signature.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/7</td>
+      <td>0</td>
+      <td>16.917603</td>
+      <td>2305</td>
+      <td>0.029550</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>36</td>
+      <td>1</td>
+      <td>6</td>
+      <td>"""\nWrite a function to find all words which are at least 4 characters long in a string.\nassert set(find_char_long('Please move back to stream')) == set(['Please', 'move', 'back', 'stream'])\n"""\n</td>
+      <td>Solution is correct for the task. The failing generated test is incorrect because 'yes' has only 3 characters and should be excluded.</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>LLM Latency By Node</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>langgraph_node</th>
+      <th>duration_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>understand_and_plan</td>
+      <td>551.208643</td>
+      <td>39989</td>
+      <td>0.985245</td>
+    </tr>
+    <tr>
+      <td>generate_tests</td>
+      <td>346.525083</td>
+      <td>50631</td>
+      <td>0.716305</td>
+    </tr>
+    <tr>
+      <td>review_solution</td>
+      <td>287.652370</td>
+      <td>61136</td>
+      <td>0.602655</td>
+    </tr>
+    <tr>
+      <td>implement_solution</td>
+      <td>278.057118</td>
+      <td>41463</td>
+      <td>0.540240</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>All Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+      <th>base_pass</th>
+      <th>plus_pass</th>
+      <th>mbpp_plus_pass</th>
+      <th>accuracy</th>
+      <th>generated_test_pass</th>
+      <th>generated_test_status</th>
+      <th>revision_count</th>
+      <th>review_decision</th>
+      <th>base_failed_count</th>
+      <th>plus_failed_count</th>
+      <th>generated_test_failed_count</th>
+      <th>generated_test_total_count</th>
+      <th>prompt</th>
+      <th>review_comments</th>
+      <th>nodes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Mbpp/109</td>
+      <td>0</td>
+      <td>54.676241</td>
+      <td>5080</td>
+      <td>0.104800</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8</td>
+      <td>"""\nWrite a python function to find the number of numbers with an odd value when rotating a binary string the given number of times.\nassert odd_Equivalent("011001",6) == 3\n"""\n</td>
+      <td>Solution matches the core property: a rotated binary value is odd iff the final bit is 1. Handles provided case and reasonable edge cases.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/124</td>
+      <td>0</td>
+      <td>48.867754</td>
+      <td>4589</td>
+      <td>0.098845</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to get the angle of a complex number.\nassert math.isclose(angle_complex(0,1j), 1.5707963267948966, rel_tol=0.001)\n"""\n</td>
+      <td>Solution matches the required signature and correctly computes the phase of the complex value formed by x + y; generated tests cover key quadrants and pass.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/100</td>
+      <td>0</td>
+      <td>48.315285</td>
+      <td>4636</td>
+      <td>0.085330</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>10</td>
+      <td>"""\nWrite a function to find the next smallest palindrome of a specified integer, returned as an integer.\nassert next_smallest_palindrome(99)==101\n"""\n</td>
+      <td>Solution correctly returns the smallest palindrome strictly greater than the input for tested and relevant edge cases, including single digits, existing palindromes, and all-9 values.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/125</td>
+      <td>0</td>
+      <td>41.444197</td>
+      <td>3765</td>
+      <td>0.069925</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to find the maximum difference between the number of 0s and number of 1s in any sub-string of the given binary string.\nassert find_length("11000010001") == 6\n"""\n</td>
+      <td>Solution correctly maps the problem to maximum subarray sum with non-empty substrings and handles expected edge cases. Signature matches the required entry point.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/56</td>
+      <td>0</td>
+      <td>37.077463</td>
+      <td>3369</td>
+      <td>0.065570</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a python function to check if a given number is one less than twice its reverse.\nassert check(70) == False\n"""\n</td>
+      <td>Solution correctly implements the required condition for non-negative integers and handles trailing zeros; generated tests pass.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/103</td>
+      <td>0</td>
+      <td>33.158138</td>
+      <td>4400</td>
+      <td>0.077250</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>9</td>
+      <td>"""\nWrite a function to find the Eulerian number a(n, m).\nassert eulerian_num(3, 1) == 4\n"""\n</td>
+      <td>Solution correctly implements the Eulerian number recurrence with appropriate base cases and handles negative/out-of-range inputs. Generated tests pass and no revision is needed.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/123</td>
+      <td>0</td>
+      <td>31.177431</td>
+      <td>4017</td>
+      <td>0.066160</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8</td>
+      <td>"""\nWrite a function to sum all amicable numbers from 1 to a specified number.\nassert amicable_numbers_sum(999)==504\n"""\n</td>
+      <td>Solution correctly implements amicable number detection, handles edge cases, avoids perfect numbers, and passes the generated tests.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/16</td>
+      <td>0</td>
+      <td>30.050409</td>
+      <td>3174</td>
+      <td>0.053645</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>24</td>
+      <td>0</td>
+      <td>11</td>
+      <td>"""\nWrite a function to that returns true if the input string contains sequences of lowercase letters joined with an underscore and false otherwise.\nassert text_lowercase_underscore("aab_cbbbc")==(True)\n"""\n</td>
+      <td>Solution matches the intended full-string pattern of lowercase letters, one underscore, then lowercase letters; tests pass and signature is compatible.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/79</td>
+      <td>0</td>
+      <td>30.021456</td>
+      <td>1622</td>
+      <td>0.020235</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a python function to check whether the length of the word is odd or not.\nassert word_len("Hadoop") == False\n"""\n</td>
+      <td>Solution correctly implements the required odd-length check with the expected signature and handles relevant edge cases like empty strings.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/67</td>
+      <td>0</td>
+      <td>29.073110</td>
+      <td>3566</td>
+      <td>0.057855</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to find the number of ways to partition a set of Bell numbers.\nassert bell_number(2)==2\n"""\n</td>
+      <td>The solution correctly computes Bell numbers using Bell triangle dynamic programming, handles n=0, matches expected assertions, and is compatible with the required entry point.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/61</td>
+      <td>0</td>
+      <td>28.874773</td>
+      <td>3246</td>
+      <td>0.052155</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>9</td>
+      <td>"""\nWrite a python function to count the number of substrings with the sum of digits equal to their length.\nassert count_Substrings('112112') == 6\n"""\n</td>
+      <td>Solution correctly transforms the condition to zero-sum subarrays and counts them efficiently with prefix sums. Signature and edge cases are appropriate.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/113</td>
+      <td>0</td>
+      <td>28.568959</td>
+      <td>2969</td>
+      <td>0.052270</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>4</td>
+      <td>0</td>
+      <td>10</td>
+      <td>"""\nWrite a function to check if a string represents an integer or not.\nassert check_integer("python")==False\n"""\n</td>
+      <td>Solution matches the task, handles empty strings, optional signs, whitespace, and non-string inputs appropriately. Generated tests pass.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/71</td>
+      <td>0</td>
+      <td>27.389797</td>
+      <td>3332</td>
+      <td>0.048260</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to sort a list of elements.\nassert comb_sort([5, 15, 37, 25, 79]) == [5, 15, 25, 37, 79]\n"""\n</td>
+      <td>Solution correctly implements comb sort, matches the required signature, handles empty/singleton lists, duplicates, negatives, and returns the sorted list.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/72</td>
+      <td>0</td>
+      <td>26.502505</td>
+      <td>2976</td>
+      <td>0.049780</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>10</td>
+      <td>"""\nWrite a python function to check whether the given number can be represented as the difference of two squares or not.\nassert dif_Square(5) == True\n"""\n</td>
+      <td>Solution is mathematically correct for integer inputs and matches expected behavior, including edge cases like 0 and numbers congruent to 2 modulo 4.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/102</td>
+      <td>0</td>
+      <td>25.986051</td>
+      <td>3060</td>
+      <td>0.049750</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>106</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to convert a snake case string to camel case string.\nassert snake_to_camel('python_program')=='PythonProgram'\n"""\n</td>
+      <td>Solution matches the required signature and expected behavior for snake_case to CamelCase, including the provided assertion and reasonable edge cases.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/84</td>
+      <td>0</td>
+      <td>25.604104</td>
+      <td>3324</td>
+      <td>0.055645</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a function to find the nth number in the newman conway sequence.\nassert sequence(10) == 6\n"""\n</td>
+      <td>Solution correctly implements the Newman-Conway recurrence iteratively with appropriate base cases and passes the generated tests. Raising ValueError for non-positive n is reasonable and unlikely to affect standard positive-input tests.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/20</td>
+      <td>0</td>
+      <td>24.680350</td>
+      <td>2784</td>
+      <td>0.043245</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>10</td>
+      <td>"""\nWrite a function to check if the given number is woodball or not.\nassert is_woodall(383) == True\n"""\n</td>
+      <td>Solution correctly checks positive integers of the form k * 2^k - 1, handles non-positive inputs, and stops once values exceed n.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/120</td>
+      <td>0</td>
+      <td>24.604129</td>
+      <td>2890</td>
+      <td>0.049050</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the maximum absolute product between numbers in pairs of tuples within a given list.\nassert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36\n"""\n</td>
+      <td>Solution correctly computes the maximum absolute product for each tuple pair, handles negatives and zeros, and matches the required entry point.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/9</td>
+      <td>0</td>
+      <td>24.509130</td>
+      <td>2812</td>
+      <td>0.044685</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a python function to find the minimum number of rotations (greater than 0) required to get the same string.\nassert find_Rotations("aaaa") == 1\n"""\n</td>
+      <td>Solution correctly returns the smallest positive rotation count for non-empty strings, handles periodic and non-periodic cases, and includes a reasonable empty-string behavior.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/129</td>
+      <td>0</td>
+      <td>24.167749</td>
+      <td>3374</td>
+      <td>0.048495</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8</td>
+      <td>"""\nWrite a function to calculate whether the matrix is a magic square.\nassert magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])==True\n"""\n</td>
+      <td>Solution correctly validates square shape and checks row, column, and diagonal sums. It matches the task requirements and generated tests pass.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/63</td>
+      <td>0</td>
+      <td>23.354705</td>
+      <td>2501</td>
+      <td>0.039830</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the maximum difference between available pairs in the given tuple list.\nassert max_difference([(3, 5), (1, 7), (10, 3), (1, 2)]) == 7\n"""\n</td>
+      <td>Solution is concise, matches the required entry point, and correctly computes the maximum absolute difference for each pair in the tuple list. Generated tests pass.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/11</td>
+      <td>0</td>
+      <td>22.992830</td>
+      <td>2814</td>
+      <td>0.042695</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a python function to remove first and last occurrence of a given character from the string.\nassert remove_Occ("hello","l") == "heo"\n"""\n</td>
+      <td>Solution matches the required behavior, handles absent characters, single occurrence, multiple occurrences, and empty strings appropriately.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/70</td>
+      <td>0</td>
+      <td>22.816169</td>
+      <td>2737</td>
+      <td>0.041985</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to find whether all the given tuples have equal length or not.\nassert get_equal([(11, 22, 33), (44, 55, 66)]) == True\n"""\n</td>
+      <td>Solution correctly checks all tuple lengths against the first item, handles empty and single-item inputs, and passes the generated tests. Ready for submission.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/57</td>
+      <td>0</td>
+      <td>22.457368</td>
+      <td>2164</td>
+      <td>0.031145</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a python function to find the largest number that can be formed with the given list of digits.\nassert find_Max_Num([1,2,3]) == 321\n"""\n</td>
+      <td>Solution correctly sorts digits descending, concatenates, converts to int, and handles empty input and all-zero cases.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/2</td>
+      <td>0</td>
+      <td>22.225545</td>
+      <td>2445</td>
+      <td>0.035325</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the shared elements from the given two lists.\nassert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n"""\n</td>
+      <td>Solution is correct for the task, matches the required signature, handles typical iterable inputs with hashable elements, and passes generated tests.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/96</td>
+      <td>0</td>
+      <td>20.942799</td>
+      <td>2655</td>
+      <td>0.038950</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a python function to find the number of divisors of a given integer.\nassert divisor(15) == 4\n"""\n</td>
+      <td>Solution correctly counts positive divisors for the specified positive integer inputs, handles perfect squares and n=1, and matches the required signature.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/92</td>
+      <td>0</td>
+      <td>20.436061</td>
+      <td>2730</td>
+      <td>0.039925</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>69</td>
+      <td>0</td>
+      <td>10</td>
+      <td>"""\nWrite a function to check whether the given number is undulating or not.\nassert is_undulating(1212121) == True\n"""\n</td>
+      <td>Solution correctly implements the undulating number definition for integer inputs, handles negatives and short numbers, and matches expected edge cases.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/101</td>
+      <td>0</td>
+      <td>20.432771</td>
+      <td>2835</td>
+      <td>0.043550</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to find the kth element in the given array using 1-based indexing.\nassert kth_element([12,3,5,7,19], 2) == 3\n"""\n</td>
+      <td>Solution correctly implements 1-based indexing and handles invalid k values safely without affecting expected valid inputs.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/94</td>
+      <td>0</td>
+      <td>19.009984</td>
+      <td>2604</td>
+      <td>0.039420</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nGiven a list of tuples, write a function that returns the first value of the tuple with the smallest second value.\nassert index_minimum([('Rash', 143), ('Manjeet', 200), ('Varsha', 100)]) == 'Varsha'\n"""\n</td>
+      <td>Solution is concise and correct for the specified task. It returns the first element of the tuple with the minimum second element and handles ties by preserving first occurrence via min.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/126</td>
+      <td>0</td>
+      <td>18.473002</td>
+      <td>2712</td>
+      <td>0.038685</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>9</td>
+      <td>"""\nWrite a python function to find the sum of common divisors of two given numbers.\nassert sum(10,15) == 6\n"""\n</td>
+      <td>Solution correctly computes gcd and sums its positive divisors, handles tested and reasonable edge cases including zero and negative inputs, and matches required entry point.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/119</td>
+      <td>0</td>
+      <td>17.972131</td>
+      <td>3016</td>
+      <td>0.040330</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>66</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a python function to find the element that appears only once in a sorted array.\nassert search([1,1,2,2,3]) == 3\n"""\n</td>
+      <td>Solution is correct for the stated sorted-array assumption where every other element appears exactly twice. It handles single-element arrays and unique values at beginning, middle, or end with O(log n) time and O(1) space.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/74</td>
+      <td>0</td>
+      <td>17.949385</td>
+      <td>3248</td>
+      <td>0.045140</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to check whether it follows the sequence given in the patterns array.\nassert is_samepatterns(["red","green","green"], ["a", "b", "b"])==True\n"""\n</td>
+      <td>Solution correctly enforces a bijective mapping between sequence items and pattern symbols, handles unequal lengths and empty inputs, and matches the required signature.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/69</td>
+      <td>0</td>
+      <td>17.872576</td>
+      <td>2830</td>
+      <td>0.038875</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8</td>
+      <td>"""\nWrite a function to check whether a list contains the given sublist or not.\nassert is_sublist([2,4,3,5,7],[3,7])==False\n"""\n</td>
+      <td>Solution correctly checks for a contiguous sublist, handles empty inputs and length edge cases, and matches the required entry point.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/98</td>
+      <td>0</td>
+      <td>17.632342</td>
+      <td>2425</td>
+      <td>0.034000</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a function to multiply all the numbers in a list and divide with the length of the list.\nassert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)\n"""\n</td>
+      <td>The implementation correctly computes the product of all input numbers and divides by the number of elements, matching the required behavior and tests. Signature is compatible and edge cases like zeros, negatives, floats, and single-element inputs are handled naturally.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/3</td>
+      <td>0</td>
+      <td>17.412766</td>
+      <td>2491</td>
+      <td>0.032880</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>10</td>
+      <td>"""\nWrite a python function to identify non-prime numbers.\nassert is_not_prime(2) == False\n"""\n</td>
+      <td>Solution correctly identifies non-prime integers, handles edge cases including &lt;=1, even numbers, and divisibility up to sqrt(n). Generated tests pass.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/7</td>
+      <td>0</td>
+      <td>16.917603</td>
+      <td>2305</td>
+      <td>0.029550</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>36</td>
+      <td>1</td>
+      <td>6</td>
+      <td>"""\nWrite a function to find all words which are at least 4 characters long in a string.\nassert set(find_char_long('Please move back to stream')) == set(['Please', 'move', 'back', 'stream'])\n"""\n</td>
+      <td>Solution is correct for the task. The failing generated test is incorrect because 'yes' has only 3 characters and should be excluded.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/6</td>
+      <td>0</td>
+      <td>16.766591</td>
+      <td>2449</td>
+      <td>0.032045</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a python function to check whether the two numbers differ at one bit position only or not.\nassert differ_At_One_Bit_Pos(13,9) == True\n"""\n</td>
+      <td>Solution correctly uses XOR and power-of-two check to detect exactly one differing bit for non-negative integers, matches expected signature, and handles equal numbers and tested edge cases.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/99</td>
+      <td>0</td>
+      <td>16.313823</td>
+      <td>2354</td>
+      <td>0.031295</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8</td>
+      <td>"""\nWrite a function to convert the given decimal number to its binary equivalent, represented as a string with no leading zeros.\nassert decimal_to_binary(8) == '1000'\n"""\n</td>
+      <td>Solution correctly converts non-negative integers to binary strings with no leading zeros and handles 0 explicitly. Extra negative handling does not affect expected behavior.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/65</td>
+      <td>0</td>
+      <td>16.005356</td>
+      <td>2284</td>
+      <td>0.028820</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a function to flatten a list and sum all of its elements.\nassert recursive_list_sum(([1, 2, [3,4],[5,6]]))==21\n"""\n</td>
+      <td>Solution matches the required signature and correctly recursively sums numeric elements in nested lists, including empty and deeply nested cases.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/116</td>
+      <td>0</td>
+      <td>15.842083</td>
+      <td>2191</td>
+      <td>0.033405</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to convert a given tuple of positive integers into a single integer.\nassert tuple_to_int((1,2,3))==123\n"""\n</td>
+      <td>Solution correctly concatenates tuple elements in order and converts to an integer; signature and expected behavior match the task.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/75</td>
+      <td>0</td>
+      <td>15.838660</td>
+      <td>2574</td>
+      <td>0.033370</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find tuples which have all elements divisible by k from the given list of tuples.\nassert find_tuples([(6, 24, 12), (7, 9, 6), (12, 18, 21)], 6) == [(6, 24, 12)]\n"""\n</td>
+      <td>Solution correctly filters tuples where all elements are divisible by nonzero k, matches expected signature, and passes generated tests.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/68</td>
+      <td>0</td>
+      <td>15.335214</td>
+      <td>2693</td>
+      <td>0.033865</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8</td>
+      <td>"""\nWrite a python function to check whether the given array is monotonic or not.\nassert is_Monotonic([6, 5, 4, 4]) == True\n"""\n</td>
+      <td>Solution correctly checks both non-decreasing and non-increasing monotonicity, handles equality and empty/single-element lists, and matches the required signature.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/4</td>
+      <td>0</td>
+      <td>15.112258</td>
+      <td>2470</td>
+      <td>0.030575</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to find the n largest integers from a given list of numbers, returned in descending order.\nassert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],3)==[85, 75, 65]\n"""\n</td>
+      <td>Solution is correct and matches the required entry point. It handles descending order, duplicates, empty input, n &lt;= 0, and n larger than the list length using heapq.nlargest.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/87</td>
+      <td>0</td>
+      <td>15.020876</td>
+      <td>2684</td>
+      <td>0.035420</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8</td>
+      <td>"""\nWrite a function to merge three dictionaries into a single dictionary.\nassert merge_dictionaries_three({ "R": "Red", "B": "Black", "P": "Pink" }, { "G": "Green", "W": "White" },{ "O": "Orange", "W": "White", "B": "Black" })=={'B': 'Black', 'R': 'Red', 'P': 'Pink', 'G': 'Green', 'W': 'White', 'O': 'Orange'}\n"""\n</td>
+      <td>The solution correctly merges three dictionaries in order without modifying inputs, handles empty dictionaries and duplicate-key precedence as expected, and matches the required entry point.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/89</td>
+      <td>0</td>
+      <td>14.763363</td>
+      <td>1751</td>
+      <td>0.027130</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the closest smaller number than n.\nassert closest_num(11) == 10\n"""\n</td>
+      <td>Solution is simple and correct for the stated integer predecessor interpretation; tests pass and signature matches.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/111</td>
+      <td>0</td>
+      <td>14.583130</td>
+      <td>2613</td>
+      <td>0.034440</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a function to find the common elements in given nested lists.\nassert set(common_in_nested_lists([[12, 18, 23, 25, 45], [7, 12, 18, 24, 28], [1, 5, 8, 12, 15, 16, 18]]))==set([18, 12])\n"""\n</td>
+      <td>Solution correctly computes the intersection across nested lists, handles empty inputs and empty inner lists, and matches the expected signature and return behavior.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/59</td>
+      <td>0</td>
+      <td>14.445755</td>
+      <td>1618</td>
+      <td>0.022465</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the nth octagonal number.\nassert is_octagonal(5) == 65\n"""\n</td>
+      <td>Solution correctly implements the nth octagonal number formula n * (3n - 2) and matches expected behavior.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/88</td>
+      <td>0</td>
+      <td>14.225346</td>
+      <td>2355</td>
+      <td>0.028225</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to get the frequency of all the elements in a list, returned as a dictionary.\nassert freq_count([10,10,10,10,20,20,20,20,40,40,50,50,30])==({10: 4, 20: 4, 40: 2, 50: 2, 30: 1})\n"""\n</td>
+      <td>The implementation correctly counts frequencies using a dictionary, matches the required signature, passes the provided and generated tests, and handles expected edge cases like empty lists and hashable element types.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/86</td>
+      <td>0</td>
+      <td>13.633946</td>
+      <td>1840</td>
+      <td>0.027150</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find nth centered hexagonal number.\nassert centered_hexagonal_number(10) == 271\n"""\n</td>
+      <td>The implementation uses the correct standard formula and matches expected behavior for the task.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/104</td>
+      <td>0</td>
+      <td>13.359893</td>
+      <td>2402</td>
+      <td>0.031035</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to sort each sublist of strings in a given list of lists.\nassert sort_sublists((["green", "orange"], ["black", "white"], ["white", "black", "orange"]))==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]\n"""\n</td>
+      <td>Solution correctly returns a new list with each inner iterable sorted, matches the required signature and expected behavior, and passes generated tests.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>
