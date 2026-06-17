@@ -60,9 +60,13 @@ def run_eval_example(
     task_prompt = make_problem_prompt(example)
     user_message = HumanMessage(content=task_prompt)
     nodes = []
+    plan = ""
     solution = ""
-    visible_test_result = {}
-    attempts = 0
+    generated_tests = ""
+    generated_test_result = {}
+    review_comments = ""
+    review_decision = ""
+    revision_count = 0
 
     if print_updates:
         user_message.pretty_print()
@@ -72,9 +76,13 @@ def run_eval_example(
         {
             "messages": [user_message],
             "task": example,
+            "plan": "",
             "solution": "",
-            "test_result": {},
-            "attempts": 0,
+            "generated_tests": "",
+            "generated_test_result": {},
+            "review_comments": "",
+            "review_decision": "",
+            "revision_count": 0,
         },
         config={
             "metadata": {
@@ -86,9 +94,16 @@ def run_eval_example(
         for node, update in chunk.items():
             nodes.append(node)
             latest_message = update["messages"][-1]
+            plan = update.get("plan", plan)
             solution = update.get("solution", solution)
-            visible_test_result = update.get("test_result", visible_test_result)
-            attempts = update.get("attempts", attempts)
+            generated_tests = update.get("generated_tests", generated_tests)
+            generated_test_result = update.get(
+                "generated_test_result",
+                generated_test_result,
+            )
+            review_comments = update.get("review_comments", review_comments)
+            review_decision = update.get("review_decision", review_decision)
+            revision_count = update.get("revision_count", revision_count)
 
             if print_updates:
                 print("### Node: ", node)
@@ -104,9 +119,13 @@ def run_eval_example(
         "repeat": repeat,
         "benchmark": "MBPP+",
         "task": compact_example(example),
+        "plan": plan,
         "solution": solution,
-        "visible_test_result": visible_test_result,
-        "repair_attempts": attempts,
+        "generated_tests": generated_tests,
+        "generated_test_result": generated_test_result,
+        "review_comments": review_comments,
+        "review_decision": review_decision,
+        "revision_count": revision_count,
         "model_config": model_config,
         "metrics": metrics,
         "nodes": nodes,

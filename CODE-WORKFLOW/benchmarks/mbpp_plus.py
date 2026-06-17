@@ -36,15 +36,11 @@ def normalize_task_id(task_id):
 
 
 def make_problem_prompt(example):
-    tests = example.get("assertion") or ""
     return (
         "Solve this MBPP+ Python programming task.\n\n"
         f"Task ID: {example['task_id']}\n"
         f"Entry point: {example['entry_point']}\n\n"
-        f"{example['prompt']}\n\n"
-        "Visible tests:\n"
-        f"{tests}\n\n"
-        "Return only Python code."
+        f"{example['prompt']}"
     )
 
 
@@ -53,5 +49,4 @@ def compact_example(example):
         "task_id": example["task_id"],
         "entry_point": example["entry_point"],
         "prompt": example["prompt"],
-        "assertion": example.get("assertion") or "",
     }

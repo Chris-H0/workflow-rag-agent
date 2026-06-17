@@ -15,6 +15,14 @@ def write_json(path: Path, data):
     path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
 
 
+def trace_is_complete(path: Path):
+    if not path.exists():
+        return False
+    data = json.loads(path.read_text(encoding="utf-8"))
+    root_run = data.get("root_run") or {}
+    return root_run.get("status") != "pending" and bool(root_run.get("end_time"))
+
+
 def download_traces(config_id: str):
     load_workflow_dotenv(override=True)
     project_name = os.getenv("LANGSMITH_PROJECT")
@@ -37,7 +45,7 @@ def download_traces(config_id: str):
             trace_id = root_run.trace_id
             output_path = analysis_config_dir(config_id) / "traces" / f"{trace_id}.json"
 
-            if output_path.exists():
+            if trace_is_complete(output_path):
                 continue
 
             trace_runs = list(

@@ -3,6 +3,10 @@ from langgraph.graph import MessagesState
 
 class CodeState(MessagesState):
     task: dict
+    plan: str
     solution: str
-    test_result: dict
-    attempts: int
+    generated_tests: str
+    generated_test_result: dict
+    review_comments: str
+    review_decision: str
+    revision_count: int

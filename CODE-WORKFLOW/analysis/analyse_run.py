@@ -147,6 +147,7 @@ def load_evals(eval_files):
         metrics = data.get("metrics") or {}
         task = data.get("task") or {}
         model_config = data.get("model_config") or {}
+        generated_test_result = data.get("generated_test_result") or {}
         row = {
             "run_id": run_id,
             "config_id": data.get("config_id"),
@@ -155,7 +156,16 @@ def load_evals(eval_files):
             "benchmark": data.get("benchmark"),
             "entry_point": task.get("entry_point"),
             "prompt": task.get("prompt"),
-            "repair_attempts": data.get("repair_attempts"),
+            "plan": data.get("plan"),
+            "generated_tests": data.get("generated_tests"),
+            "generated_test_status": generated_test_result.get("status"),
+            "generated_test_pass": generated_test_result.get("passed"),
+            "generated_test_failed_count": generated_test_result.get("failed_count"),
+            "generated_test_total_count": generated_test_result.get("total_count"),
+            "generated_test_error": generated_test_result.get("error"),
+            "review_comments": data.get("review_comments"),
+            "review_decision": data.get("review_decision"),
+            "revision_count": data.get("revision_count", data.get("repair_attempts")),
             "nodes": " -> ".join(data.get("nodes") or []),
             "solution": data.get("solution"),
             "model_config": json_string(model_config),
@@ -332,7 +342,9 @@ def summarise(config_id: str, runs_df, components_df, problem_summary, warnings)
         "accuracy",
         "base_failed_count",
         "plus_failed_count",
-        "repair_attempts",
+        "generated_test_pass",
+        "generated_test_failed_count",
+        "revision_count",
     ]
     metrics = {}
     for column in metric_columns:
@@ -388,7 +400,12 @@ def short_run_labels(runs_df: pd.DataFrame):
 
 
 def plot_latency_by_run(runs_df: pd.DataFrame, output_dir: Path):
-    data = runs_df.sort_values("total_latency_s", ascending=False).reset_index(drop=True)
+    data = runs_df.dropna(subset=["total_latency_s"]).sort_values(
+        "total_latency_s",
+        ascending=False,
+    ).reset_index(drop=True)
+    if data.empty:
+        return
     colours = data["is_correct"].map({True: "#2ca02c", False: "#d62728"}).tolist()
     plt.figure(figsize=(11, 5))
     plt.bar(short_run_labels(data), data["total_latency_s"], color=colours)
@@ -402,7 +419,13 @@ def plot_latency_by_run(runs_df: pd.DataFrame, output_dir: Path):
 def plot_latency_breakdown_by_run(runs_df, top_nodes_df, output_dir):
     if top_nodes_df.empty:
         return
-    node_order = ["generate_solution", "run_visible_tests", "debug_solution"]
+    node_order = [
+        "understand_and_plan",
+        "implement_solution",
+        "generate_tests",
+        "run_tests",
+        "review_solution",
+    ]
     pivot = top_nodes_df.pivot_table(
         index="run_id",
         columns="name",
@@ -410,7 +433,12 @@ def plot_latency_breakdown_by_run(runs_df, top_nodes_df, output_dir):
         aggfunc="sum",
         fill_value=0,
     )
-    ordered_runs = runs_df.sort_values("total_latency_s", ascending=False)["run_id"].tolist()
+    ordered_runs = runs_df.dropna(subset=["total_latency_s"]).sort_values(
+        "total_latency_s",
+        ascending=False,
+    )["run_id"].tolist()
+    if not ordered_runs:
+        return
     pivot = pivot.reindex(ordered_runs).fillna(0)
     columns = [column for column in node_order if column in pivot.columns]
     columns += [column for column in pivot.columns if column not in columns]
@@ -441,9 +469,12 @@ def plot_latency_breakdown_by_node(components_df, output_dir):
 
 
 def plot_accuracy_vs_latency(runs_df, output_dir):
-    colours = runs_df["is_correct"].map({True: "#2ca02c", False: "#d62728"}).tolist()
+    data = runs_df.dropna(subset=["total_latency_s", "accuracy"])
+    if data.empty:
+        return
+    colours = data["is_correct"].map({True: "#2ca02c", False: "#d62728"}).tolist()
     plt.figure(figsize=(8, 5))
-    plt.scatter(runs_df["total_latency_s"], runs_df["accuracy"], c=colours, s=80)
+    plt.scatter(data["total_latency_s"], data["accuracy"], c=colours, s=80)
     plt.xlabel("Total latency (s)")
     plt.ylabel("MBPP+ accuracy")
     plt.ylim(-0.05, 1.05)
@@ -452,8 +483,11 @@ def plot_accuracy_vs_latency(runs_df, output_dir):
 
 
 def plot_tokens_vs_latency(runs_df, output_dir):
+    data = runs_df.dropna(subset=["total_tokens", "total_latency_s"])
+    if data.empty:
+        return
     plt.figure(figsize=(8, 5))
-    plt.scatter(runs_df["total_tokens"], runs_df["total_latency_s"], c="#1f77b4", s=80)
+    plt.scatter(data["total_tokens"], data["total_latency_s"], c="#1f77b4", s=80)
     plt.xlabel("Total tokens")
     plt.ylabel("Total latency (s)")
     plt.title("Tokens vs latency")
@@ -599,10 +633,16 @@ def create_report(config_id, output_dir, runs_df, components_df, summary):
         "plus_pass",
         "mbpp_plus_pass",
         "accuracy",
-        "repair_attempts",
+        "generated_test_pass",
+        "generated_test_status",
+        "revision_count",
+        "review_decision",
         "base_failed_count",
         "plus_failed_count",
+        "generated_test_failed_count",
+        "generated_test_total_count",
         "prompt",
+        "review_comments",
     ]
     llm_by_node = (
         components_df[components_df["run_type"] == "llm"]
@@ -632,7 +672,7 @@ def create_report(config_id, output_dir, runs_df, components_df, summary):
 </head>
 <body>
   <h1>{escape(config_id)} Analysis</h1>
-  <p>Generated from <code>traces/*.json</code> and <code>evals/*.json</code>. Root latency is end-to-end LangGraph wall time; MBPP+ pass means both base and plus tests passed.</p>
+  <p>Generated from <code>traces/*.json</code> and <code>evals/*.json</code>. Root latency is end-to-end LangGraph wall time; MBPP+ pass means both base and plus tests passed after the agent finalized its solution.</p>
 
   <div class="grid">
     <div class="card"><h2>Run Counts</h2>{key_value_table({

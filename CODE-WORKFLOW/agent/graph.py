@@ -1,35 +1,43 @@
 from langgraph.graph import END, START, StateGraph
 
 from agent.nodes import (
-    build_debug_solution,
-    build_generate_solution,
-    decide_after_tests,
-    run_visible_tests,
+    build_generate_tests,
+    build_implement_solution,
+    build_review_solution,
+    build_understand_and_plan,
+    decide_after_review,
+    run_tests,
 )
 from agent.state import CodeState
 from paths import WORKFLOW_ROOT
 
 
 def build_graph(model_router):
-    generate_solution = build_generate_solution(model_router.get_model("generate_solution"))
-    debug_solution = build_debug_solution(model_router.get_model("debug_solution"))
+    understand_and_plan = build_understand_and_plan(model_router.get_model("understand_and_plan"))
+    implement_solution = build_implement_solution(model_router.get_model("implement_solution"))
+    generate_tests = build_generate_tests(model_router.get_model("generate_tests"))
+    review_solution = build_review_solution(model_router.get_model("review_solution"))
 
     workflow = StateGraph(CodeState)
-    workflow.add_node(generate_solution)
-    workflow.add_node(run_visible_tests)
-    workflow.add_node(debug_solution)
+    workflow.add_node(understand_and_plan)
+    workflow.add_node(implement_solution)
+    workflow.add_node(generate_tests)
+    workflow.add_node(run_tests)
+    workflow.add_node(review_solution)
 
-    workflow.add_edge(START, "generate_solution")
-    workflow.add_edge("generate_solution", "run_visible_tests")
+    workflow.add_edge(START, "understand_and_plan")
+    workflow.add_edge("understand_and_plan", "implement_solution")
+    workflow.add_edge("implement_solution", "generate_tests")
+    workflow.add_edge("generate_tests", "run_tests")
+    workflow.add_edge("run_tests", "review_solution")
     workflow.add_conditional_edges(
-        "run_visible_tests",
-        decide_after_tests,
+        "review_solution",
+        decide_after_review,
         {
-            "debug_solution": "debug_solution",
+            "implement_solution": "implement_solution",
             "__end__": END,
         },
     )
-    workflow.add_edge("debug_solution", "run_visible_tests")
 
     return workflow.compile()
 
