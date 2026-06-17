@@ -1,0 +1,38 @@
+{
+  "config_id": "v2-gpt4.1-mini",
+  "run_count": 75,
+  "eval_count": 75,
+  "trace_count": 75,
+  "component_count": 897,
+  "latency_s": {
+    "mean": 9.093690186666667,
+    "median": 7.447911,
+    "min": 4.991905,
+    "max": 35.776752,
+    "p90": 13.736098600000009,
+    "p95": 15.4994075
+  },
+  "correctness": {
+    "base_pass": 0.9733333333333334,
+    "plus_pass": 0.8266666666666667,
+    "mbpp_plus_pass": 0.8266666666666667,
+    "accuracy": 0.8266666666666667,
+    "base_failed_count": 0.08,
+    "plus_failed_count": 7.386666666666667,
+    "generated_test_pass": 0.88,
+    "generated_test_failed_count": 0.12,
+    "revision_count": 0.12
+  },
+  "root_status_counts": {
+    "success": 75
+  },
+  "model_config_counts": {
+    "{\"generate_tests\": {\"model\": \"gpt-4.1-mini\", \"provider\": \"openai\", \"temperature\": 0}, \"implement_solution\": {\"model\": \"gpt-4.1-mini\", \"provider\": \"openai\", \"temperature\": 0}, \"review_solution\": {\"model\": \"gpt-4.1-mini\", \"provider\": \"openai\", \"temperature\": 0}, \"understand_and_plan\": {\"model\": \"gpt-4.1-mini\", \"provider\": \"openai\", \"temperature\": 0}}": 75
+  },
+  "problems": {
+    "benchmark": "MBPP+",
+    "loaded_count": 100,
+    "evaluated_count": 75
+  },
+  "warnings": []
+}
