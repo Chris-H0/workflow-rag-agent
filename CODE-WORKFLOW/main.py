@@ -6,7 +6,7 @@ from evals.runner import run_download_traces, run_eval_loop
 from paths import load_workflow_dotenv
 
 
-CONFIG_ID = "v2-gpt5.5"
+CONFIG_ID = "v2.1-gpt5.5"
 MBPP_LOAD_LIMIT = 100
 TASKS = 75
 REPEATS = 1

@@ -1,0 +1,38 @@
+{
+  "config_id": "v2.1-gpt5.5",
+  "run_count": 75,
+  "eval_count": 75,
+  "trace_count": 75,
+  "component_count": 817,
+  "latency_s": {
+    "mean": 21.534011053333334,
+    "median": 18.792749,
+    "min": 9.950341,
+    "max": 69.162507,
+    "p90": 32.71878060000001,
+    "p95": 39.30089619999998
+  },
+  "correctness": {
+    "base_pass": 1.0,
+    "plus_pass": 0.8933333333333333,
+    "mbpp_plus_pass": 0.8933333333333333,
+    "accuracy": 0.8933333333333333,
+    "base_failed_count": 0.0,
+    "plus_failed_count": 4.04,
+    "generated_test_pass": 0.9866666666666667,
+    "generated_test_failed_count": 0.013333333333333334,
+    "revision_count": 0.0
+  },
+  "root_status_counts": {
+    "success": 75
+  },
+  "model_config_counts": {
+    "{\"generate_tests\": {\"model\": \"gpt-5.5\", \"provider\": \"openai\", \"temperature\": 0}, \"implement_solution\": {\"model\": \"gpt-5.5\", \"provider\": \"openai\", \"temperature\": 0}, \"review_solution\": {\"model\": \"gpt-5.5\", \"provider\": \"openai\", \"temperature\": 0}, \"understand_and_plan\": {\"model\": \"gpt-5.5\", \"provider\": \"openai\", \"temperature\": 0}}": 75
+  },
+  "problems": {
+    "benchmark": "MBPP+",
+    "loaded_count": 100,
+    "evaluated_count": 75
+  },
+  "warnings": []
+}
