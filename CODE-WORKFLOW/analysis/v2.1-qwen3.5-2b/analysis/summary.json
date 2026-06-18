@@ -1,0 +1,38 @@
+{
+  "config_id": "v2.1-qwen3.5-2b",
+  "run_count": 75,
+  "eval_count": 75,
+  "trace_count": 75,
+  "component_count": 1313,
+  "latency_s": {
+    "mean": 29.299777226666667,
+    "median": 19.532626,
+    "min": 8.466367,
+    "max": 88.892738,
+    "p90": 55.728295200000005,
+    "p95": 62.4033647
+  },
+  "correctness": {
+    "base_pass": 0.6266666666666667,
+    "plus_pass": 0.5333333333333333,
+    "mbpp_plus_pass": 0.5333333333333333,
+    "accuracy": 0.5333333333333333,
+    "base_failed_count": 0.76,
+    "plus_failed_count": 23.6,
+    "generated_test_pass": 0.16,
+    "generated_test_failed_count": 0.16,
+    "revision_count": 0.8133333333333334
+  },
+  "root_status_counts": {
+    "success": 75
+  },
+  "model_config_counts": {
+    "{\"generate_tests\": {\"model\": \"qwen3.5:2b\", \"num_predict\": 512, \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"implement_solution\": {\"model\": \"qwen3.5:2b\", \"num_predict\": 768, \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"review_solution\": {\"model\": \"qwen3.5:2b\", \"num_predict\": 256, \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"understand_and_plan\": {\"model\": \"qwen3.5:2b\", \"num_predict\": 256, \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}}": 75
+  },
+  "problems": {
+    "benchmark": "MBPP+",
+    "loaded_count": 100,
+    "evaluated_count": 75
+  },
+  "warnings": []
+}
