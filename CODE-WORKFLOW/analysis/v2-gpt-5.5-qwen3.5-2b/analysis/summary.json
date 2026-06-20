@@ -1,0 +1,38 @@
+{
+  "config_id": "v2-gpt-5.5-qwen3.5-2b",
+  "run_count": 75,
+  "eval_count": 75,
+  "trace_count": 75,
+  "component_count": 841,
+  "latency_s": {
+    "mean": 19.297397573333335,
+    "median": 16.689691,
+    "min": 9.627333,
+    "max": 97.503025,
+    "p90": 31.234754200000012,
+    "p95": 34.25245619999998
+  },
+  "correctness": {
+    "base_pass": 0.9866666666666667,
+    "plus_pass": 0.84,
+    "mbpp_plus_pass": 0.84,
+    "accuracy": 0.84,
+    "base_failed_count": 0.013333333333333334,
+    "plus_failed_count": 4.346666666666667,
+    "generated_test_pass": 1.0,
+    "generated_test_failed_count": 0.0,
+    "revision_count": 0.02666666666666667
+  },
+  "root_status_counts": {
+    "success": 75
+  },
+  "model_config_counts": {
+    "{\"generate_tests\": {\"model\": \"gpt-5.5\", \"provider\": \"openai\", \"temperature\": 0}, \"implement_solution\": {\"model\": \"gpt-5.5\", \"provider\": \"openai\", \"temperature\": 0}, \"review_solution\": {\"model\": \"qwen3.5:2b\", \"num_predict\": 256, \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"understand_and_plan\": {\"model\": \"qwen3.5:2b\", \"num_predict\": 256, \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}}": 75
+  },
+  "problems": {
+    "benchmark": "MBPP+",
+    "loaded_count": 100,
+    "evaluated_count": 75
+  },
+  "warnings": []
+}

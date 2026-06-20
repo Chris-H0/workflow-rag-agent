@@ -6,7 +6,7 @@ from evals.runner import run_download_traces, run_eval_loop
 from paths import load_workflow_dotenv
 
 
-CONFIG_ID = "v2-gpt-4.1-mini-qwen3.5-2b"
+CONFIG_ID = "v2-gpt-5.5-qwen3.5-2b"
 MBPP_LOAD_LIMIT = 100
 TASKS = 75
 REPEATS = 1
@@ -26,12 +26,12 @@ NODE_MODEL_CONFIG = {
     },
     "implement_solution": {
         "provider": "openai",
-        "model": "gpt-4.1-mini",
+        "model": "gpt-5.5",
         "temperature": 0,
     },
     "generate_tests": {
         "provider": "openai",
-        "model": "gpt-4.1-mini",
+        "model": "gpt-5.5",
         "temperature": 0,
     },
     "review_solution": {
