@@ -1,0 +1,2893 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>v2-qwen3.5-2bgpt-4.1-mini analysis</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 32px; color: #1f2933; }
+    h1, h2 { margin-bottom: 0.35rem; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0 28px; font-size: 13px; }
+    th, td { border: 1px solid #d9e2ec; padding: 7px 9px; text-align: left; vertical-align: top; }
+    th { background: #f0f4f8; }
+    img { max-width: 100%; border: 1px solid #d9e2ec; margin: 8px 0 28px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .card { border: 1px solid #d9e2ec; padding: 14px; border-radius: 6px; background: #fbfcfd; }
+    .warning { color: #9f580a; }
+    code { background: #f0f4f8; padding: 2px 4px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <h1>v2-qwen3.5-2bgpt-4.1-mini Analysis</h1>
+  <p>Generated from <code>traces/*.json</code> and <code>evals/*.json</code>. Root latency is end-to-end LangGraph wall time; MBPP+ pass means both base and plus tests passed after the agent finalized its solution.</p>
+
+  <div class="grid">
+    <div class="card"><h2>Run Counts</h2><table><tr><th>runs</th><td>75</td></tr><tr><th>evals</th><td>75</td></tr><tr><th>traces</th><td>75</td></tr><tr><th>components</th><td>1577</td></tr></table></div>
+    <div class="card"><h2>Latency Seconds</h2><table><tr><th>mean</th><td>24.048</td></tr><tr><th>median</th><td>22.811</td></tr><tr><th>min</th><td>4.32</td></tr><tr><th>max</th><td>339.666</td></tr><tr><th>p90</th><td>31.39</td></tr><tr><th>p95</th><td>34.994</td></tr></table></div>
+    <div class="card"><h2>Correctness</h2><table><tr><th>base_pass</th><td>0.813</td></tr><tr><th>plus_pass</th><td>0.693</td></tr><tr><th>mbpp_plus_pass</th><td>0.693</td></tr><tr><th>accuracy</th><td>0.693</td></tr><tr><th>base_failed_count</th><td>0.347</td></tr><tr><th>plus_failed_count</th><td>16.0</td></tr><tr><th>generated_test_pass</th><td>0.133</td></tr><tr><th>generated_test_failed_count</th><td>0.147</td></tr><tr><th>revision_count</th><td>1.253</td></tr></table></div>
+  </div>
+
+  <h2>Configured Models By Node</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>node</th>
+      <th>model</th>
+      <th>provider</th>
+      <th>model_kwargs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>generate_tests</td>
+      <td>qwen3.5:2b</td>
+      <td>ollama</td>
+      <td>{"num_predict": 256, "reasoning": false, "temperature": 0, "thinking": false}</td>
+    </tr>
+    <tr>
+      <td>implement_solution</td>
+      <td>qwen3.5:2b</td>
+      <td>ollama</td>
+      <td>{"num_predict": 256, "reasoning": false, "temperature": 0, "thinking": false}</td>
+    </tr>
+    <tr>
+      <td>review_solution</td>
+      <td>gpt-4.1-mini</td>
+      <td>openai</td>
+      <td>{"temperature": 0}</td>
+    </tr>
+    <tr>
+      <td>understand_and_plan</td>
+      <td>gpt-4.1-mini</td>
+      <td>openai</td>
+      <td>{"temperature": 0}</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Observed LLM Models In Traces</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>langgraph_node</th>
+      <th>model_provider</th>
+      <th>model_type</th>
+      <th>model_name</th>
+      <th>calls</th>
+      <th>duration_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>generate_tests</td>
+      <td>ollama</td>
+      <td>chat</td>
+      <td>qwen3.5:2b</td>
+      <td>169</td>
+      <td>769.036154</td>
+      <td>136636</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <td>implement_solution</td>
+      <td>ollama</td>
+      <td>chat</td>
+      <td>qwen3.5:2b</td>
+      <td>169</td>
+      <td>366.972090</td>
+      <td>110164</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <td>review_solution</td>
+      <td>openai</td>
+      <td>chat</td>
+      <td>gpt-4.1-mini</td>
+      <td>169</td>
+      <td>169.879816</td>
+      <td>265719</td>
+      <td>0.086657</td>
+    </tr>
+    <tr>
+      <td>understand_and_plan</td>
+      <td>openai</td>
+      <td>chat</td>
+      <td>gpt-4.1-mini</td>
+      <td>75</td>
+      <td>488.602215</td>
+      <td>59975</td>
+      <td>0.085578</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Warnings</h2>
+  <p>No warnings.</p>
+
+  <section><h2>Latency By Run</h2><img src="latency_by_run.png" alt="Latency By Run"></section>
+<section><h2>Latency Breakdown By Run</h2><img src="latency_breakdown_by_run.png" alt="Latency Breakdown By Run"></section>
+<section><h2>Latency Breakdown By Node</h2><img src="latency_breakdown_by_node.png" alt="Latency Breakdown By Node"></section>
+<section><h2>Accuracy Vs Latency</h2><img src="accuracy_vs_latency.png" alt="Accuracy Vs Latency"></section>
+<section><h2>Tokens Vs Latency</h2><img src="tokens_vs_latency.png" alt="Tokens Vs Latency"></section>
+
+  <h2>Correct Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+      <th>base_pass</th>
+      <th>plus_pass</th>
+      <th>mbpp_plus_pass</th>
+      <th>accuracy</th>
+      <th>generated_test_pass</th>
+      <th>generated_test_status</th>
+      <th>revision_count</th>
+      <th>review_decision</th>
+      <th>base_failed_count</th>
+      <th>plus_failed_count</th>
+      <th>generated_test_failed_count</th>
+      <th>generated_test_total_count</th>
+      <th>prompt</th>
+      <th>review_comments</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Mbpp/129</td>
+      <td>0</td>
+      <td>34.732569</td>
+      <td>9207</td>
+      <td>0.001757</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to calculate whether the matrix is a magic square.\nassert magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])==True\n"""\n</td>
+      <td>Test code contains invalid markdown syntax (```python) causing syntax error; also some tests are incorrect or inconsistent with the problem statement (e.g., non-square matrix test and non-numeric elements test). The solution function is correct but tests need fixing and completion.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/72</td>
+      <td>0</td>
+      <td>34.066807</td>
+      <td>10384</td>
+      <td>0.002520</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>25</td>
+      <td>"""\nWrite a python function to check whether the given number can be represented as the difference of two squares or not.\nassert dif_Square(5) == True\n"""\n</td>
+      <td>The solution incorrectly returns True for all negative numbers without proper factor parity checks. Also, the parity check and factor iteration need to handle negative factors and zero correctly. The current approach misses some cases and fails some tests.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/75</td>
+      <td>0</td>
+      <td>32.754920</td>
+      <td>8683</td>
+      <td>0.001587</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find tuples which have all elements divisible by k from the given list of tuples.\nassert find_tuples([(6, 24, 12), (7, 9, 6), (12, 18, 21)], 6) == [(6, 24, 12)]\n"""\n</td>
+      <td>Remove markdown code fences from generated tests and complete the incomplete test case to fix syntax errors.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/97</td>
+      <td>0</td>
+      <td>31.839373</td>
+      <td>8604</td>
+      <td>0.001643</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find frequency of each element in a flattened list of lists, returned in a dictionary.\nassert frequency_lists([[1, 2, 3, 2], [4, 5, 6, 2], [7, 8, 9, 5]])=={1: 1, 2: 3, 3: 1, 4: 1, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1}\n"""\n</td>
+      <td>The solution is correct, but the generated tests contain a syntax error due to an unclosed dictionary literal. The code should be finalized after fixing the test cases.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/9</td>
+      <td>0</td>
+      <td>29.637961</td>
+      <td>9131</td>
+      <td>0.001711</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>20</td>
+      <td>"""\nWrite a python function to find the minimum number of rotations (greater than 0) required to get the same string.\nassert find_Rotations("aaaa") == 1\n"""\n</td>
+      <td>The solution is correct but the generated tests contain invalid assertions expecting multiple different results for the same input, causing failures. The function itself works as intended and handles edge cases properly, but the test suite needs correction.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/63</td>
+      <td>0</td>
+      <td>28.998492</td>
+      <td>7149</td>
+      <td>0.001829</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>10</td>
+      <td>"""\nWrite a function to find the maximum difference between available pairs in the given tuple list.\nassert max_difference([(3, 5), (1, 7), (10, 3), (1, 2)]) == 7\n"""\n</td>
+      <td>The solution is mostly correct but fails one test; likely due to incorrect expected values in tests or a misunderstanding. The function logic is sound, but the test asserting max_difference([(1, 2), (3, 4), (5, 6)]) == 3 is incorrect since max difference should be 1, 1, and 1 respectively, so max is 1, not 3. Tests need correction or clarification.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/80</td>
+      <td>0</td>
+      <td>28.331973</td>
+      <td>7683</td>
+      <td>0.001864</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the nth tetrahedral number.\nassert tetrahedral_number(5) == 35\n"""\n</td>
+      <td>The solution raises ValueError for negative inputs, but the test expects returning 0 for negative inputs. The behavior should be consistent; either raise or return 0. Revise to match the test expectations.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/69</td>
+      <td>0</td>
+      <td>28.217987</td>
+      <td>8041</td>
+      <td>0.001432</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to check whether a list contains the given sublist or not.\nassert is_sublist([2,4,3,5,7],[3,7])==False\n"""\n</td>
+      <td>The solution logic is correct, but the generated tests contain invalid syntax (```python) causing a compile error. Remove markdown syntax from the test code.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/4</td>
+      <td>0</td>
+      <td>27.267737</td>
+      <td>8095</td>
+      <td>0.001345</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find the n largest integers from a given list of numbers, returned in descending order.\nassert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],3)==[85, 75, 65]\n"""\n</td>
+      <td>The solution is correct and handles edge cases well, but the generated tests contain a syntax error due to an incomplete assert statement. Fix the test code before final submission.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/3</td>
+      <td>0</td>
+      <td>27.134382</td>
+      <td>7205</td>
+      <td>0.001842</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to identify non-prime numbers.\nassert is_not_prime(2) == False\n"""\n</td>
+      <td>Tests contain invalid markdown syntax (```python) causing syntax error; also, the function incorrectly returns True for prime numbers &gt; 2 (e.g., 3 and 5). Fix test formatting and correct logic to return False for primes and True for non-primes.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/98</td>
+      <td>0</td>
+      <td>26.055809</td>
+      <td>8079</td>
+      <td>0.001430</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to multiply all the numbers in a list and divide with the length of the list.\nassert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)\n"""\n</td>
+      <td>The solution is correct but the generated tests contain a syntax error due to an incomplete assert statement. Fix the test code to close the list and complete the assertion.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/12</td>
+      <td>0</td>
+      <td>25.762264</td>
+      <td>6593</td>
+      <td>0.001538</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to sort a given matrix in ascending order according to the sum of its rows.\nassert sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]])==[[1, 1, 1], [1, 2, 3], [2, 4, 5]]\n"""\n</td>
+      <td>The solution logic is correct, but the generated tests contain invalid syntax (```python) causing a compile error. Remove markdown syntax from tests and complete the last test case.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/18</td>
+      <td>0</td>
+      <td>24.265995</td>
+      <td>6745</td>
+      <td>0.001664</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to remove characters from the first string which are present in the second string.\nassert remove_dirty_chars("probasscurve", "pros") == 'bacuve'\n"""\n</td>
+      <td>Remove markdown syntax from generated tests to avoid syntax errors; solution logic is correct and handles edge cases well.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/64</td>
+      <td>0</td>
+      <td>23.899633</td>
+      <td>6555</td>
+      <td>0.001578</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to sort a list of tuples using the second value of each tuple.\nassert subject_marks([('English', 88), ('Science', 90), ('Maths', 97), ('Social sciences', 82)])==[('Social sciences', 82), ('English', 88), ('Science', 90), ('Maths', 97)]\n"""\n</td>
+      <td>The solution is correct, but the generated tests contain invalid syntax (triple backticks). Remove the markdown formatting from the test code to fix the syntax error.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/87</td>
+      <td>0</td>
+      <td>23.747099</td>
+      <td>6767</td>
+      <td>0.001671</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to merge three dictionaries into a single dictionary.\nassert merge_dictionaries_three({ "R": "Red", "B": "Black", "P": "Pink" }, { "G": "Green", "W": "White" },{ "O": "Orange", "W": "White", "B": "Black" })=={'B': 'Black', 'R': 'Red', 'P': 'Pink', 'G': 'Green', 'W': 'White', 'O': 'Orange'}\n"""\n</td>
+      <td>The solution is correct, but the generated tests contain a syntax error due to an unterminated string literal. Fixing the test code is necessary before final submission.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/70</td>
+      <td>0</td>
+      <td>23.699638</td>
+      <td>6373</td>
+      <td>0.001596</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find whether all the given tuples have equal length or not.\nassert get_equal([(11, 22, 33), (44, 55, 66)]) == True\n"""\n</td>
+      <td>Solution is correct and handles all edge cases. The test failure is due to invalid syntax in the test code (presence of ```python). The function itself is ready for final submission.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/108</td>
+      <td>0</td>
+      <td>23.533574</td>
+      <td>7052</td>
+      <td>0.001669</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to merge three lists into a single sorted list.\nassert merge_sorted_list([25, 24, 15, 4, 5, 29, 110],[19, 20, 11, 56, 25, 233, 154],[24, 26, 54, 48])==[4, 5, 11, 15, 19, 20, 24, 24, 25, 25, 26, 29, 48, 54, 56, 110, 154, 233]\n"""\n</td>
+      <td>The solution is correct, but the generated tests contain syntax errors (e.g., markdown code fences and incomplete test cases). Remove markdown and fix test cases to ensure proper testing.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/14</td>
+      <td>0</td>
+      <td>23.416535</td>
+      <td>5922</td>
+      <td>0.001474</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to find the volume of a triangular prism.\nassert find_Volume(10,8,6) == 240\n"""\n</td>
+      <td>Remove markdown syntax from generated tests to avoid syntax errors; function logic is correct and handles edge cases well.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/58</td>
+      <td>0</td>
+      <td>23.224584</td>
+      <td>6199</td>
+      <td>0.001578</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to check whether the given two integers have opposite sign or not.\nassert opposite_Signs(1,-2) == True\n"""\n</td>
+      <td>The solution is correct, but the generated tests contain a syntax error due to an incomplete assert statement. Fix the test code to remove the syntax error before final submission.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/8</td>
+      <td>0</td>
+      <td>22.810521</td>
+      <td>7025</td>
+      <td>0.001210</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find squares of individual elements in a list.\nassert square_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]\n"""\n</td>
+      <td>The solution is correct, but the generated tests contain a syntax error due to an unclosed list bracket. Fix the test cases before final submission.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/79</td>
+      <td>0</td>
+      <td>22.097914</td>
+      <td>5691</td>
+      <td>0.001511</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to check whether the length of the word is odd or not.\nassert word_len("Hadoop") == False\n"""\n</td>
+      <td>The solution is correct, but the generated tests contain a syntax error due to a trailing 'assert' statement without a condition. Remove the invalid assert to fix the tests.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/101</td>
+      <td>0</td>
+      <td>19.405661</td>
+      <td>6403</td>
+      <td>0.001638</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find the kth element in the given array using 1-based indexing.\nassert kth_element([12,3,5,7,19], 2) == 3\n"""\n</td>
+      <td>Test syntax for checking exceptions is invalid; use try-except or unittest methods to test IndexError. Function implementation is correct.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/111</td>
+      <td>0</td>
+      <td>19.204081</td>
+      <td>5211</td>
+      <td>0.001292</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>1</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find the common elements in given nested lists.\nassert set(common_in_nested_lists([[12, 18, 23, 25, 45], [7, 12, 18, 24, 28], [1, 5, 8, 12, 15, 16, 18]]))==set([18, 12])\n"""\n</td>
+      <td>Solution is correct and handles edge cases well. The test failure is due to invalid syntax in the test code (backticks), not the solution itself.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/82</td>
+      <td>0</td>
+      <td>18.489960</td>
+      <td>5833</td>
+      <td>0.001572</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the volume of a sphere.\nassert math.isclose(volume_sphere(10), 4188.790204786391, rel_tol=0.001)\n"""\n</td>
+      <td>The assertion volume_sphere(10) == 4188.790204786391 fails due to floating point precision; use math.isclose for comparisons. Also, the test for volume_sphere(3.14159) is incorrect as the expected value is not verified with tolerance. Revise tests to use math.isclose and keep the function as is.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/96</td>
+      <td>0</td>
+      <td>17.753351</td>
+      <td>5892</td>
+      <td>0.001585</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>10</td>
+      <td>"""\nWrite a python function to find the number of divisors of a given integer.\nassert divisor(15) == 4\n"""\n</td>
+      <td>The solution is correct for small inputs but inefficient for large inputs like 1,000,000. The test failure likely comes from incorrect divisor count for large numbers. Optimize by checking divisors up to sqrt(n) and counting pairs to improve performance and correctness.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/61</td>
+      <td>0</td>
+      <td>15.238219</td>
+      <td>3089</td>
+      <td>0.001139</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>12</td>
+      <td>"""\nWrite a python function to count the number of substrings with the sum of digits equal to their length.\nassert count_Substrings('112112') == 6\n"""\n</td>
+      <td>The solution is correct and passes all edge cases; the test failure is likely due to an external issue, not the code itself.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/85</td>
+      <td>0</td>
+      <td>14.770928</td>
+      <td>4826</td>
+      <td>0.001208</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the surface area of a sphere.\nassert math.isclose(surfacearea_sphere(10), 1256.6370614359173, rel_tol=0.001)\n"""\n</td>
+      <td>Function does not handle negative radius as expected by tests; should return 0 for negative radius to pass all tests.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/91</td>
+      <td>0</td>
+      <td>14.126830</td>
+      <td>3723</td>
+      <td>0.001040</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>1</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to check if a string is present as a substring in a given list of string values.\nassert find_substring(["red", "black", "white", "green", "orange"],"ack")==True\n"""\n</td>
+      <td>Solution is correct, passes all tests including edge cases, and matches the task requirements.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/125</td>
+      <td>0</td>
+      <td>13.931267</td>
+      <td>3650</td>
+      <td>0.001315</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find the maximum difference between the number of 0s and number of 1s in any sub-string of the given binary string.\nassert find_length("11000010001") == 6\n"""\n</td>
+      <td>Solution is correct and efficient; test failure is due to a syntax error in the generated tests, not the solution itself.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/120</td>
+      <td>0</td>
+      <td>13.678312</td>
+      <td>3368</td>
+      <td>0.001244</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find the maximum absolute product between numbers in pairs of tuples within a given list.\nassert max_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==36\n"""\n</td>
+      <td>Solution is correct and handles edge cases well. The test failure is due to a syntax error in the generated tests, not the solution itself.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/6</td>
+      <td>0</td>
+      <td>13.430640</td>
+      <td>3260</td>
+      <td>0.001288</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>16</td>
+      <td>"""\nWrite a python function to check whether the two numbers differ at one bit position only or not.\nassert differ_At_One_Bit_Pos(13,9) == True\n"""\n</td>
+      <td>The solution correctly implements the logic to check if two numbers differ at exactly one bit position. The test failure appears to be a single assertion error likely due to a test input issue, not the function logic. The function handles edge cases and negative numbers as intended.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/71</td>
+      <td>0</td>
+      <td>13.300980</td>
+      <td>3349</td>
+      <td>0.001160</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to sort a list of elements.\nassert comb_sort([5, 15, 37, 25, 79]) == [5, 15, 25, 37, 79]\n"""\n</td>
+      <td>The solution is correct and implements comb sort properly. The test failure is due to a syntax error in the generated tests, not the solution itself.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/68</td>
+      <td>0</td>
+      <td>12.849636</td>
+      <td>2931</td>
+      <td>0.001032</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to check whether the given array is monotonic or not.\nassert is_Monotonic([6, 5, 4, 4]) == True\n"""\n</td>
+      <td>Solution is correct and handles all edge cases. The test failure is due to invalid syntax in the test code (triple backticks), not the solution itself.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/2</td>
+      <td>0</td>
+      <td>11.704293</td>
+      <td>2452</td>
+      <td>0.000855</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>11</td>
+      <td>"""\nWrite a function to find the shared elements from the given two lists.\nassert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n"""\n</td>
+      <td>Solution is correct and handles all edge cases; test import error is unrelated to the solution code.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/66</td>
+      <td>0</td>
+      <td>9.150927</td>
+      <td>2356</td>
+      <td>0.000807</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to count the number of positive numbers in a list.\nassert pos_count([1,-2,3,-4]) == 2\n"""\n</td>
+      <td>Solution is correct and handles all edge cases. The test failure is due to an incomplete test case, not the solution itself.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/95</td>
+      <td>0</td>
+      <td>9.005953</td>
+      <td>2270</td>
+      <td>0.000778</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to find the length of the smallest list in a list of lists.\nassert Find_Min_Length([[1],[1,2]]) == 1\n"""\n</td>
+      <td>Solution is correct and handles edge cases well. The test failure is due to an incomplete test case, not the solution itself.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/90</td>
+      <td>0</td>
+      <td>8.957322</td>
+      <td>1939</td>
+      <td>0.000632</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>14</td>
+      <td>"""\nWrite a python function to find the length of the longest word.\nassert len_log(["python","PHP","bigdata"]) == 7\n"""\n</td>
+      <td>Solution is correct, handles edge cases, passes all tests, and meets requirements.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/116</td>
+      <td>0</td>
+      <td>8.896827</td>
+      <td>2582</td>
+      <td>0.000939</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to convert a given tuple of positive integers into a single integer.\nassert tuple_to_int((1,2,3))==123\n"""\n</td>
+      <td>Solution is correct and efficient. The test failure is due to a syntax error in the generated tests, not the solution itself.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/105</td>
+      <td>0</td>
+      <td>8.377441</td>
+      <td>2198</td>
+      <td>0.000760</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to count true booleans in the given list.\nassert count([True,False,True]) == 2\n"""\n</td>
+      <td>The solution is correct and handles all specified edge cases. The test failure is due to a syntax error in the generated tests, not the solution itself.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/88</td>
+      <td>0</td>
+      <td>7.906013</td>
+      <td>2260</td>
+      <td>0.000690</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to get the frequency of all the elements in a list, returned as a dictionary.\nassert freq_count([10,10,10,10,20,20,20,20,40,40,50,50,30])==({10: 4, 20: 4, 40: 2, 50: 2, 30: 1})\n"""\n</td>
+      <td>Solution is correct and handles all edge cases. The test failure is due to an incomplete test case, not the solution itself.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/94</td>
+      <td>0</td>
+      <td>7.815225</td>
+      <td>2181</td>
+      <td>0.000742</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nGiven a list of tuples, write a function that returns the first value of the tuple with the smallest second value.\nassert index_minimum([('Rash', 143), ('Manjeet', 200), ('Varsha', 100)]) == 'Varsha'\n"""\n</td>
+      <td>Solution is correct, handles edge cases, passes all tests, and is concise.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/86</td>
+      <td>0</td>
+      <td>7.797453</td>
+      <td>2142</td>
+      <td>0.000715</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>4</td>
+      <td>"""\nWrite a function to find nth centered hexagonal number.\nassert centered_hexagonal_number(10) == 271\n"""\n</td>
+      <td>The solution is correct and handles the input as specified. The test failure is due to incorrect import in the generated tests, not the solution itself.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/65</td>
+      <td>0</td>
+      <td>7.467502</td>
+      <td>1955</td>
+      <td>0.000647</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a function to flatten a list and sum all of its elements.\nassert recursive_list_sum(([1, 2, [3,4],[5,6]]))==21\n"""\n</td>
+      <td>Solution is correct, passes all tests, handles edge cases, and matches the task requirements.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/62</td>
+      <td>0</td>
+      <td>7.013141</td>
+      <td>2054</td>
+      <td>0.000775</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a python function to find smallest number in a list.\nassert smallest_num([10, 20, 1, 45, 99]) == 1\n"""\n</td>
+      <td>The solution is correct and handles edge cases properly. The test error is due to import issues, not the function itself.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/93</td>
+      <td>0</td>
+      <td>6.664662</td>
+      <td>2165</td>
+      <td>0.000828</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to calculate the value of 'a' to the power 'b'.\nassert power(3,4) == 81\n"""\n</td>
+      <td>The solution is correct and handles all edge cases as specified. The test failure is due to an import error in the generated tests, not the solution itself.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/19</td>
+      <td>0</td>
+      <td>6.619225</td>
+      <td>1950</td>
+      <td>0.000700</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find whether a given array of integers contains any duplicate element.\nassert test_duplicate(([1,2,3,4,5]))==False\n"""\n</td>
+      <td>Solution is correct, efficient, handles edge cases, and passes all tests.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/57</td>
+      <td>0</td>
+      <td>6.464076</td>
+      <td>1839</td>
+      <td>0.000618</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a python function to find the largest number that can be formed with the given list of digits.\nassert find_Max_Num([1,2,3]) == 321\n"""\n</td>
+      <td>Solution correctly handles all specified cases and passes all tests; no revisions needed.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/118</td>
+      <td>0</td>
+      <td>5.822908</td>
+      <td>1785</td>
+      <td>0.000682</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>4</td>
+      <td>"""\nWrite a function to convert a string to a list of strings split on the space character.\nassert string_to_list("python programming")==['python','programming']\n"""\n</td>
+      <td>The solution matches the task requirements and handles edge cases as specified. The test failure is likely due to an incorrect expected output in the generated tests, not the implementation.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/17</td>
+      <td>0</td>
+      <td>5.711781</td>
+      <td>1649</td>
+      <td>0.000598</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>6</td>
+      <td>"""\nWrite a function that returns the perimeter of a square given its side length as input.\nassert square_perimeter(10)==40\n"""\n</td>
+      <td>The solution is correct and handles all specified edge cases. The test failure is due to an import error in the test setup, not the solution itself.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/127</td>
+      <td>0</td>
+      <td>5.586944</td>
+      <td>1600</td>
+      <td>0.000593</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>4</td>
+      <td>"""\nWrite a function to multiply two integers.\nassert multiply_int(10,20)==200\n"""\n</td>
+      <td>Solution is correct, passes all tests including edge cases, and meets the task requirements.</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>Incorrect Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+      <th>base_pass</th>
+      <th>plus_pass</th>
+      <th>mbpp_plus_pass</th>
+      <th>accuracy</th>
+      <th>generated_test_pass</th>
+      <th>generated_test_status</th>
+      <th>revision_count</th>
+      <th>review_decision</th>
+      <th>base_failed_count</th>
+      <th>plus_failed_count</th>
+      <th>generated_test_failed_count</th>
+      <th>generated_test_total_count</th>
+      <th>prompt</th>
+      <th>review_comments</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Mbpp/56</td>
+      <td>0</td>
+      <td>339.666038</td>
+      <td>159074</td>
+      <td>0.073158</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>1</td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to check if a given number is one less than twice its reverse.\nassert check(70) == False\n"""\n</td>
+      <td>Syntax error in generated tests and incorrect logic in solution; should check if n == 2 * rev - 1, not n == 2 * rev.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/123</td>
+      <td>0</td>
+      <td>38.372894</td>
+      <td>11159</td>
+      <td>0.001719</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to sum all amicable numbers from 1 to a specified number.\nassert amicable_numbers_sum(999)==504\n"""\n</td>
+      <td>Solution incomplete and contains invalid syntax; sum_proper_divisors function is not properly implemented and abruptly cut off; needs a correct and efficient implementation without hardcoded values.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/100</td>
+      <td>0</td>
+      <td>36.936945</td>
+      <td>10808</td>
+      <td>0.001678</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find the next smallest palindrome of a specified integer, returned as an integer.\nassert next_smallest_palindrome(99)==101\n"""\n</td>
+      <td>Incomplete solution with syntax errors and unfinished code; needs completion and correction for odd length case and proper palindrome increment handling.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/103</td>
+      <td>0</td>
+      <td>35.603028</td>
+      <td>9506</td>
+      <td>0.001776</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>18</td>
+      <td>"""\nWrite a function to find the Eulerian number a(n, m).\nassert eulerian_num(3, 1) == 4\n"""\n</td>
+      <td>The solution code is incomplete and missing the return statement for dp(n, m). Also, the code block markers ```python should be removed to avoid syntax errors.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/109</td>
+      <td>0</td>
+      <td>30.716336</td>
+      <td>11333</td>
+      <td>0.002038</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>48</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to find the number of numbers with an odd value when rotating a binary string the given number of times.\nassert odd_Equivalent("011001",6) == 3\n"""\n</td>
+      <td>The solution logic is correct, but the generated tests contain a syntax error due to an incomplete assert statement. Fixing the test code is needed before final submission.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/67</td>
+      <td>0</td>
+      <td>30.035127</td>
+      <td>9777</td>
+      <td>0.001762</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>3</td>
+      <td>98</td>
+      <td>0</td>
+      <td>11</td>
+      <td>"""\nWrite a function to find the number of ways to partition a set of Bell numbers.\nassert bell_number(2)==2\n"""\n</td>
+      <td>The solution logic is mostly correct but the test import causes ModuleNotFoundError. Also, the Bell triangle construction has an indexing issue leading to incorrect Bell numbers for n&gt;2. The code should be fixed to correctly build the Bell triangle and tests should be run without import errors.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/16</td>
+      <td>0</td>
+      <td>29.660539</td>
+      <td>7826</td>
+      <td>0.001297</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>24</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to that returns true if the input string contains sequences of lowercase letters joined with an underscore and false otherwise.\nassert text_lowercase_underscore("aab_cbbbc")==(True)\n"""\n</td>
+      <td>Syntax error in test code due to incomplete test method definition; also, the regex pattern incorrectly allows multiple consecutive underscores; needs correction to match the specification and fix tests.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/92</td>
+      <td>0</td>
+      <td>29.273622</td>
+      <td>9014</td>
+      <td>0.001708</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to check whether the given number is undulating or not.\nassert is_undulating(1212121) == True\n"""\n</td>
+      <td>The solution logic is mostly correct but the test code contains invalid syntax (```python block). Also, the function does not verify the alternating pattern strictly; it only checks if digits are among the first two digits but does not ensure the correct alternating order. The function should be revised to check that digits at even indices match s[0] and digits at odd indices match s[1].</td>
+    </tr>
+    <tr>
+      <td>Mbpp/11</td>
+      <td>0</td>
+      <td>27.945528</td>
+      <td>8225</td>
+      <td>0.001530</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>2</td>
+      <td>27</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to remove first and last occurrence of a given character from the string.\nassert remove_Occ("hello","l") == "heo"\n"""\n</td>
+      <td>The solution logic is mostly correct but the final return statement incorrectly removes the substring between first and last occurrence instead of removing both characters separately. Also, the generated tests contain invalid markdown syntax causing a syntax error. Fix the function to remove both occurrences properly and remove markdown from tests.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/74</td>
+      <td>0</td>
+      <td>27.897543</td>
+      <td>7744</td>
+      <td>0.002041</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>1</td>
+      <td>16</td>
+      <td>0</td>
+      <td>12</td>
+      <td>"""\nWrite a function to check whether it follows the sequence given in the patterns array.\nassert is_samepatterns(["red","green","green"], ["a", "b", "b"])==True\n"""\n</td>
+      <td>The current solution is incorrect and does not implement the pattern mapping logic. Also, the initial check 'if not lst1 or not lst2: return True' is wrong because if one list is empty and the other is not, it should return False. The test import error is due to test setup, not the solution itself. The function needs to be rewritten to correctly map elements to pattern IDs and compare them.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/20</td>
+      <td>0</td>
+      <td>27.632143</td>
+      <td>7005</td>
+      <td>0.001704</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>20</td>
+      <td>"""\nWrite a function to check if the given number is woodball or not.\nassert is_woodall(383) == True\n"""\n</td>
+      <td>The solution is correct in logic but the generated tests incorrectly assume many numbers are not Woodall numbers; some test assertions fail. The function should be kept but test cases need correction.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/124</td>
+      <td>0</td>
+      <td>27.456534</td>
+      <td>8348</td>
+      <td>0.001512</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>3</td>
+      <td>116</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to get the angle of a complex number.\nassert math.isclose(angle_complex(0,1j), 1.5707963267948966, rel_tol=0.001)\n"""\n</td>
+      <td>The solution is correct but the generated tests contain a syntax error due to an unclosed parenthesis. Also, the first test case calls angle_complex with two arguments instead of one complex number. Fixing these issues will make the solution ready.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/84</td>
+      <td>0</td>
+      <td>26.567527</td>
+      <td>7645</td>
+      <td>0.001932</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>final</td>
+      <td>0</td>
+      <td>60</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find the nth number in the newman conway sequence.\nassert sequence(10) == 6\n"""\n</td>
+      <td>The solution is correct and efficient with memoization. The test failure is due to an incomplete test line, not the solution itself.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/113</td>
+      <td>0</td>
+      <td>26.071695</td>
+      <td>7148</td>
+      <td>0.001821</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>9</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to check if a string represents an integer or not.\nassert check_integer("python")==False\n"""\n</td>
+      <td>The solution logic is correct, but the generated tests contain a syntax error due to a stray 'assert' statement without a condition. The solution should be resubmitted with corrected tests.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/104</td>
+      <td>0</td>
+      <td>26.066283</td>
+      <td>7600</td>
+      <td>0.001665</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>3</td>
+      <td>120</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to sort each sublist of strings in a given list of lists.\nassert sort_sublists((["green", "orange"], ["black", "white"], ["white", "black", "orange"]))==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]\n"""\n</td>
+      <td>The provided solution code is incorrect and does not sort sublists properly. The generated tests contain a syntax error due to an unterminated string literal. The function should be rewritten to correctly sort each sublist and return a new list of sorted sublists without modifying the input.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/119</td>
+      <td>0</td>
+      <td>25.438723</td>
+      <td>7196</td>
+      <td>0.001846</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>63</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to find the element that appears only once in a sorted array.\nassert search([1,1,2,2,3]) == 3\n"""\n</td>
+      <td>The solution is correct and handles edge cases well, but the generated tests contain a syntax error due to an unclosed bracket. Fixing the test cases is needed before final submission.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/126</td>
+      <td>0</td>
+      <td>23.840574</td>
+      <td>7405</td>
+      <td>0.001809</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>3</td>
+      <td>107</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a python function to find the sum of common divisors of two given numbers.\nassert sum(10,15) == 6\n"""\n</td>
+      <td>The function name 'sum' shadows the built-in sum() function, causing a TypeError when calling sum(common_divisors). Rename the function to avoid this conflict.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/7</td>
+      <td>0</td>
+      <td>23.124982</td>
+      <td>6627</td>
+      <td>0.001751</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>36</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find all words which are at least 4 characters long in a string.\nassert set(find_char_long('Please move back to stream')) == set(['Please', 'move', 'back', 'stream'])\n"""\n</td>
+      <td>The solution is correct, but the generated tests contain a syntax error due to an unterminated string literal. The function itself is fine and meets the requirements, but the test suite must be fixed before final submission.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/128</td>
+      <td>0</td>
+      <td>22.686736</td>
+      <td>5997</td>
+      <td>0.001642</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>3</td>
+      <td>104</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find words that are longer than n characters from a given list of words.\nassert long_words(3,"python is a programming language")==['python','programming','language']\n"""\n</td>
+      <td>The solution function signature and parameter order do not match the task description and example. The generated tests contain syntax errors and invalid calls with wrong argument types. The function should accept (n, words) with words as a string, not the other way around. The tests need correction and completion.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/59</td>
+      <td>0</td>
+      <td>22.445637</td>
+      <td>5656</td>
+      <td>0.001397</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>3</td>
+      <td>101</td>
+      <td>1</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the nth octagonal number.\nassert is_octagonal(5) == 65\n"""\n</td>
+      <td>The function correctly implements the formula with division by 2, but the generated tests incorrectly expect 0 for n=0 and n=-1 instead of raising ValueError. The tests should be fixed or removed; otherwise, the function should raise errors for non-positive inputs as documented.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/106</td>
+      <td>0</td>
+      <td>18.028069</td>
+      <td>6266</td>
+      <td>0.001680</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>3</td>
+      <td>115</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to append the given list to the given tuples.\nassert add_lists([5, 6, 7], (9, 10)) == (9, 10, 5, 6, 7)\n"""\n</td>
+      <td>The function parameter named 'tuple' shadows the built-in tuple type, causing a TypeError when calling tuple(list). Rename the parameter to avoid this conflict.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/102</td>
+      <td>0</td>
+      <td>9.227322</td>
+      <td>2077</td>
+      <td>0.000672</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>100</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to convert a snake case string to camel case string.\nassert snake_to_camel('python_program')=='PythonProgram'\n"""\n</td>
+      <td>Solution passes all tests, handles edge cases correctly, and matches the task requirements.</td>
+    </tr>
+    <tr>
+      <td>Mbpp/99</td>
+      <td>0</td>
+      <td>6.548925</td>
+      <td>1978</td>
+      <td>0.000700</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>51</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to convert the given decimal number to its binary equivalent, represented as a string with no leading zeros.\nassert decimal_to_binary(8) == '1000'\n"""\n</td>
+      <td>The solution is correct and handles all edge cases. The test failure is due to an import error in the test setup, not the solution itself.</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>LLM Latency By Node</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>langgraph_node</th>
+      <th>duration_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>generate_tests</td>
+      <td>769.036154</td>
+      <td>136636</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <td>understand_and_plan</td>
+      <td>488.602215</td>
+      <td>59975</td>
+      <td>0.085578</td>
+    </tr>
+    <tr>
+      <td>implement_solution</td>
+      <td>366.972090</td>
+      <td>110164</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <td>review_solution</td>
+      <td>169.879816</td>
+      <td>265719</td>
+      <td>0.086657</td>
+    </tr>
+  </tbody>
+</table>
+
+  <h2>All Runs</h2>
+  <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>example_id</th>
+      <th>repeat</th>
+      <th>total_latency_s</th>
+      <th>total_tokens</th>
+      <th>total_cost</th>
+      <th>base_pass</th>
+      <th>plus_pass</th>
+      <th>mbpp_plus_pass</th>
+      <th>accuracy</th>
+      <th>generated_test_pass</th>
+      <th>generated_test_status</th>
+      <th>revision_count</th>
+      <th>review_decision</th>
+      <th>base_failed_count</th>
+      <th>plus_failed_count</th>
+      <th>generated_test_failed_count</th>
+      <th>generated_test_total_count</th>
+      <th>prompt</th>
+      <th>review_comments</th>
+      <th>nodes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Mbpp/56</td>
+      <td>0</td>
+      <td>339.666038</td>
+      <td>159074</td>
+      <td>0.073158</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>1</td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to check if a given number is one less than twice its reverse.\nassert check(70) == False\n"""\n</td>
+      <td>Syntax error in generated tests and incorrect logic in solution; should check if n == 2 * rev - 1, not n == 2 * rev.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/123</td>
+      <td>0</td>
+      <td>38.372894</td>
+      <td>11159</td>
+      <td>0.001719</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to sum all amicable numbers from 1 to a specified number.\nassert amicable_numbers_sum(999)==504\n"""\n</td>
+      <td>Solution incomplete and contains invalid syntax; sum_proper_divisors function is not properly implemented and abruptly cut off; needs a correct and efficient implementation without hardcoded values.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/100</td>
+      <td>0</td>
+      <td>36.936945</td>
+      <td>10808</td>
+      <td>0.001678</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find the next smallest palindrome of a specified integer, returned as an integer.\nassert next_smallest_palindrome(99)==101\n"""\n</td>
+      <td>Incomplete solution with syntax errors and unfinished code; needs completion and correction for odd length case and proper palindrome increment handling.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/103</td>
+      <td>0</td>
+      <td>35.603028</td>
+      <td>9506</td>
+      <td>0.001776</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>18</td>
+      <td>"""\nWrite a function to find the Eulerian number a(n, m).\nassert eulerian_num(3, 1) == 4\n"""\n</td>
+      <td>The solution code is incomplete and missing the return statement for dp(n, m). Also, the code block markers ```python should be removed to avoid syntax errors.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/129</td>
+      <td>0</td>
+      <td>34.732569</td>
+      <td>9207</td>
+      <td>0.001757</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to calculate whether the matrix is a magic square.\nassert magic_square_test([[7, 12, 1, 14], [2, 13, 8, 11], [16, 3, 10, 5], [9, 6, 15, 4]])==True\n"""\n</td>
+      <td>Test code contains invalid markdown syntax (```python) causing syntax error; also some tests are incorrect or inconsistent with the problem statement (e.g., non-square matrix test and non-numeric elements test). The solution function is correct but tests need fixing and completion.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/72</td>
+      <td>0</td>
+      <td>34.066807</td>
+      <td>10384</td>
+      <td>0.002520</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>25</td>
+      <td>"""\nWrite a python function to check whether the given number can be represented as the difference of two squares or not.\nassert dif_Square(5) == True\n"""\n</td>
+      <td>The solution incorrectly returns True for all negative numbers without proper factor parity checks. Also, the parity check and factor iteration need to handle negative factors and zero correctly. The current approach misses some cases and fails some tests.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/75</td>
+      <td>0</td>
+      <td>32.754920</td>
+      <td>8683</td>
+      <td>0.001587</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find tuples which have all elements divisible by k from the given list of tuples.\nassert find_tuples([(6, 24, 12), (7, 9, 6), (12, 18, 21)], 6) == [(6, 24, 12)]\n"""\n</td>
+      <td>Remove markdown code fences from generated tests and complete the incomplete test case to fix syntax errors.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/97</td>
+      <td>0</td>
+      <td>31.839373</td>
+      <td>8604</td>
+      <td>0.001643</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find frequency of each element in a flattened list of lists, returned in a dictionary.\nassert frequency_lists([[1, 2, 3, 2], [4, 5, 6, 2], [7, 8, 9, 5]])=={1: 1, 2: 3, 3: 1, 4: 1, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1}\n"""\n</td>
+      <td>The solution is correct, but the generated tests contain a syntax error due to an unclosed dictionary literal. The code should be finalized after fixing the test cases.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/109</td>
+      <td>0</td>
+      <td>30.716336</td>
+      <td>11333</td>
+      <td>0.002038</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>48</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to find the number of numbers with an odd value when rotating a binary string the given number of times.\nassert odd_Equivalent("011001",6) == 3\n"""\n</td>
+      <td>The solution logic is correct, but the generated tests contain a syntax error due to an incomplete assert statement. Fixing the test code is needed before final submission.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/67</td>
+      <td>0</td>
+      <td>30.035127</td>
+      <td>9777</td>
+      <td>0.001762</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>3</td>
+      <td>98</td>
+      <td>0</td>
+      <td>11</td>
+      <td>"""\nWrite a function to find the number of ways to partition a set of Bell numbers.\nassert bell_number(2)==2\n"""\n</td>
+      <td>The solution logic is mostly correct but the test import causes ModuleNotFoundError. Also, the Bell triangle construction has an indexing issue leading to incorrect Bell numbers for n&gt;2. The code should be fixed to correctly build the Bell triangle and tests should be run without import errors.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/16</td>
+      <td>0</td>
+      <td>29.660539</td>
+      <td>7826</td>
+      <td>0.001297</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>24</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to that returns true if the input string contains sequences of lowercase letters joined with an underscore and false otherwise.\nassert text_lowercase_underscore("aab_cbbbc")==(True)\n"""\n</td>
+      <td>Syntax error in test code due to incomplete test method definition; also, the regex pattern incorrectly allows multiple consecutive underscores; needs correction to match the specification and fix tests.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/9</td>
+      <td>0</td>
+      <td>29.637961</td>
+      <td>9131</td>
+      <td>0.001711</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>20</td>
+      <td>"""\nWrite a python function to find the minimum number of rotations (greater than 0) required to get the same string.\nassert find_Rotations("aaaa") == 1\n"""\n</td>
+      <td>The solution is correct but the generated tests contain invalid assertions expecting multiple different results for the same input, causing failures. The function itself works as intended and handles edge cases properly, but the test suite needs correction.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/92</td>
+      <td>0</td>
+      <td>29.273622</td>
+      <td>9014</td>
+      <td>0.001708</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to check whether the given number is undulating or not.\nassert is_undulating(1212121) == True\n"""\n</td>
+      <td>The solution logic is mostly correct but the test code contains invalid syntax (```python block). Also, the function does not verify the alternating pattern strictly; it only checks if digits are among the first two digits but does not ensure the correct alternating order. The function should be revised to check that digits at even indices match s[0] and digits at odd indices match s[1].</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/63</td>
+      <td>0</td>
+      <td>28.998492</td>
+      <td>7149</td>
+      <td>0.001829</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>10</td>
+      <td>"""\nWrite a function to find the maximum difference between available pairs in the given tuple list.\nassert max_difference([(3, 5), (1, 7), (10, 3), (1, 2)]) == 7\n"""\n</td>
+      <td>The solution is mostly correct but fails one test; likely due to incorrect expected values in tests or a misunderstanding. The function logic is sound, but the test asserting max_difference([(1, 2), (3, 4), (5, 6)]) == 3 is incorrect since max difference should be 1, 1, and 1 respectively, so max is 1, not 3. Tests need correction or clarification.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/80</td>
+      <td>0</td>
+      <td>28.331973</td>
+      <td>7683</td>
+      <td>0.001864</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the nth tetrahedral number.\nassert tetrahedral_number(5) == 35\n"""\n</td>
+      <td>The solution raises ValueError for negative inputs, but the test expects returning 0 for negative inputs. The behavior should be consistent; either raise or return 0. Revise to match the test expectations.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/69</td>
+      <td>0</td>
+      <td>28.217987</td>
+      <td>8041</td>
+      <td>0.001432</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to check whether a list contains the given sublist or not.\nassert is_sublist([2,4,3,5,7],[3,7])==False\n"""\n</td>
+      <td>The solution logic is correct, but the generated tests contain invalid syntax (```python) causing a compile error. Remove markdown syntax from the test code.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/11</td>
+      <td>0</td>
+      <td>27.945528</td>
+      <td>8225</td>
+      <td>0.001530</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>2</td>
+      <td>27</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to remove first and last occurrence of a given character from the string.\nassert remove_Occ("hello","l") == "heo"\n"""\n</td>
+      <td>The solution logic is mostly correct but the final return statement incorrectly removes the substring between first and last occurrence instead of removing both characters separately. Also, the generated tests contain invalid markdown syntax causing a syntax error. Fix the function to remove both occurrences properly and remove markdown from tests.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/74</td>
+      <td>0</td>
+      <td>27.897543</td>
+      <td>7744</td>
+      <td>0.002041</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>1</td>
+      <td>16</td>
+      <td>0</td>
+      <td>12</td>
+      <td>"""\nWrite a function to check whether it follows the sequence given in the patterns array.\nassert is_samepatterns(["red","green","green"], ["a", "b", "b"])==True\n"""\n</td>
+      <td>The current solution is incorrect and does not implement the pattern mapping logic. Also, the initial check 'if not lst1 or not lst2: return True' is wrong because if one list is empty and the other is not, it should return False. The test import error is due to test setup, not the solution itself. The function needs to be rewritten to correctly map elements to pattern IDs and compare them.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/20</td>
+      <td>0</td>
+      <td>27.632143</td>
+      <td>7005</td>
+      <td>0.001704</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>20</td>
+      <td>"""\nWrite a function to check if the given number is woodball or not.\nassert is_woodall(383) == True\n"""\n</td>
+      <td>The solution is correct in logic but the generated tests incorrectly assume many numbers are not Woodall numbers; some test assertions fail. The function should be kept but test cases need correction.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/124</td>
+      <td>0</td>
+      <td>27.456534</td>
+      <td>8348</td>
+      <td>0.001512</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>3</td>
+      <td>116</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to get the angle of a complex number.\nassert math.isclose(angle_complex(0,1j), 1.5707963267948966, rel_tol=0.001)\n"""\n</td>
+      <td>The solution is correct but the generated tests contain a syntax error due to an unclosed parenthesis. Also, the first test case calls angle_complex with two arguments instead of one complex number. Fixing these issues will make the solution ready.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/4</td>
+      <td>0</td>
+      <td>27.267737</td>
+      <td>8095</td>
+      <td>0.001345</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find the n largest integers from a given list of numbers, returned in descending order.\nassert heap_queue_largest( [25, 35, 22, 85, 14, 65, 75, 22, 58],3)==[85, 75, 65]\n"""\n</td>
+      <td>The solution is correct and handles edge cases well, but the generated tests contain a syntax error due to an incomplete assert statement. Fix the test code before final submission.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/3</td>
+      <td>0</td>
+      <td>27.134382</td>
+      <td>7205</td>
+      <td>0.001842</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to identify non-prime numbers.\nassert is_not_prime(2) == False\n"""\n</td>
+      <td>Tests contain invalid markdown syntax (```python) causing syntax error; also, the function incorrectly returns True for prime numbers &gt; 2 (e.g., 3 and 5). Fix test formatting and correct logic to return False for primes and True for non-primes.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/84</td>
+      <td>0</td>
+      <td>26.567527</td>
+      <td>7645</td>
+      <td>0.001932</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>final</td>
+      <td>0</td>
+      <td>60</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find the nth number in the newman conway sequence.\nassert sequence(10) == 6\n"""\n</td>
+      <td>The solution is correct and efficient with memoization. The test failure is due to an incomplete test line, not the solution itself.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/113</td>
+      <td>0</td>
+      <td>26.071695</td>
+      <td>7148</td>
+      <td>0.001821</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>9</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to check if a string represents an integer or not.\nassert check_integer("python")==False\n"""\n</td>
+      <td>The solution logic is correct, but the generated tests contain a syntax error due to a stray 'assert' statement without a condition. The solution should be resubmitted with corrected tests.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/104</td>
+      <td>0</td>
+      <td>26.066283</td>
+      <td>7600</td>
+      <td>0.001665</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>3</td>
+      <td>120</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to sort each sublist of strings in a given list of lists.\nassert sort_sublists((["green", "orange"], ["black", "white"], ["white", "black", "orange"]))==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]\n"""\n</td>
+      <td>The provided solution code is incorrect and does not sort sublists properly. The generated tests contain a syntax error due to an unterminated string literal. The function should be rewritten to correctly sort each sublist and return a new list of sorted sublists without modifying the input.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/98</td>
+      <td>0</td>
+      <td>26.055809</td>
+      <td>8079</td>
+      <td>0.001430</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to multiply all the numbers in a list and divide with the length of the list.\nassert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)\n"""\n</td>
+      <td>The solution is correct but the generated tests contain a syntax error due to an incomplete assert statement. Fix the test code to close the list and complete the assertion.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/12</td>
+      <td>0</td>
+      <td>25.762264</td>
+      <td>6593</td>
+      <td>0.001538</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to sort a given matrix in ascending order according to the sum of its rows.\nassert sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]])==[[1, 1, 1], [1, 2, 3], [2, 4, 5]]\n"""\n</td>
+      <td>The solution logic is correct, but the generated tests contain invalid syntax (```python) causing a compile error. Remove markdown syntax from tests and complete the last test case.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/119</td>
+      <td>0</td>
+      <td>25.438723</td>
+      <td>7196</td>
+      <td>0.001846</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>63</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to find the element that appears only once in a sorted array.\nassert search([1,1,2,2,3]) == 3\n"""\n</td>
+      <td>The solution is correct and handles edge cases well, but the generated tests contain a syntax error due to an unclosed bracket. Fixing the test cases is needed before final submission.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/18</td>
+      <td>0</td>
+      <td>24.265995</td>
+      <td>6745</td>
+      <td>0.001664</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to remove characters from the first string which are present in the second string.\nassert remove_dirty_chars("probasscurve", "pros") == 'bacuve'\n"""\n</td>
+      <td>Remove markdown syntax from generated tests to avoid syntax errors; solution logic is correct and handles edge cases well.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/64</td>
+      <td>0</td>
+      <td>23.899633</td>
+      <td>6555</td>
+      <td>0.001578</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to sort a list of tuples using the second value of each tuple.\nassert subject_marks([('English', 88), ('Science', 90), ('Maths', 97), ('Social sciences', 82)])==[('Social sciences', 82), ('English', 88), ('Science', 90), ('Maths', 97)]\n"""\n</td>
+      <td>The solution is correct, but the generated tests contain invalid syntax (triple backticks). Remove the markdown formatting from the test code to fix the syntax error.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/126</td>
+      <td>0</td>
+      <td>23.840574</td>
+      <td>7405</td>
+      <td>0.001809</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>3</td>
+      <td>107</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a python function to find the sum of common divisors of two given numbers.\nassert sum(10,15) == 6\n"""\n</td>
+      <td>The function name 'sum' shadows the built-in sum() function, causing a TypeError when calling sum(common_divisors). Rename the function to avoid this conflict.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/87</td>
+      <td>0</td>
+      <td>23.747099</td>
+      <td>6767</td>
+      <td>0.001671</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to merge three dictionaries into a single dictionary.\nassert merge_dictionaries_three({ "R": "Red", "B": "Black", "P": "Pink" }, { "G": "Green", "W": "White" },{ "O": "Orange", "W": "White", "B": "Black" })=={'B': 'Black', 'R': 'Red', 'P': 'Pink', 'G': 'Green', 'W': 'White', 'O': 'Orange'}\n"""\n</td>
+      <td>The solution is correct, but the generated tests contain a syntax error due to an unterminated string literal. Fixing the test code is necessary before final submission.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/70</td>
+      <td>0</td>
+      <td>23.699638</td>
+      <td>6373</td>
+      <td>0.001596</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find whether all the given tuples have equal length or not.\nassert get_equal([(11, 22, 33), (44, 55, 66)]) == True\n"""\n</td>
+      <td>Solution is correct and handles all edge cases. The test failure is due to invalid syntax in the test code (presence of ```python). The function itself is ready for final submission.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/108</td>
+      <td>0</td>
+      <td>23.533574</td>
+      <td>7052</td>
+      <td>0.001669</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to merge three lists into a single sorted list.\nassert merge_sorted_list([25, 24, 15, 4, 5, 29, 110],[19, 20, 11, 56, 25, 233, 154],[24, 26, 54, 48])==[4, 5, 11, 15, 19, 20, 24, 24, 25, 25, 26, 29, 48, 54, 56, 110, 154, 233]\n"""\n</td>
+      <td>The solution is correct, but the generated tests contain syntax errors (e.g., markdown code fences and incomplete test cases). Remove markdown and fix test cases to ensure proper testing.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/14</td>
+      <td>0</td>
+      <td>23.416535</td>
+      <td>5922</td>
+      <td>0.001474</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to find the volume of a triangular prism.\nassert find_Volume(10,8,6) == 240\n"""\n</td>
+      <td>Remove markdown syntax from generated tests to avoid syntax errors; function logic is correct and handles edge cases well.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/58</td>
+      <td>0</td>
+      <td>23.224584</td>
+      <td>6199</td>
+      <td>0.001578</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to check whether the given two integers have opposite sign or not.\nassert opposite_Signs(1,-2) == True\n"""\n</td>
+      <td>The solution is correct, but the generated tests contain a syntax error due to an incomplete assert statement. Fix the test code to remove the syntax error before final submission.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/7</td>
+      <td>0</td>
+      <td>23.124982</td>
+      <td>6627</td>
+      <td>0.001751</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>36</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find all words which are at least 4 characters long in a string.\nassert set(find_char_long('Please move back to stream')) == set(['Please', 'move', 'back', 'stream'])\n"""\n</td>
+      <td>The solution is correct, but the generated tests contain a syntax error due to an unterminated string literal. The function itself is fine and meets the requirements, but the test suite must be fixed before final submission.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/8</td>
+      <td>0</td>
+      <td>22.810521</td>
+      <td>7025</td>
+      <td>0.001210</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find squares of individual elements in a list.\nassert square_nums([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])==[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]\n"""\n</td>
+      <td>The solution is correct, but the generated tests contain a syntax error due to an unclosed list bracket. Fix the test cases before final submission.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/128</td>
+      <td>0</td>
+      <td>22.686736</td>
+      <td>5997</td>
+      <td>0.001642</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>3</td>
+      <td>104</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find words that are longer than n characters from a given list of words.\nassert long_words(3,"python is a programming language")==['python','programming','language']\n"""\n</td>
+      <td>The solution function signature and parameter order do not match the task description and example. The generated tests contain syntax errors and invalid calls with wrong argument types. The function should accept (n, words) with words as a string, not the other way around. The tests need correction and completion.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/59</td>
+      <td>0</td>
+      <td>22.445637</td>
+      <td>5656</td>
+      <td>0.001397</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>3</td>
+      <td>101</td>
+      <td>1</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the nth octagonal number.\nassert is_octagonal(5) == 65\n"""\n</td>
+      <td>The function correctly implements the formula with division by 2, but the generated tests incorrectly expect 0 for n=0 and n=-1 instead of raising ValueError. The tests should be fixed or removed; otherwise, the function should raise errors for non-positive inputs as documented.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/79</td>
+      <td>0</td>
+      <td>22.097914</td>
+      <td>5691</td>
+      <td>0.001511</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a python function to check whether the length of the word is odd or not.\nassert word_len("Hadoop") == False\n"""\n</td>
+      <td>The solution is correct, but the generated tests contain a syntax error due to a trailing 'assert' statement without a condition. Remove the invalid assert to fix the tests.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/101</td>
+      <td>0</td>
+      <td>19.405661</td>
+      <td>6403</td>
+      <td>0.001638</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find the kth element in the given array using 1-based indexing.\nassert kth_element([12,3,5,7,19], 2) == 3\n"""\n</td>
+      <td>Test syntax for checking exceptions is invalid; use try-except or unittest methods to test IndexError. Function implementation is correct.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/111</td>
+      <td>0</td>
+      <td>19.204081</td>
+      <td>5211</td>
+      <td>0.001292</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>1</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find the common elements in given nested lists.\nassert set(common_in_nested_lists([[12, 18, 23, 25, 45], [7, 12, 18, 24, 28], [1, 5, 8, 12, 15, 16, 18]]))==set([18, 12])\n"""\n</td>
+      <td>Solution is correct and handles edge cases well. The test failure is due to invalid syntax in the test code (backticks), not the solution itself.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/82</td>
+      <td>0</td>
+      <td>18.489960</td>
+      <td>5833</td>
+      <td>0.001572</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the volume of a sphere.\nassert math.isclose(volume_sphere(10), 4188.790204786391, rel_tol=0.001)\n"""\n</td>
+      <td>The assertion volume_sphere(10) == 4188.790204786391 fails due to floating point precision; use math.isclose for comparisons. Also, the test for volume_sphere(3.14159) is incorrect as the expected value is not verified with tolerance. Revise tests to use math.isclose and keep the function as is.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/106</td>
+      <td>0</td>
+      <td>18.028069</td>
+      <td>6266</td>
+      <td>0.001680</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>0.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>3</td>
+      <td>115</td>
+      <td>0</td>
+      <td>7</td>
+      <td>"""\nWrite a function to append the given list to the given tuples.\nassert add_lists([5, 6, 7], (9, 10)) == (9, 10, 5, 6, 7)\n"""\n</td>
+      <td>The function parameter named 'tuple' shadows the built-in tuple type, causing a TypeError when calling tuple(list). Rename the parameter to avoid this conflict.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/96</td>
+      <td>0</td>
+      <td>17.753351</td>
+      <td>5892</td>
+      <td>0.001585</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>10</td>
+      <td>"""\nWrite a python function to find the number of divisors of a given integer.\nassert divisor(15) == 4\n"""\n</td>
+      <td>The solution is correct for small inputs but inefficient for large inputs like 1,000,000. The test failure likely comes from incorrect divisor count for large numbers. Optimize by checking divisors up to sqrt(n) and counting pairs to improve performance and correctness.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/61</td>
+      <td>0</td>
+      <td>15.238219</td>
+      <td>3089</td>
+      <td>0.001139</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>12</td>
+      <td>"""\nWrite a python function to count the number of substrings with the sum of digits equal to their length.\nassert count_Substrings('112112') == 6\n"""\n</td>
+      <td>The solution is correct and passes all edge cases; the test failure is likely due to an external issue, not the code itself.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/85</td>
+      <td>0</td>
+      <td>14.770928</td>
+      <td>4826</td>
+      <td>0.001208</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>fail</td>
+      <td>2</td>
+      <td>revise</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>5</td>
+      <td>"""\nWrite a function to find the surface area of a sphere.\nassert math.isclose(surfacearea_sphere(10), 1256.6370614359173, rel_tol=0.001)\n"""\n</td>
+      <td>Function does not handle negative radius as expected by tests; should return 0 for negative radius to pass all tests.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/91</td>
+      <td>0</td>
+      <td>14.126830</td>
+      <td>3723</td>
+      <td>0.001040</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>pass</td>
+      <td>1</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>5</td>
+      <td>"""\nWrite a function to check if a string is present as a substring in a given list of string values.\nassert find_substring(["red", "black", "white", "green", "orange"],"ack")==True\n"""\n</td>
+      <td>Solution is correct, passes all tests including edge cases, and matches the task requirements.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+    <tr>
+      <td>Mbpp/125</td>
+      <td>0</td>
+      <td>13.931267</td>
+      <td>3650</td>
+      <td>0.001315</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>error</td>
+      <td>0</td>
+      <td>final</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>"""\nWrite a function to find the maximum difference between the number of 0s and number of 1s in any sub-string of the given binary string.\nassert find_length("11000010001") == 6\n"""\n</td>
+      <td>Solution is correct and efficient; test failure is due to a syntax error in the generated tests, not the solution itself.</td>
+      <td>understand_and_plan -&gt; implement_solution -&gt; generate_tests -&gt; run_tests -&gt; review_solution</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>
