@@ -6,7 +6,7 @@ from evals.runner import run_download_traces, run_eval_loop
 from paths import load_workflow_dotenv
 
 
-CONFIG_ID = "v2.1-qwen3.5-2b"
+CONFIG_ID = "v2-gpt-4.1-mini-qwen3.5-2b"
 MBPP_LOAD_LIMIT = 100
 TASKS = 75
 REPEATS = 1
@@ -25,20 +25,14 @@ NODE_MODEL_CONFIG = {
         "num_predict": 256,
     },
     "implement_solution": {
-        "provider": "ollama",
-        "model": "qwen3.5:2b",
+        "provider": "openai",
+        "model": "gpt-4.1-mini",
         "temperature": 0,
-        "thinking": False,
-        "reasoning": False,
-        "num_predict": 768,
     },
     "generate_tests": {
-        "provider": "ollama",
-        "model": "qwen3.5:2b",
+        "provider": "openai",
+        "model": "gpt-4.1-mini",
         "temperature": 0,
-        "thinking": False,
-        "reasoning": False,
-        "num_predict": 512,
     },
     "review_solution": {
         "provider": "ollama",
@@ -50,6 +44,12 @@ NODE_MODEL_CONFIG = {
     },
 }
 
+        # "provider": "ollama",
+        # "model": "qwen3.5:2b",
+        # "temperature": 0,
+        # "thinking": False,
+        # "reasoning": False,
+        # "num_predict": 256,
 
 if __name__ == "__main__":
     load_workflow_dotenv(override=True)
