@@ -1,13 +1,12 @@
 from datetime import UTC, datetime
 import json
 from pathlib import Path
-from time import sleep
 
 from langchain_core.messages import AIMessage
 from langchain_core.messages import HumanMessage
 
 from evals.metrics import get_retrieved_titles, get_supporting_titles, score_result
-from evals.traces import download_traces
+from evals.traces import download_trace
 from paths import analysis_config_dir
 
 
@@ -143,7 +142,7 @@ def run_eval_loop(
     count = 0
     for repeat in range(repeats):
         for example in examples:
-            run_eval_example(
+            result = run_eval_example(
                 graph,
                 example,
                 config_id,
@@ -151,10 +150,6 @@ def run_eval_loop(
                 print_updates,
                 model_config,
             )
+            download_trace(config_id, result["run_id"])
             count += 1
-    print(f"Downloaded {count} evals for config ID: {config_id}.")
-
-
-def run_download_traces(config_id: str):
-    sleep(5)  # Ensure all traces are available in LangSmith.
-    download_traces(config_id)
+    print(f"Completed {count} evals for config ID: {config_id}.")
