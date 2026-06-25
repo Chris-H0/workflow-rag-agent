@@ -1,0 +1,26 @@
+model_endpoints:
+  - id: qwen-local
+    model: qwen3.5:2b
+    location: local
+    provider: ollama
+    context_window: 32768
+    tool_calling: true
+    structured_output: false
+    input_cost_per_million_tokens: 0
+    output_cost_per_million_tokens: 0
+  - id: gpt-4.1-mini-cloud
+    model: gpt-4.1-mini
+    location: cloud
+    provider: openai
+    context_window: 1047576
+    tool_calling: true
+    structured_output: true
+    input_cost_per_million_tokens: 0.4
+    output_cost_per_million_tokens: 1.6
+  - id: gpt-5.5-cloud
+    model: gpt-5.5
+    location: cloud
+    provider: openai
+    context_window: 400000
+    tool_calling: true
+    structured_output: true

@@ -1,0 +1,17 @@
+workflow: qa
+models: model_endpoints.yaml
+candidates: 3
+output: ../../placement_candidates/qa/candidates.json
+metadata: null
+
+priorities:
+  - quality
+  - cloud-cost
+  - latency
+
+compiler:
+  provider: openai
+  model: gpt-5.5
+  temperature: 0
+
+max_attempts: 2
