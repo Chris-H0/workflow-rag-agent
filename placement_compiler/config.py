@@ -6,13 +6,14 @@ from typing import Any
 from pydantic import Field, field_validator, model_validator
 
 from placement_compiler.catalogue import load_json_or_yaml
-from placement_compiler.models import StrictModel
+from placement_compiler.models import StrictModel, StructuredOutputMethod
 
 
 class CompilerConfig(StrictModel):
     provider: str
     model: str
     temperature: float | None = None
+    structured_output_method: StructuredOutputMethod = "function_calling"
     model_kwargs: dict[str, Any] = Field(default_factory=dict)
 
     @field_validator("provider", "model")

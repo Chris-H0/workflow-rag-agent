@@ -90,6 +90,7 @@ def _build_compiler_llm(config: ResolvedPlacementRunConfig) -> LangChainCompiler
     return LangChainCompilerLLM(
         provider=config.compiler.provider,
         model=config.compiler.model,
+        structured_output_method=config.compiler.structured_output_method,
         **model_kwargs,
     )
 

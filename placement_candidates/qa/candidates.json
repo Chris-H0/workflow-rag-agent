@@ -1,0 +1,312 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "qa-workflow",
+  "generated_at": "2026-06-25T18:30:23.012371+00:00",
+  "candidate_count": 3,
+  "workflow": {
+    "workflow_id": "qa-workflow",
+    "nodes": [
+      {
+        "is_llm_placement_unit": true,
+        "semantic_role": "final answer generation",
+        "description": "Generates the final answer from the question and retrieved context.",
+        "user_facing_output": true,
+        "tool_use": false,
+        "structured_output_required": false,
+        "branch_control": false,
+        "id": "generate_answer",
+        "name": "generate_answer",
+        "structural": true,
+        "predecessors": [
+          "retrieve"
+        ],
+        "successors": [],
+        "in_degree": 1,
+        "out_degree": 0,
+        "reachable_downstream": [],
+        "in_cycle": false,
+        "stage": "terminal"
+      },
+      {
+        "is_llm_placement_unit": false,
+        "semantic_role": "follow-up query prompt builder",
+        "description": "Builds a follow-up retrieval prompt without invoking a model.",
+        "user_facing_output": false,
+        "tool_use": false,
+        "structured_output_required": false,
+        "branch_control": false,
+        "id": "generate_followup_query",
+        "name": "generate_followup_query",
+        "structural": true,
+        "predecessors": [
+          "retrieve"
+        ],
+        "successors": [
+          "generate_query_or_respond"
+        ],
+        "in_degree": 1,
+        "out_degree": 1,
+        "reachable_downstream": [
+          "generate_answer",
+          "generate_query_or_respond",
+          "retrieve",
+          "rewrite_question"
+        ],
+        "in_cycle": true,
+        "stage": "late"
+      },
+      {
+        "is_llm_placement_unit": true,
+        "semantic_role": "initial retrieval controller",
+        "description": "Decides whether to answer directly or call the retriever for the first query.",
+        "user_facing_output": true,
+        "tool_use": true,
+        "structured_output_required": false,
+        "branch_control": true,
+        "id": "generate_query_or_respond",
+        "name": "generate_query_or_respond",
+        "structural": true,
+        "predecessors": [
+          "generate_followup_query",
+          "rewrite_question"
+        ],
+        "successors": [
+          "retrieve"
+        ],
+        "in_degree": 2,
+        "out_degree": 1,
+        "reachable_downstream": [
+          "generate_answer",
+          "generate_followup_query",
+          "retrieve",
+          "rewrite_question"
+        ],
+        "in_cycle": true,
+        "stage": "entry"
+      },
+      {
+        "is_llm_placement_unit": false,
+        "semantic_role": "retrieval tool",
+        "description": "Tool node that calls the configured document retriever.",
+        "user_facing_output": false,
+        "tool_use": false,
+        "structured_output_required": false,
+        "branch_control": false,
+        "id": "retrieve",
+        "name": "retrieve",
+        "structural": true,
+        "predecessors": [
+          "generate_query_or_respond"
+        ],
+        "successors": [
+          "generate_answer",
+          "generate_followup_query",
+          "rewrite_question"
+        ],
+        "in_degree": 1,
+        "out_degree": 3,
+        "reachable_downstream": [
+          "generate_answer",
+          "generate_followup_query",
+          "generate_query_or_respond",
+          "rewrite_question"
+        ],
+        "in_cycle": true,
+        "stage": "middle"
+      },
+      {
+        "is_llm_placement_unit": true,
+        "semantic_role": "question rewrite",
+        "description": "Rewrites the original question before another retrieval attempt.",
+        "user_facing_output": false,
+        "tool_use": false,
+        "structured_output_required": false,
+        "branch_control": false,
+        "id": "rewrite_question",
+        "name": "rewrite_question",
+        "structural": true,
+        "predecessors": [
+          "retrieve"
+        ],
+        "successors": [
+          "generate_query_or_respond"
+        ],
+        "in_degree": 1,
+        "out_degree": 1,
+        "reachable_downstream": [
+          "generate_answer",
+          "generate_followup_query",
+          "generate_query_or_respond",
+          "retrieve"
+        ],
+        "in_cycle": true,
+        "stage": "late"
+      },
+      {
+        "is_llm_placement_unit": true,
+        "semantic_role": "retrieval sufficiency router",
+        "description": "Routes after retrieval based on relevance, completeness, and budget.",
+        "user_facing_output": false,
+        "tool_use": false,
+        "structured_output_required": true,
+        "branch_control": true,
+        "id": "decide_after_retrieval",
+        "name": "decide_after_retrieval",
+        "structural": false,
+        "predecessors": [],
+        "successors": [],
+        "in_degree": 0,
+        "out_degree": 0,
+        "reachable_downstream": [],
+        "in_cycle": false,
+        "stage": "middle"
+      }
+    ],
+    "edges": [
+      {
+        "source": "generate_followup_query",
+        "target": "generate_query_or_respond",
+        "conditional": false
+      },
+      {
+        "source": "generate_query_or_respond",
+        "target": "retrieve",
+        "conditional": true,
+        "label": "tools"
+      },
+      {
+        "source": "retrieve",
+        "target": "generate_answer",
+        "conditional": true
+      },
+      {
+        "source": "retrieve",
+        "target": "generate_followup_query",
+        "conditional": true
+      },
+      {
+        "source": "retrieve",
+        "target": "rewrite_question",
+        "conditional": true
+      },
+      {
+        "source": "rewrite_question",
+        "target": "generate_query_or_respond",
+        "conditional": false
+      }
+    ],
+    "entry_nodes": [
+      "generate_query_or_respond"
+    ],
+    "terminal_nodes": [
+      "generate_answer",
+      "generate_query_or_respond"
+    ],
+    "conditional_edges": [
+      {
+        "source": "generate_query_or_respond",
+        "target": "retrieve",
+        "conditional": true,
+        "label": "tools"
+      },
+      {
+        "source": "retrieve",
+        "target": "generate_answer",
+        "conditional": true
+      },
+      {
+        "source": "retrieve",
+        "target": "generate_followup_query",
+        "conditional": true
+      },
+      {
+        "source": "retrieve",
+        "target": "rewrite_question",
+        "conditional": true
+      }
+    ]
+  },
+  "model_endpoints": [
+    {
+      "id": "qwen-local",
+      "model": "qwen3.5:2b",
+      "location": "local",
+      "provider": "ollama",
+      "context_window": 32768,
+      "tool_calling": true,
+      "structured_output": false,
+      "input_cost_per_million_tokens": 0.0,
+      "output_cost_per_million_tokens": 0.0
+    },
+    {
+      "id": "gpt-4.1-mini-cloud",
+      "model": "gpt-4.1-mini",
+      "location": "cloud",
+      "provider": "openai",
+      "context_window": 1047576,
+      "tool_calling": true,
+      "structured_output": true,
+      "input_cost_per_million_tokens": 0.4,
+      "output_cost_per_million_tokens": 1.6
+    },
+    {
+      "id": "gpt-5.5-cloud",
+      "model": "gpt-5.5",
+      "location": "cloud",
+      "provider": "openai",
+      "context_window": 400000,
+      "tool_calling": true,
+      "structured_output": true
+    }
+  ],
+  "candidates": [
+    {
+      "id": "quality_cloud",
+      "description": "Quality-oriented all-cloud placement using the highest-capability endpoint for every LLM unit, including tool-calling and structured routing.",
+      "assignments": {
+        "generate_answer": "gpt-5.5-cloud",
+        "generate_query_or_respond": "gpt-5.5-cloud",
+        "rewrite_question": "gpt-5.5-cloud",
+        "decide_after_retrieval": "gpt-5.5-cloud"
+      },
+      "rationale": {
+        "generate_answer": "User-facing final synthesis benefits from the strongest cloud model and large context capacity for retrieved evidence.",
+        "generate_query_or_respond": "Branch-control entry node requires reliable tool calling; highest-capability endpoint should improve query/tool-use decisions.",
+        "rewrite_question": "High-quality rewriting can improve subsequent retrieval precision in the retry loop.",
+        "decide_after_retrieval": "Requires structured output and branch control, which this cloud endpoint supports."
+      }
+    },
+    {
+      "id": "balanced_local_cloud",
+      "description": "Balanced placement that keeps inexpensive/local work local where valid, while using cloud models for structured routing and higher-impact user-facing generation.",
+      "assignments": {
+        "generate_answer": "gpt-4.1-mini-cloud",
+        "generate_query_or_respond": "qwen-local",
+        "rewrite_question": "qwen-local",
+        "decide_after_retrieval": "gpt-4.1-mini-cloud"
+      },
+      "rationale": {
+        "generate_answer": "Cloud mini model offers structured-capable, broad-context answer generation at known moderate cost.",
+        "generate_query_or_respond": "Local endpoint supports tool calling, so it can validly handle the initial retrieval controller without cloud spend.",
+        "rewrite_question": "Question rewriting is non-user-facing and does not need tools or structured output, making it suitable for local execution.",
+        "decide_after_retrieval": "Structured output is required, so this must use a structured-capable endpoint; gpt-4.1-mini-cloud provides lower cloud cost than the premium cloud option."
+      }
+    },
+    {
+      "id": "local_first_low_cloud_cost",
+      "description": "Local-first configuration minimizing cloud use by assigning all valid non-structured units to the local endpoint and reserving the cheapest structured-capable cloud endpoint for the router.",
+      "assignments": {
+        "generate_answer": "qwen-local",
+        "generate_query_or_respond": "qwen-local",
+        "rewrite_question": "qwen-local",
+        "decide_after_retrieval": "gpt-4.1-mini-cloud"
+      },
+      "rationale": {
+        "generate_answer": "Final answer generation has no tool or structured-output requirement, so local placement is valid and avoids per-token cloud cost, trading off quality.",
+        "generate_query_or_respond": "Local model supports tool calling, satisfying the controller\u2019s tool-use requirement while keeping the loop local.",
+        "rewrite_question": "No special endpoint capabilities are required, so local execution minimizes cost and likely latency to local resources.",
+        "decide_after_retrieval": "Only structured-capable endpoints are valid; the mini cloud model is selected to minimize cloud cost for this required structured router."
+      }
+    }
+  ]
+}

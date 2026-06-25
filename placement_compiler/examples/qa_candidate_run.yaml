@@ -13,5 +13,6 @@ compiler:
   provider: openai
   model: gpt-5.5
   temperature: 0
+  structured_output_method: function_calling
 
 max_attempts: 2

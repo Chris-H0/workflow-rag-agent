@@ -8,6 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 Stage = Literal["entry", "early", "middle", "late", "terminal"]
 EndpointLocation = Literal["local", "cloud"]
+StructuredOutputMethod = Literal["function_calling", "json_mode", "json_schema"]
 
 
 class StrictModel(BaseModel):
