@@ -7,7 +7,16 @@ from placement_compiler.artifacts import build_artifact, write_artifact
 from placement_compiler.candidates import CandidateGenerator, CompilerLLM
 from placement_compiler.catalogue import load_model_catalogue, load_node_registry
 from placement_compiler.config import ResolvedPlacementRunConfig, load_run_config
+from placement_compiler.endpoint_registry import EndpointRegistry
 from placement_compiler.llm import LangChainCompilerLLM
+from placement_compiler.profile_config import load_profile_run_config
+from placement_compiler.profile_workflows import build_repository_profile_adapters
+from placement_compiler.profiling import (
+    CandidateProfiler,
+    build_baseline_plan,
+    load_candidate_artifact,
+    write_profile_artifacts,
+)
 from placement_compiler.workflows import (
     REPO_ROOT,
     WORKFLOW_SPECS,
@@ -21,6 +30,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "generate":
         output_path = generate_command(args)
         print(f"Wrote placement candidates to {output_path}")
+        return 0
+    if args.command == "profile":
+        output_paths = profile_command(args)
+        print(f"Wrote placement profile to {output_paths['profile']}")
         return 0
     parser.error("unknown command")
     return 2
@@ -37,6 +50,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--config",
         required=True,
         help="Path to the placement run YAML/JSON config.",
+    )
+    profile = subparsers.add_parser("profile")
+    profile.add_argument(
+        "--config",
+        required=True,
+        help="Path to the profiling run YAML/JSON config.",
     )
     return parser
 
@@ -81,6 +100,40 @@ def generate_from_config(
         candidates=candidates,
     )
     return write_artifact(artifact, config.output)
+
+
+def profile_command(args: argparse.Namespace) -> dict[str, Path]:
+    return profile_from_config(args.config)
+
+
+def profile_from_config(config_path: str | Path) -> dict[str, Path]:
+    config = load_profile_run_config(config_path)
+    _load_dotenvs(config.workflow)
+    loaded_artifact = load_candidate_artifact(config.candidate_artifact)
+    endpoint_registry = EndpointRegistry(loaded_artifact.artifact.model_endpoints)
+    baseline_plan = build_baseline_plan(
+        artifact=loaded_artifact.artifact,
+        baseline_type=config.baseline.type,
+        endpoint_id=config.baseline.endpoint_id,
+        candidate_id=config.baseline.candidate_id,
+    )
+    evaluation_adapter, runtime_adapter = build_repository_profile_adapters(
+        workflow=config.workflow,
+        candidate_artifact=loaded_artifact.artifact,
+        endpoint_registry=endpoint_registry,
+    )
+    profiler = CandidateProfiler(
+        candidate_artifact=loaded_artifact,
+        evaluation_adapter=evaluation_adapter,
+        runtime_adapter=runtime_adapter,
+        profile=config.profile,
+        baseline_plan=baseline_plan,
+        quality_constraint=config.quality_constraint,
+        ranking=config.ranking,
+        workflow_name=config.workflow,
+    )
+    profile, runs = profiler.run()
+    return write_profile_artifacts(profile=profile, runs=runs, output_dir=config.output)
 
 
 def _build_compiler_llm(config: ResolvedPlacementRunConfig) -> LangChainCompilerLLM:

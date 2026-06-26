@@ -25,6 +25,7 @@ class NodeRegistryMetadata(StrictModel):
     tool_use: bool = False
     structured_output_required: bool = False
     branch_control: bool = False
+    required_context_window: int | None = None
 
 
 class WorkflowEdge(StrictModel):
@@ -69,6 +70,7 @@ class ModelEndpoint(StrictModel):
     structured_output: bool = False
     input_cost_per_million_tokens: float | None = None
     output_cost_per_million_tokens: float | None = None
+    model_kwargs: dict[str, object] = Field(default_factory=dict)
 
     @field_validator("id", "model", "provider")
     @classmethod
