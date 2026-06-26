@@ -133,6 +133,7 @@ class CandidateProfiler:
                 workflow_id=self.candidate_artifact.artifact.workflow_id,
                 workflow=self.workflow_name,
                 profile_config=self.profile.model_dump(mode="json", exclude_none=True),
+                primary_metric=self.evaluation_adapter.primary_metric,
                 selected_example_ids=selected_example_ids,
                 baseline=baseline_profile,
                 quality_constraint=self.quality_constraint,

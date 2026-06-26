@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "workflow_id": "qa-workflow",
-  "generated_at": "2026-06-25T18:30:23.012371+00:00",
+  "generated_at": "2026-06-26T11:40:51.942120+00:00",
   "candidate_count": 3,
   "workflow": {
     "workflow_id": "qa-workflow",
@@ -236,7 +236,13 @@
       "tool_calling": true,
       "structured_output": false,
       "input_cost_per_million_tokens": 0.0,
-      "output_cost_per_million_tokens": 0.0
+      "output_cost_per_million_tokens": 0.0,
+      "model_kwargs": {
+        "temperature": 0,
+        "thinking": false,
+        "reasoning": false,
+        "num_predict": 128
+      }
     },
     {
       "id": "gpt-4.1-mini-cloud",
@@ -247,7 +253,8 @@
       "tool_calling": true,
       "structured_output": true,
       "input_cost_per_million_tokens": 0.4,
-      "output_cost_per_million_tokens": 1.6
+      "output_cost_per_million_tokens": 1.6,
+      "model_kwargs": {}
     },
     {
       "id": "gpt-5.5-cloud",
@@ -256,13 +263,16 @@
       "provider": "openai",
       "context_window": 400000,
       "tool_calling": true,
-      "structured_output": true
+      "structured_output": true,
+      "input_cost_per_million_tokens": 5.0,
+      "output_cost_per_million_tokens": 30.0,
+      "model_kwargs": {}
     }
   ],
   "candidates": [
     {
       "id": "quality_cloud",
-      "description": "Quality-oriented all-cloud placement using the highest-capability endpoint for every LLM unit, including tool-calling and structured routing.",
+      "description": "Quality-oriented placement using the strongest cloud model for all LLM units, maximizing answer quality, routing reliability, tool-use behavior, and structured decision output.",
       "assignments": {
         "generate_answer": "gpt-5.5-cloud",
         "generate_query_or_respond": "gpt-5.5-cloud",
@@ -270,31 +280,31 @@
         "decide_after_retrieval": "gpt-5.5-cloud"
       },
       "rationale": {
-        "generate_answer": "User-facing final synthesis benefits from the strongest cloud model and large context capacity for retrieved evidence.",
-        "generate_query_or_respond": "Branch-control entry node requires reliable tool calling; highest-capability endpoint should improve query/tool-use decisions.",
-        "rewrite_question": "High-quality rewriting can improve subsequent retrieval precision in the retry loop.",
-        "decide_after_retrieval": "Requires structured output and branch control, which this cloud endpoint supports."
+        "generate_answer": "Final user-facing synthesis benefits most from the highest-quality model and large context for retrieved material.",
+        "generate_query_or_respond": "Tool-calling branch controller uses the strongest model to reduce bad retrieval decisions and direct-answer mistakes.",
+        "rewrite_question": "High-quality rewrite can improve subsequent retrieval recall and precision in difficult cases.",
+        "decide_after_retrieval": "Requires structured output and branch control; gpt-5.5-cloud supports structured output and should provide the most reliable sufficiency judgments."
       }
     },
     {
       "id": "balanced_local_cloud",
-      "description": "Balanced placement that keeps inexpensive/local work local where valid, while using cloud models for structured routing and higher-impact user-facing generation.",
+      "description": "Balanced placement keeps inexpensive/local execution for simpler rewrite work while using cloud models where capabilities or user-facing quality matter most.",
       "assignments": {
         "generate_answer": "gpt-4.1-mini-cloud",
-        "generate_query_or_respond": "qwen-local",
+        "generate_query_or_respond": "gpt-4.1-mini-cloud",
         "rewrite_question": "qwen-local",
         "decide_after_retrieval": "gpt-4.1-mini-cloud"
       },
       "rationale": {
-        "generate_answer": "Cloud mini model offers structured-capable, broad-context answer generation at known moderate cost.",
-        "generate_query_or_respond": "Local endpoint supports tool calling, so it can validly handle the initial retrieval controller without cloud spend.",
-        "rewrite_question": "Question rewriting is non-user-facing and does not need tools or structured output, making it suitable for local execution.",
-        "decide_after_retrieval": "Structured output is required, so this must use a structured-capable endpoint; gpt-4.1-mini-cloud provides lower cloud cost than the premium cloud option."
+        "generate_answer": "gpt-4.1-mini-cloud provides strong, cost-effective final answer generation with a very large context window.",
+        "generate_query_or_respond": "This unit requires tool calling and controls branching; gpt-4.1-mini-cloud supports tools at low cloud cost.",
+        "rewrite_question": "Question rewriting is non-user-facing and does not require tools or structured output, making the free local endpoint a good cost/latency trade-off.",
+        "decide_after_retrieval": "Structured output is required, so a structured-capable endpoint is necessary; gpt-4.1-mini-cloud is the lower-cost cloud option."
       }
     },
     {
       "id": "local_first_low_cloud_cost",
-      "description": "Local-first configuration minimizing cloud use by assigning all valid non-structured units to the local endpoint and reserving the cheapest structured-capable cloud endpoint for the router.",
+      "description": "Local-first/low-cloud-cost placement uses the local endpoint wherever valid, reserving cloud only for the structured-output router that cannot run locally.",
       "assignments": {
         "generate_answer": "qwen-local",
         "generate_query_or_respond": "qwen-local",
@@ -302,10 +312,10 @@
         "decide_after_retrieval": "gpt-4.1-mini-cloud"
       },
       "rationale": {
-        "generate_answer": "Final answer generation has no tool or structured-output requirement, so local placement is valid and avoids per-token cloud cost, trading off quality.",
-        "generate_query_or_respond": "Local model supports tool calling, satisfying the controller\u2019s tool-use requirement while keeping the loop local.",
-        "rewrite_question": "No special endpoint capabilities are required, so local execution minimizes cost and likely latency to local resources.",
-        "decide_after_retrieval": "Only structured-capable endpoints are valid; the mini cloud model is selected to minimize cloud cost for this required structured router."
+        "generate_answer": "Valid local placement with zero token cost; suitable when minimizing cloud spend is more important than maximum answer quality.",
+        "generate_query_or_respond": "qwen-local supports tool calling, so it can perform the retrieval-controller role without cloud cost.",
+        "rewrite_question": "Local endpoint is sufficient for non-structured, non-tool rewrite work and avoids cloud usage inside retry loops.",
+        "decide_after_retrieval": "This unit requires structured output; qwen-local lacks structured output support, so the lowest-cost structured-capable cloud endpoint is used."
       }
     }
   ]

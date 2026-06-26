@@ -8,6 +8,11 @@ model_endpoints:
     structured_output: false
     input_cost_per_million_tokens: 0
     output_cost_per_million_tokens: 0
+    model_kwargs:
+      temperature: 0
+      thinking: false
+      reasoning: false
+      num_predict: 128
   - id: gpt-4.1-mini-cloud
     model: gpt-4.1-mini
     location: cloud
@@ -24,3 +29,5 @@ model_endpoints:
     context_window: 400000
     tool_calling: true
     structured_output: true
+    input_cost_per_million_tokens: 5
+    output_cost_per_million_tokens: 30

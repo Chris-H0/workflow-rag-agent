@@ -132,31 +132,58 @@ class InstrumentedModel:
         endpoint: ModelEndpoint,
         placement_unit_id: str,
         trace_collector: TraceCollector,
+        result_transform: Any | None = None,
+        usage_source: Any | None = None,
     ) -> None:
         self._base_model = base_model
         self._endpoint = endpoint
         self._placement_unit_id = placement_unit_id
         self._trace_collector = trace_collector
+        self._result_transform = result_transform
+        self._usage_source = usage_source
 
     def bind_tools(self, tools: list[Any]) -> "InstrumentedModel":
         return self._wrap(self._base_model.bind_tools(tools))
 
     def with_structured_output(self, schema: Any) -> "InstrumentedModel":
-        return self._wrap(self._base_model.with_structured_output(schema))
+        try:
+            structured = self._base_model.with_structured_output(
+                schema,
+                include_raw=True,
+            )
+        except TypeError:
+            return self._wrap(self._base_model.with_structured_output(schema))
+
+        return self._wrap(
+            structured,
+            result_transform=_structured_parsed_result,
+            usage_source=_structured_raw_result,
+        )
 
     def invoke(self, messages: Any) -> Any:
         started = time.perf_counter()
         error = None
         result = None
+        returned_result = None
         try:
             result = self._base_model.invoke(messages)
-            return result
+            returned_result = (
+                self._result_transform(result)
+                if self._result_transform is not None
+                else result
+            )
+            return returned_result
         except Exception as exc:
             error = repr(exc)
             raise
         finally:
             elapsed = time.perf_counter() - started
-            usage = _extract_usage(result)
+            usage_result = (
+                self._usage_source(result)
+                if self._usage_source is not None and result is not None
+                else result
+            )
+            usage = _extract_usage(usage_result)
             cloud_cost, cost_known = _cloud_api_cost(self._endpoint, usage)
             self._trace_collector.add(
                 ModelInvocation(
@@ -175,12 +202,20 @@ class InstrumentedModel:
                 )
             )
 
-    def _wrap(self, base_model: Any) -> "InstrumentedModel":
+    def _wrap(
+        self,
+        base_model: Any,
+        *,
+        result_transform: Any | None = None,
+        usage_source: Any | None = None,
+    ) -> "InstrumentedModel":
         return InstrumentedModel(
             base_model=base_model,
             endpoint=self._endpoint,
             placement_unit_id=self._placement_unit_id,
             trace_collector=self._trace_collector,
+            result_transform=result_transform,
+            usage_source=usage_source,
         )
 
 
@@ -189,13 +224,20 @@ class MockPlacementModel:
         self.model = model
         self.model_kwargs = model_kwargs
         self._structured_schema: Any = None
+        self._include_raw = False
 
     def bind_tools(self, tools: list[Any]) -> "MockPlacementModel":
         return self
 
-    def with_structured_output(self, schema: Any) -> "MockPlacementModel":
+    def with_structured_output(
+        self,
+        schema: Any,
+        *,
+        include_raw: bool = False,
+    ) -> "MockPlacementModel":
         clone = MockPlacementModel(self.model, self.model_kwargs)
         clone._structured_schema = schema
+        clone._include_raw = include_raw
         return clone
 
     def invoke(self, messages: Any) -> Any:
@@ -203,7 +245,14 @@ class MockPlacementModel:
         usage = _mock_usage(messages, content)
         if self._structured_schema is not None:
             data = self._structured_payload()
-            return self._structured_schema.model_validate(data)
+            parsed = self._structured_schema.model_validate(data)
+            if self._include_raw:
+                return {
+                    "raw": AIMessage(content=json.dumps(data), usage_metadata=usage),
+                    "parsed": parsed,
+                    "parsing_error": None,
+                }
+            return parsed
         return AIMessage(content=content, usage_metadata=usage)
 
     def _structured_payload(self) -> dict[str, str]:
@@ -302,6 +351,21 @@ def _extract_usage(result: Any) -> dict[str, int | None]:
         "output_tokens": _int_or_none(output_tokens),
         "total_tokens": _int_or_none(total_tokens),
     }
+
+
+def _structured_parsed_result(result: Any) -> Any:
+    if isinstance(result, Mapping):
+        parsing_error = result.get("parsing_error")
+        if parsing_error is not None:
+            raise ValueError(f"structured output parsing failed: {parsing_error}")
+        return result.get("parsed")
+    return result
+
+
+def _structured_raw_result(result: Any) -> Any:
+    if isinstance(result, Mapping):
+        return result.get("raw") or result
+    return result
 
 
 def _int_or_none(value: Any) -> int | None:

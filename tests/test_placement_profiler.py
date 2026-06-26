@@ -6,6 +6,8 @@ import time
 import unittest
 from pathlib import Path
 
+from pydantic import create_model
+
 from placement_compiler.artifacts import build_artifact
 from placement_compiler.cli import profile_from_config
 from placement_compiler.endpoint_registry import EndpointRegistry, ModelResolver, TraceCollector
@@ -329,6 +331,10 @@ class PlacementProfilerTests(unittest.TestCase):
             trace_collector=trace_collector,
         )
         resolver.get_model("plan").invoke([{"role": "user", "content": "hello"}])
+        decision_schema = create_model("Decision", decision=(str, ...))
+        resolver.get_model("plan").with_structured_output(decision_schema).invoke(
+            [{"role": "user", "content": "choose"}]
+        )
         execution = WorkflowExecution(
             output={"quality": 1.0},
             trace=RunTrace(invocations=trace_collector.invocations),
@@ -371,6 +377,7 @@ class PlacementProfilerTests(unittest.TestCase):
                 workflow_id="tiny",
                 workflow="fake",
                 profile_config={},
+                primary_metric=MetricDefinition(name="quality", direction="maximise"),
                 selected_example_ids=["1"],
                 baseline=CandidateProfile(
                     candidate_id="baseline",

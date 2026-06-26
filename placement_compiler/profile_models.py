@@ -173,6 +173,7 @@ class ProfileArtifact(StrictModel):
     workflow_id: str
     workflow: str
     profile_config: dict[str, Any]
+    primary_metric: MetricDefinition
     selected_example_ids: list[str]
     baseline: CandidateProfile
     quality_constraint: QualityConstraint
