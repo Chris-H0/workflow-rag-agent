@@ -1,3 +1,5 @@
+"""Typed config loading for profile-only candidate profiling runs."""
+
 from __future__ import annotations
 
 from pathlib import Path

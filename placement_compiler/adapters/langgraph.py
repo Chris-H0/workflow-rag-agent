@@ -1,3 +1,5 @@
+"""Extract framework-neutral workflow metadata from compiled LangGraph graphs."""
+
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping

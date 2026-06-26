@@ -1,3 +1,5 @@
+"""Run fixed-candidate profiling, aggregate metrics, and write reports."""
+
 from __future__ import annotations
 
 import csv

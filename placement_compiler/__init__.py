@@ -1,4 +1,4 @@
-"""Compile-time model placement candidate generation."""
+"""Public package exports for placement compilation and profiling."""
 
 from placement_compiler.generation.candidates import CandidateGenerationError, CandidateGenerator
 from placement_compiler.generation.config import CompilerConfig, PlacementRunConfig, load_run_config

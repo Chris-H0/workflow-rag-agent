@@ -1,3 +1,5 @@
+"""Load repository workflows and built-in placement metadata registries."""
+
 from __future__ import annotations
 
 import importlib

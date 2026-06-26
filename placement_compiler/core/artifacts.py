@@ -1,3 +1,5 @@
+"""Build and write versioned placement candidate artifacts."""
+
 from __future__ import annotations
 
 import json

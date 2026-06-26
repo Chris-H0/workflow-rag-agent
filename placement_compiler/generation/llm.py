@@ -1,3 +1,5 @@
+"""LangChain-backed compiler LLM adapter for structured candidate output."""
+
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence

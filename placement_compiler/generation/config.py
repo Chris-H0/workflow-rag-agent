@@ -1,3 +1,5 @@
+"""Typed config loading for compile-only candidate generation runs."""
+
 from __future__ import annotations
 
 from pathlib import Path

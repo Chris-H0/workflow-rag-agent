@@ -1,3 +1,5 @@
+"""Orchestrate compile-only and compile-plus-profile pipeline phases."""
+
 from __future__ import annotations
 
 from pathlib import Path

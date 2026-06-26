@@ -1,3 +1,5 @@
+"""Module entry point for running the placement compiler CLI."""
+
 from placement_compiler.cli import main
 
 

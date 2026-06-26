@@ -1,3 +1,5 @@
+"""Command-line interface for compile, profile, and unified pipeline runs."""
+
 from __future__ import annotations
 
 import argparse

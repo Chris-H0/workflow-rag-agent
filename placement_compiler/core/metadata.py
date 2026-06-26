@@ -1,3 +1,5 @@
+"""Normalize graph structure into framework-neutral workflow metadata."""
+
 from __future__ import annotations
 
 from collections import deque

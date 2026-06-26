@@ -1,3 +1,5 @@
+"""Prompt and validate compiler LLM placement candidate proposals."""
+
 from __future__ import annotations
 
 import json

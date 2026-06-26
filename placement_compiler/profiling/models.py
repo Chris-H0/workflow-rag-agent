@@ -1,3 +1,5 @@
+"""Pydantic models for profiling plans, traces, metrics, and artifacts."""
+
 from __future__ import annotations
 
 from datetime import UTC, datetime

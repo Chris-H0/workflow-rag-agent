@@ -1,3 +1,5 @@
+"""Repository-specific profiling adapters for the QA and code workflows."""
+
 from __future__ import annotations
 
 import time

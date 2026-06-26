@@ -1,3 +1,5 @@
+"""Shared Pydantic models for workflows, endpoints, candidates, and artifacts."""
+
 from __future__ import annotations
 
 from datetime import UTC, datetime

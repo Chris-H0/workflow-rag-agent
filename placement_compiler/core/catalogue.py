@@ -1,3 +1,5 @@
+"""Load model endpoint catalogues and optional node metadata files."""
+
 from __future__ import annotations
 
 import json

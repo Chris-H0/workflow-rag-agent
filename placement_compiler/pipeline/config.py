@@ -1,3 +1,5 @@
+"""Typed config loading for unified compile and profile pipeline runs."""
+
 from __future__ import annotations
 
 from pathlib import Path
