@@ -6,7 +6,7 @@ from typing import Any, Literal
 
 from pydantic import Field, field_validator, model_validator
 
-from placement_compiler.models import Candidate, ModelEndpoint, PlacementArtifact, StrictModel
+from placement_compiler.core.models import Candidate, ModelEndpoint, PlacementArtifact, StrictModel
 
 
 MetricDirection = Literal["maximise", "minimise"]

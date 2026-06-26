@@ -5,8 +5,8 @@ from typing import Any
 
 from pydantic import Field, field_validator, model_validator
 
-from placement_compiler.catalogue import load_json_or_yaml
-from placement_compiler.models import StrictModel, StructuredOutputMethod
+from placement_compiler.core.catalogue import load_json_or_yaml
+from placement_compiler.core.models import StrictModel, StructuredOutputMethod
 
 
 class CompilerConfig(StrictModel):

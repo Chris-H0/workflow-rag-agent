@@ -5,7 +5,7 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
-from placement_compiler.models import ModelEndpoint, NodeRegistryMetadata
+from placement_compiler.core.models import ModelEndpoint, NodeRegistryMetadata
 
 
 def load_model_catalogue(path: str | Path) -> list[ModelEndpoint]:

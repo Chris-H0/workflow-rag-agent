@@ -6,17 +6,17 @@ from typing import Any
 
 from langchain_core.messages import AIMessage, HumanMessage
 
-from placement_compiler.endpoint_registry import EndpointRegistry, ModelResolver, TraceCollector
-from placement_compiler.profile_models import (
+from placement_compiler.runtime.endpoint_registry import EndpointRegistry, ModelResolver, TraceCollector
+from placement_compiler.profiling.models import (
     MetricDefinition,
     PlacementPlan,
     ProfileSettings,
     RunTrace,
     WorkflowExecution,
 )
-from placement_compiler.profiling import EvaluationAdapter, RuntimeAdapter
-from placement_compiler.models import PlacementArtifact
-from placement_compiler.workflows import WORKFLOW_SPECS, _workflow_import_context
+from placement_compiler.profiling.runner import EvaluationAdapter, RuntimeAdapter
+from placement_compiler.core.models import PlacementArtifact
+from placement_compiler.adapters.repository_workflows import WORKFLOW_SPECS, _workflow_import_context
 
 
 def build_repository_profile_adapters(

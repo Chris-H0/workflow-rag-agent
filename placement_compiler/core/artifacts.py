@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from placement_compiler.models import Candidate, ModelEndpoint, PlacementArtifact, WorkflowMetadata
+from placement_compiler.core.models import Candidate, ModelEndpoint, PlacementArtifact, WorkflowMetadata
 
 
 def build_artifact(

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from placement_compiler.catalogue import load_json_or_yaml
-from placement_compiler.profile_models import ProfileRunConfig, ResolvedProfileRunConfig
+from placement_compiler.core.catalogue import load_json_or_yaml
+from placement_compiler.profiling.models import ProfileRunConfig, ResolvedProfileRunConfig
 
 
 def load_profile_run_config(path: str | Path) -> ResolvedProfileRunConfig:

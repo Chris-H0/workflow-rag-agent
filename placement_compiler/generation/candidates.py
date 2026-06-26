@@ -7,7 +7,7 @@ from typing import Any, Protocol
 
 from pydantic import BaseModel, ValidationError
 
-from placement_compiler.models import (
+from placement_compiler.core.models import (
     Candidate,
     CandidateSetDraft,
     ModelEndpoint,
@@ -227,5 +227,14 @@ def _candidate_errors(
         if node.structured_output_required and not endpoint.structured_output:
             errors.append(
                 f"{node_id} requires structured output but {endpoint_id!r} does not support it"
+            )
+        if (
+            node.required_context_window is not None
+            and endpoint.context_window is not None
+            and endpoint.context_window < node.required_context_window
+        ):
+            errors.append(
+                f"{node_id} requires context window {node.required_context_window} "
+                f"but {endpoint_id!r} only declares {endpoint.context_window}"
             )
     return errors

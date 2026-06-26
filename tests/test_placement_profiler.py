@@ -8,12 +8,12 @@ from pathlib import Path
 
 from pydantic import create_model
 
-from placement_compiler.artifacts import build_artifact
+from placement_compiler.core.artifacts import build_artifact
 from placement_compiler.cli import profile_from_config
-from placement_compiler.endpoint_registry import EndpointRegistry, ModelResolver, TraceCollector
-from placement_compiler.metadata import build_workflow_metadata
-from placement_compiler.models import Candidate, ModelEndpoint, NodeRegistryMetadata, WorkflowEdge
-from placement_compiler.profile_models import (
+from placement_compiler.runtime.endpoint_registry import EndpointRegistry, ModelResolver, TraceCollector
+from placement_compiler.core.metadata import build_workflow_metadata
+from placement_compiler.core.models import Candidate, ModelEndpoint, NodeRegistryMetadata, WorkflowEdge
+from placement_compiler.profiling.models import (
     CandidateProfile,
     MetricDefinition,
     PlacementPlan,
@@ -36,7 +36,7 @@ from placement_compiler.profiling import (
     run_record_from_execution,
     write_profile_artifacts,
 )
-from placement_compiler.workflows import load_existing_workflow_metadata
+from placement_compiler.adapters.repository_workflows import load_existing_workflow_metadata
 
 
 def tiny_workflow():

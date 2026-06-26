@@ -3,8 +3,8 @@ from __future__ import annotations
 from collections.abc import Callable, Mapping
 from typing import Any
 
-from placement_compiler.metadata import build_workflow_metadata
-from placement_compiler.models import NodeRegistryMetadata, WorkflowEdge, WorkflowMetadata
+from placement_compiler.core.metadata import build_workflow_metadata
+from placement_compiler.core.models import NodeRegistryMetadata, WorkflowEdge, WorkflowMetadata
 
 
 def extract_langgraph_metadata(

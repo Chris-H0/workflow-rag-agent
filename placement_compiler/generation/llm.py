@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import Any
 
-from placement_compiler.models import CandidateSetDraft, StructuredOutputMethod
+from placement_compiler.core.models import CandidateSetDraft, StructuredOutputMethod
 
 
 class LangChainCompilerLLM:

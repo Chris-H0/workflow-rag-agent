@@ -1,0 +1,43 @@
+workflow: qa
+models: model_endpoints.yaml
+candidate_artifact: ../../placement_candidates/qa/candidates.json
+metadata: null
+default_phase: compile_and_profile
+
+compile:
+  candidates: 3
+  priorities:
+    - quality
+    - cloud-cost
+    - latency
+  compiler:
+    provider: openai
+    model: gpt-5.5
+    temperature: 0
+    structured_output_method: function_calling
+  max_attempts: 2
+
+profile:
+  profile:
+    split: validation
+    sample_size: 10
+    seed: 42
+    repeats: 1
+    timeout_seconds: 120
+    warmup_runs: 0
+    dataset_options:
+      level: hard
+      load_limit: 100
+  baseline:
+    type: all_endpoint
+    endpoint_id: gpt-4.1-mini-cloud
+  quality_constraint:
+    metric: exact_match
+    max_drop_from_baseline: 0.05
+  ranking:
+    objectives:
+      - metric: cloud_api_cost
+        direction: minimise
+      - metric: mean_latency_seconds
+        direction: minimise
+  output: ../../placement_profiles/qa

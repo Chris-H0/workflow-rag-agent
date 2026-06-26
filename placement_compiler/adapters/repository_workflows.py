@@ -8,10 +8,10 @@ from pathlib import Path
 from typing import Any
 
 from placement_compiler.adapters.langgraph import extract_langgraph_metadata
-from placement_compiler.models import NodeRegistryMetadata, WorkflowMetadata
+from placement_compiler.core.models import NodeRegistryMetadata, WorkflowMetadata
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 @dataclass(frozen=True)

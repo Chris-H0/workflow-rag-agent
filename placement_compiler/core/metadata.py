@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections import deque
 from collections.abc import Mapping, Sequence
 
-from placement_compiler.models import (
+from placement_compiler.core.models import (
     NodeRegistryMetadata,
     Stage,
     WorkflowEdge,

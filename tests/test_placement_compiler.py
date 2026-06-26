@@ -6,19 +6,19 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from placement_compiler.artifacts import build_artifact, write_artifact
-from placement_compiler.candidates import CandidateGenerationError, CandidateGenerator
-from placement_compiler.cli import generate_command
-from placement_compiler.config import load_run_config
-from placement_compiler.metadata import build_workflow_metadata
-from placement_compiler.models import (
+from placement_compiler.core.artifacts import build_artifact, write_artifact
+from placement_compiler.generation.candidates import CandidateGenerationError, CandidateGenerator
+from placement_compiler.cli import generate_command, pipeline_from_config
+from placement_compiler.core.metadata import build_workflow_metadata
+from placement_compiler.core.models import (
     Candidate,
     CandidateSetDraft,
     ModelEndpoint,
     NodeRegistryMetadata,
     WorkflowEdge,
 )
-from placement_compiler.workflows import load_existing_workflow_metadata
+from placement_compiler.pipeline.config import load_pipeline_config
+from placement_compiler.adapters.repository_workflows import load_existing_workflow_metadata
 
 
 class FakeCompilerLLM:
@@ -201,6 +201,47 @@ class PlacementCompilerTests(unittest.TestCase):
                 candidate_count=1,
             )
 
+    def test_context_window_incompatibility_rejection(self):
+        workflow = build_workflow_metadata(
+            workflow_id="context",
+            node_ids=["__start__", "plan", "__end__"],
+            edges=[
+                WorkflowEdge(source="__start__", target="plan"),
+                WorkflowEdge(source="plan", target="__end__"),
+            ],
+            registry={
+                "plan": NodeRegistryMetadata(
+                    is_llm_placement_unit=True,
+                    required_context_window=1000,
+                )
+            },
+        )
+        response = CandidateSetDraft(
+            candidates=[
+                Candidate(
+                    id="too-small",
+                    description="Endpoint context window is too small.",
+                    assignments={"plan": "small"},
+                )
+            ]
+        )
+        endpoints = [
+            ModelEndpoint(
+                id="small",
+                model="small",
+                location="local",
+                provider="mock",
+                context_window=10,
+            )
+        ]
+
+        with self.assertRaisesRegex(CandidateGenerationError, "context window"):
+            CandidateGenerator(FakeCompilerLLM(response), max_attempts=1).generate(
+                workflow=workflow,
+                model_endpoints=endpoints,
+                candidate_count=1,
+            )
+
     def test_valid_json_serialization(self):
         candidates = [
             Candidate(
@@ -297,14 +338,70 @@ class PlacementCompilerTests(unittest.TestCase):
         self.assertEqual(len(data["workflow"]["nodes"]), 6)
 
     def test_example_run_config_loads(self):
-        config = load_run_config("placement_compiler/examples/qa_candidate_run.yaml")
+        config = load_pipeline_config("placement_compiler/examples/qa_pipeline_run.yaml")
 
         self.assertEqual(config.workflow, "qa")
-        self.assertEqual(config.candidates, 3)
-        self.assertEqual(config.compiler.provider, "openai")
-        self.assertEqual(config.compiler.model, "gpt-5.5")
+        self.assertEqual(config.compile.candidates, 3)
+        self.assertEqual(config.compile.compiler.provider, "openai")
+        self.assertEqual(config.compile.compiler.model, "gpt-5.5")
         self.assertTrue(config.models.exists())
-        self.assertTrue(str(config.output).endswith("placement_candidates/qa/candidates.json"))
+        self.assertTrue(str(config.candidate_artifact).endswith("placement_candidates/qa/candidates.json"))
+        self.assertIsNotNone(config.profile)
+        self.assertTrue(str(config.profile.output).endswith("placement_profiles/qa"))
+
+    def test_pipeline_compile_phase_against_existing_qa_workflow(self):
+        response = CandidateSetDraft(
+            candidates=[
+                Candidate(
+                    id="quality",
+                    description="Cloud endpoints for all QA placement units.",
+                    assignments={
+                        "generate_query_or_respond": "gpt-4.1-mini-cloud",
+                        "decide_after_retrieval": "gpt-4.1-mini-cloud",
+                        "rewrite_question": "gpt-4.1-mini-cloud",
+                        "generate_answer": "gpt-4.1-mini-cloud",
+                    },
+                )
+            ]
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output = Path(tmpdir) / "qa-candidates.json"
+            config = Path(tmpdir) / "qa-pipeline.yaml"
+            models = (
+                Path.cwd()
+                / "placement_compiler"
+                / "examples"
+                / "model_endpoints.yaml"
+            )
+            config.write_text(
+                "\n".join(
+                    [
+                        "workflow: qa",
+                        f"models: {models}",
+                        f"candidate_artifact: {output}",
+                        "default_phase: compile",
+                        "compile:",
+                        "  candidates: 1",
+                        "  priorities: [quality]",
+                        "  compiler:",
+                        "    provider: openai",
+                        "    model: gpt-5.5",
+                        "    temperature: 0",
+                        "  max_attempts: 1",
+                    ]
+                )
+                + "\n"
+            )
+            paths = pipeline_from_config(
+                config,
+                phase="compile",
+                compiler_llm=FakeCompilerLLM(response),
+            )
+            data = json.loads(Path(paths["candidate_artifact"]).read_text())
+
+        self.assertEqual(data["workflow_id"], "qa-workflow")
+        self.assertEqual(data["candidate_count"], 1)
 
 
 if __name__ == "__main__":

@@ -10,8 +10,8 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError
 from pathlib import Path
 from typing import Any, Protocol
 
-from placement_compiler.models import PlacementArtifact
-from placement_compiler.profile_models import (
+from placement_compiler.core.models import PlacementArtifact
+from placement_compiler.profiling.models import (
     CandidateProfile,
     LoadedCandidateArtifact,
     MetricDefinition,

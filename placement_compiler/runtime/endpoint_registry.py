@@ -8,8 +8,8 @@ from typing import Any
 
 from langchain_core.messages import AIMessage
 
-from placement_compiler.models import ModelEndpoint, WorkflowMetadata, WorkflowNode
-from placement_compiler.profile_models import ModelInvocation, PlacementPlan
+from placement_compiler.core.models import ModelEndpoint, WorkflowMetadata, WorkflowNode
+from placement_compiler.profiling.models import ModelInvocation, PlacementPlan
 
 
 class PlacementResolutionError(RuntimeError):
