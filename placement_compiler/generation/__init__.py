@@ -1,4 +1,4 @@
-"""Candidate generation configuration, LLM wrapper, and validation."""
+"""Compiler LLM candidate generation and validation."""
 
 from placement_compiler.generation.candidates import (
     CandidateGenerationError,
@@ -7,4 +7,3 @@ from placement_compiler.generation.candidates import (
 )
 
 __all__ = ["CandidateGenerationError", "CandidateGenerator", "CompilerLLM"]
-

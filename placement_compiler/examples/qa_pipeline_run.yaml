@@ -18,16 +18,15 @@ compile:
   max_attempts: 2
 
 profile:
-  profile:
-    split: validation
-    sample_size: 10
-    seed: 42
-    repeats: 1
-    timeout_seconds: 120
-    warmup_runs: 0
-    dataset_options:
-      level: hard
-      load_limit: 100
+  split: validation
+  sample_size: 10
+  seed: 42
+  repeats: 1
+  timeout_seconds: 120
+  warmup_runs: 0
+  dataset_options:
+    level: hard
+    load_limit: 100
   baseline:
     type: all_endpoint
     endpoint_id: gpt-4.1-mini-cloud

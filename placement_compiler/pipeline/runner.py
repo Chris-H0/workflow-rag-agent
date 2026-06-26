@@ -96,7 +96,7 @@ def profile_candidates(config: ResolvedPipelineConfig) -> dict[str, Path]:
         candidate_artifact=loaded_artifact,
         evaluation_adapter=evaluation_adapter,
         runtime_adapter=runtime_adapter,
-        profile=config.profile.profile,
+        profile=config.profile,
         baseline_plan=baseline_plan,
         quality_constraint=config.profile.quality_constraint,
         ranking=config.profile.ranking,

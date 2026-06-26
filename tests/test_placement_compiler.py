@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import argparse
 import json
 import tempfile
 import unittest
@@ -8,7 +7,7 @@ from pathlib import Path
 
 from placement_compiler.core.artifacts import build_artifact, write_artifact
 from placement_compiler.generation.candidates import CandidateGenerationError, CandidateGenerator
-from placement_compiler.cli import generate_command, pipeline_from_config
+from placement_compiler.cli import pipeline_from_config
 from placement_compiler.core.metadata import build_workflow_metadata
 from placement_compiler.core.models import (
     Candidate,
@@ -264,79 +263,6 @@ class PlacementCompilerTests(unittest.TestCase):
         self.assertEqual(data["candidate_count"], 1)
         self.assertEqual(data["candidates"][0]["assignments"]["plan"], "cloud")
 
-    def test_generate_command_against_existing_qa_workflow(self):
-        response = CandidateSetDraft(
-            candidates=[
-                Candidate(
-                    id="quality",
-                    description="Cloud endpoints for all QA placement units.",
-                    assignments={
-                        "generate_query_or_respond": "gpt-4.1-mini-cloud",
-                        "decide_after_retrieval": "gpt-4.1-mini-cloud",
-                        "rewrite_question": "gpt-4.1-mini-cloud",
-                        "generate_answer": "gpt-4.1-mini-cloud",
-                    },
-                ),
-                Candidate(
-                    id="balanced",
-                    description="Local query generation with cloud routing and answer.",
-                    assignments={
-                        "generate_query_or_respond": "qwen-local",
-                        "decide_after_retrieval": "gpt-4.1-mini-cloud",
-                        "rewrite_question": "qwen-local",
-                        "generate_answer": "gpt-4.1-mini-cloud",
-                    },
-                ),
-                Candidate(
-                    id="local-first",
-                    description="Local where capabilities allow it.",
-                    assignments={
-                        "generate_query_or_respond": "qwen-local",
-                        "decide_after_retrieval": "gpt-4.1-mini-cloud",
-                        "rewrite_question": "qwen-local",
-                        "generate_answer": "qwen-local",
-                    },
-                ),
-            ]
-        )
-
-        with tempfile.TemporaryDirectory() as tmpdir:
-            output = Path(tmpdir) / "qa-candidates.json"
-            config = Path(tmpdir) / "qa-run.yaml"
-            models = (
-                Path.cwd()
-                / "placement_compiler"
-                / "examples"
-                / "model_endpoints.yaml"
-            )
-            config.write_text(
-                "\n".join(
-                    [
-                        "workflow: qa",
-                        f"models: {models}",
-                        "candidates: 3",
-                        f"output: {output}",
-                        "priorities:",
-                        "  - quality",
-                        "compiler:",
-                        "  provider: openai",
-                        "  model: gpt-5.5",
-                        "  temperature: 0",
-                        "max_attempts: 1",
-                    ]
-                )
-                + "\n"
-            )
-            args = argparse.Namespace(
-                config=str(config),
-            )
-            path = generate_command(args, compiler_llm=FakeCompilerLLM(response))
-            data = json.loads(path.read_text())
-
-        self.assertEqual(data["workflow_id"], "qa-workflow")
-        self.assertEqual(data["candidate_count"], 3)
-        self.assertEqual(len(data["workflow"]["nodes"]), 6)
-
     def test_example_run_config_loads(self):
         config = load_pipeline_config("placement_compiler/examples/qa_pipeline_run.yaml")
 
@@ -347,6 +273,7 @@ class PlacementCompilerTests(unittest.TestCase):
         self.assertTrue(config.models.exists())
         self.assertTrue(str(config.candidate_artifact).endswith("placement_candidates/qa/candidates.json"))
         self.assertIsNotNone(config.profile)
+        self.assertEqual(config.profile.sample_size, 10)
         self.assertTrue(str(config.profile.output).endswith("placement_profiles/qa"))
 
     def test_pipeline_compile_phase_against_existing_qa_workflow(self):

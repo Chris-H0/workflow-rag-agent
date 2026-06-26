@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import Field, field_validator, model_validator
 
 from placement_compiler.core.catalogue import load_json_or_yaml
-from placement_compiler.core.models import StrictModel
-from placement_compiler.generation.config import CompilerConfig
+from placement_compiler.core.models import StrictModel, StructuredOutputMethod
 from placement_compiler.profiling.models import (
     BaselineConfig,
     ProfileSettings,
@@ -19,6 +18,22 @@ from placement_compiler.profiling.models import (
 
 
 PipelinePhase = Literal["compile", "compile_and_profile"]
+
+
+class CompilerConfig(StrictModel):
+    provider: str
+    model: str
+    temperature: float | None = None
+    structured_output_method: StructuredOutputMethod = "function_calling"
+    model_kwargs: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("provider", "model")
+    @classmethod
+    def non_empty_string(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise ValueError("must not be empty")
+        return value
 
 
 class CompileConfig(StrictModel):
@@ -36,8 +51,7 @@ class CompileConfig(StrictModel):
         return self
 
 
-class ProfileConfig(StrictModel):
-    profile: ProfileSettings = Field(default_factory=ProfileSettings)
+class ProfileConfig(ProfileSettings):
     baseline: BaselineConfig
     quality_constraint: QualityConstraint
     ranking: RankingConfig = Field(default_factory=RankingConfig)
@@ -70,8 +84,7 @@ class PipelineConfig(StrictModel):
         return value
 
 
-class ResolvedProfileConfig(StrictModel):
-    profile: ProfileSettings
+class ResolvedProfileConfig(ProfileSettings):
     baseline: BaselineConfig
     quality_constraint: QualityConstraint
     ranking: RankingConfig
@@ -98,7 +111,14 @@ def load_pipeline_config(path: str | Path) -> ResolvedPipelineConfig:
         compile=config.compile,
         profile=(
             ResolvedProfileConfig(
-                profile=config.profile.profile,
+                split=config.profile.split,
+                sample_size=config.profile.sample_size,
+                seed=config.profile.seed,
+                repeats=config.profile.repeats,
+                timeout_seconds=config.profile.timeout_seconds,
+                warmup_runs=config.profile.warmup_runs,
+                dataset_options=config.profile.dataset_options,
+                examples=config.profile.examples,
                 baseline=config.profile.baseline,
                 quality_constraint=config.profile.quality_constraint,
                 ranking=config.profile.ranking,

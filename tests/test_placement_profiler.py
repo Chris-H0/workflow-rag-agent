@@ -9,7 +9,8 @@ from pathlib import Path
 from pydantic import create_model
 
 from placement_compiler.core.artifacts import build_artifact
-from placement_compiler.cli import profile_from_config
+from placement_compiler.pipeline.config import load_pipeline_config
+from placement_compiler.pipeline.runner import profile_candidates
 from placement_compiler.runtime.endpoint_registry import EndpointRegistry, ModelResolver, TraceCollector
 from placement_compiler.core.metadata import build_workflow_metadata
 from placement_compiler.core.models import Candidate, ModelEndpoint, NodeRegistryMetadata, WorkflowEdge
@@ -422,10 +423,17 @@ class PlacementProfilerTests(unittest.TestCase):
                 [Candidate(id="mock-qa", description="mock", assignments=qa_assignments)],
             )
             qa_config = tmp / "qa-profile.yaml"
+            models = Path.cwd() / "placement_compiler" / "examples" / "model_endpoints.yaml"
             qa_config.write_text(
                 f"""
 workflow: qa
+models: {models}
 candidate_artifact: {qa_artifact}
+compile:
+  candidates: 1
+  compiler:
+    provider: openai
+    model: gpt-5.5
 profile:
   sample_size: 1
   seed: 1
@@ -442,20 +450,20 @@ profile:
         title: [Paris]
         sentences:
           - [Paris is the answer.]
-baseline:
-  type: all_endpoint
-  endpoint_id: mock-cloud
-quality_constraint:
-  metric: exact_match
-  max_drop_from_baseline: 0
-ranking:
-  objectives:
-    - metric: cloud_api_cost
-      direction: minimise
-output: {tmp / "qa-profile"}
+  baseline:
+    type: all_endpoint
+    endpoint_id: mock-cloud
+  quality_constraint:
+    metric: exact_match
+    max_drop_from_baseline: 0
+  ranking:
+    objectives:
+      - metric: cloud_api_cost
+        direction: minimise
+  output: {tmp / "qa-profile"}
 """
             )
-            qa_paths = profile_from_config(qa_config)
+            qa_paths = profile_candidates(load_pipeline_config(qa_config))
             qa_profile = json.loads(qa_paths["profile"].read_text())
             self.assertEqual(qa_profile["selected_candidate_id"], "mock-qa")
 
@@ -474,7 +482,13 @@ output: {tmp / "qa-profile"}
             code_config.write_text(
                 f"""
 workflow: code
+models: {models}
 candidate_artifact: {code_artifact}
+compile:
+  candidates: 1
+  compiler:
+    provider: openai
+    model: gpt-5.5
 profile:
   sample_size: 1
   seed: 1
@@ -493,20 +507,20 @@ profile:
         - [-1, 2]
       atol: 0
       contract: ""
-baseline:
-  type: all_endpoint
-  endpoint_id: mock-cloud
-quality_constraint:
-  metric: mbpp_plus_pass
-  max_drop_from_baseline: 0
-ranking:
-  objectives:
-    - metric: cloud_api_cost
-      direction: minimise
-output: {tmp / "code-profile"}
+  baseline:
+    type: all_endpoint
+    endpoint_id: mock-cloud
+  quality_constraint:
+    metric: mbpp_plus_pass
+    max_drop_from_baseline: 0
+  ranking:
+    objectives:
+      - metric: cloud_api_cost
+        direction: minimise
+  output: {tmp / "code-profile"}
 """
             )
-            code_paths = profile_from_config(code_config)
+            code_paths = profile_candidates(load_pipeline_config(code_config))
             code_profile = json.loads(code_paths["profile"].read_text())
             self.assertEqual(code_profile["selected_candidate_id"], "mock-code")
 

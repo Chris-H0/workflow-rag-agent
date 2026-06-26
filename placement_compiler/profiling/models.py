@@ -6,7 +6,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, model_validator
 
 from placement_compiler.core.models import Candidate, ModelEndpoint, PlacementArtifact, StrictModel
 
@@ -71,34 +71,6 @@ class RankingObjective(StrictModel):
 
 class RankingConfig(StrictModel):
     objectives: list[RankingObjective] = Field(default_factory=list)
-
-
-class ProfileRunConfig(StrictModel):
-    workflow: str
-    candidate_artifact: str
-    profile: ProfileSettings = Field(default_factory=ProfileSettings)
-    baseline: BaselineConfig
-    quality_constraint: QualityConstraint
-    ranking: RankingConfig = Field(default_factory=RankingConfig)
-    output: str
-
-    @field_validator("workflow", "candidate_artifact", "output")
-    @classmethod
-    def non_empty_string(cls, value: str) -> str:
-        value = value.strip()
-        if not value:
-            raise ValueError("must not be empty")
-        return value
-
-
-class ResolvedProfileRunConfig(StrictModel):
-    workflow: str
-    candidate_artifact: Path
-    profile: ProfileSettings
-    baseline: BaselineConfig
-    quality_constraint: QualityConstraint
-    ranking: RankingConfig
-    output: Path
 
 
 class PlacementPlan(StrictModel):
