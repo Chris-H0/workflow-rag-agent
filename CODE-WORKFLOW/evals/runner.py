@@ -2,10 +2,8 @@ from datetime import UTC, datetime
 import json
 from pathlib import Path
 
-from langchain_core.messages import AIMessage, HumanMessage
-
-from benchmarks.mbpp_plus import compact_example, make_problem_prompt
-from evals.metrics import score_solution
+import evaluation as workflow_evaluation
+from benchmarks.mbpp_plus import compact_example
 from evals.traces import download_trace
 from paths import analysis_config_dir
 
@@ -56,33 +54,15 @@ def run_eval_example(
 ):
     example_id = example["task_id"]
     run_id = make_run_id(config_id, example_id, repeat)
-    task_prompt = make_problem_prompt(example)
-    user_message = HumanMessage(content=task_prompt)
-    nodes = []
-    plan = ""
-    solution = ""
-    generated_tests = ""
-    generated_test_result = {}
-    review_comments = ""
-    review_decision = ""
-    revision_count = 0
+    graph_input = workflow_evaluation.make_input(example)
+    chunks = []
 
     if print_updates:
-        user_message.pretty_print()
+        graph_input["messages"][0].pretty_print()
         print("\n")
 
     for chunk in graph.stream(
-        {
-            "messages": [user_message],
-            "task": example,
-            "plan": "",
-            "solution": "",
-            "generated_tests": "",
-            "generated_test_result": {},
-            "review_comments": "",
-            "review_decision": "",
-            "revision_count": 0,
-        },
+        graph_input,
         config={
             "metadata": {
                 "config_id": config_id,
@@ -90,27 +70,11 @@ def run_eval_example(
             }
         },
     ):
-        for node, update in chunk.items():
-            nodes.append(node)
-            latest_message = update["messages"][-1]
-            plan = update.get("plan", plan)
-            solution = update.get("solution", solution)
-            generated_tests = update.get("generated_tests", generated_tests)
-            generated_test_result = update.get(
-                "generated_test_result",
-                generated_test_result,
-            )
-            review_comments = update.get("review_comments", review_comments)
-            review_decision = update.get("review_decision", review_decision)
-            revision_count = update.get("revision_count", revision_count)
+        chunks.append(chunk)
+        if print_updates:
+            _print_chunk(chunk)
 
-            if print_updates:
-                print("### Node: ", node)
-                if isinstance(latest_message, AIMessage):
-                    latest_message.pretty_print()
-                print("\n")
-
-    metrics = score_solution(example, solution)
+    output = workflow_evaluation.extract_output(chunks)
     result = {
         "config_id": config_id,
         "run_id": run_id,
@@ -118,16 +82,16 @@ def run_eval_example(
         "repeat": repeat,
         "benchmark": "MBPP+",
         "task": compact_example(example),
-        "plan": plan,
-        "solution": solution,
-        "generated_tests": generated_tests,
-        "generated_test_result": generated_test_result,
-        "review_comments": review_comments,
-        "review_decision": review_decision,
-        "revision_count": revision_count,
+        "plan": output.get("plan", ""),
+        "solution": output.get("solution", ""),
+        "generated_tests": output.get("generated_tests", ""),
+        "generated_test_result": output.get("generated_test_result", {}),
+        "review_comments": output.get("review_comments", ""),
+        "review_decision": output.get("review_decision", ""),
+        "revision_count": output.get("revision_count", 0),
         "model_config": model_config,
-        "metrics": metrics,
-        "nodes": nodes,
+        "metrics": workflow_evaluation.score(example, output),
+        "nodes": output.get("nodes", []),
     }
 
     output_path = analysis_config_dir(config_id) / "evals" / f"{run_id}.json"
@@ -135,6 +99,15 @@ def run_eval_example(
     print(f"Saved eval result to {output_path}")
 
     return result
+
+
+def _print_chunk(chunk):
+    for node, update in chunk.items():
+        messages = update.get("messages", [])
+        print("### Node: ", node)
+        if messages:
+            messages[-1].pretty_print()
+        print("\n")
 
 
 def run_eval_loop(

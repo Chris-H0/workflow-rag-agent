@@ -1,0 +1,29 @@
+nodes:
+  generate_query_or_respond:
+    is_llm_placement_unit: true
+    semantic_role: initial retrieval controller
+    description: Decides whether to answer directly or call the retriever for the first query.
+    user_facing_output: true
+    tool_use: true
+    branch_control: true
+  decide_after_retrieval:
+    is_llm_placement_unit: true
+    semantic_role: retrieval sufficiency router
+    description: Routes after retrieval based on relevance, completeness, and budget.
+    structured_output_required: true
+    branch_control: true
+  rewrite_question:
+    is_llm_placement_unit: true
+    semantic_role: question rewrite
+    description: Rewrites the original question before another retrieval attempt.
+  generate_followup_query:
+    semantic_role: follow-up query prompt builder
+    description: Builds a follow-up retrieval prompt without invoking a model.
+  generate_answer:
+    is_llm_placement_unit: true
+    semantic_role: final answer generation
+    description: Generates the final answer from the question and retrieved context.
+    user_facing_output: true
+  retrieve:
+    semantic_role: retrieval tool
+    description: Tool node that calls the configured document retriever.

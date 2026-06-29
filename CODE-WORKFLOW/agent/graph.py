@@ -12,11 +12,11 @@ from agent.state import CodeState
 from paths import WORKFLOW_ROOT
 
 
-def build_graph(model_router):
-    understand_and_plan = build_understand_and_plan(model_router.get_model("understand_and_plan"))
-    implement_solution = build_implement_solution(model_router.get_model("implement_solution"))
-    generate_tests = build_generate_tests(model_router.get_model("generate_tests"))
-    review_solution = build_review_solution(model_router.get_model("review_solution"))
+def build_graph(model_resolver, runtime=None):
+    understand_and_plan = build_understand_and_plan(model_resolver.get_model("understand_and_plan"))
+    implement_solution = build_implement_solution(model_resolver.get_model("implement_solution"))
+    generate_tests = build_generate_tests(model_resolver.get_model("generate_tests"))
+    review_solution = build_review_solution(model_resolver.get_model("review_solution"))
 
     workflow = StateGraph(CodeState)
     workflow.add_node(understand_and_plan)

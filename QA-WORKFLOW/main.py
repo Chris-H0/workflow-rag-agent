@@ -56,7 +56,7 @@ if __name__ == "__main__":
     # Build agent
     retriever_tool = build_retriever_tool(retriever)
     model_router = ModelRouter(NODE_MODEL_CONFIG)
-    agent_graph = build_graph(model_router, retriever_tool)
+    agent_graph = build_graph(model_router, {"retriever_tool": retriever_tool})
     if SAVE_GRAPH_PNG:
         save_graph_image(agent_graph)
 

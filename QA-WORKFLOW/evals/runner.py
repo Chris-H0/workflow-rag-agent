@@ -2,10 +2,8 @@ from datetime import UTC, datetime
 import json
 from pathlib import Path
 
-from langchain_core.messages import AIMessage
-from langchain_core.messages import HumanMessage
-
-from evals.metrics import get_retrieved_titles, get_supporting_titles, score_result
+import evaluation as workflow_evaluation
+from evals.metrics import get_supporting_titles
 from evals.traces import download_trace
 from paths import analysis_config_dir
 
@@ -58,17 +56,15 @@ def run_eval_example(
     gold_answer = example["answer"]
     supporting_titles = get_supporting_titles(example)
     run_id = make_run_id(config_id, example_id, repeat)
-    user_message = HumanMessage(content=question)
-    nodes = []
-    agent_answer = ""
-    retrieved_titles = set()
+    graph_input = workflow_evaluation.make_input(example)
+    chunks = []
 
     if print_updates:
-        user_message.pretty_print()
+        graph_input["messages"][0].pretty_print()
         print("\n")
 
     for chunk in graph.stream(
-        {"messages": [user_message]},
+        graph_input,
         config={
             "metadata": {
                 "config_id": config_id,
@@ -76,27 +72,12 @@ def run_eval_example(
             }
         },
     ):
-        for node, update in chunk.items():
-            nodes.append(node)
-            latest_message = update["messages"][-1]
+        chunks.append(chunk)
+        if print_updates:
+            _print_chunk(chunk)
 
-            if node == "retrieve":
-                for message in update["messages"]:
-                    retrieved_titles.update(get_retrieved_titles(message.content))
-
-            if isinstance(latest_message, AIMessage) and latest_message.content:
-                agent_answer = latest_message.content
-
-            if print_updates:
-                print("### Node: ", node)
-                if node == "retrieve":
-                    for message in update["messages"]:
-                        message.pretty_print()
-                else:
-                    latest_message.pretty_print()
-                print("\n")
-
-    retrieved_titles = sorted(retrieved_titles)
+    output = workflow_evaluation.extract_output(chunks)
+    retrieved_titles = output.get("retrieved_titles", [])
     supporting_titles = sorted(supporting_titles)
 
     result = {
@@ -106,18 +87,13 @@ def run_eval_example(
         "repeat": repeat,
         "question": question,
         "gold_answer": gold_answer,
-        "agent_answer": agent_answer,
+        "agent_answer": output.get("agent_answer", ""),
         "supporting_titles": supporting_titles,
         "retrieved_titles": retrieved_titles,
-        "retrieval_rounds": nodes.count("retrieve"),
+        "retrieval_rounds": output.get("retrieval_rounds", 0),
         "model_config": model_config,
-        "metrics": score_result(
-            agent_answer,
-            gold_answer,
-            retrieved_titles,
-            supporting_titles,
-        ),
-        "nodes": nodes,
+        "metrics": workflow_evaluation.score(example, output),
+        "nodes": output.get("nodes", []),
     }
 
     output_path = analysis_config_dir(config_id) / "evals" / f"{run_id}.json"
@@ -125,6 +101,18 @@ def run_eval_example(
     print(f"Saved eval result to {output_path}")
 
     return result
+
+
+def _print_chunk(chunk):
+    for node, update in chunk.items():
+        messages = update.get("messages", [])
+        print("### Node: ", node)
+        if node == "retrieve":
+            for message in messages:
+                message.pretty_print()
+        elif messages:
+            messages[-1].pretty_print()
+        print("\n")
 
 
 def run_eval_loop(
