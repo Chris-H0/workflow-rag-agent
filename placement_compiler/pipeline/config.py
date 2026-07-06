@@ -72,7 +72,6 @@ class PipelineConfig(StrictModel):
     candidate_artifact: str
     compile: CompileConfig
     profile: ProfileConfig | None = None
-    metadata: str | None = None
     default_phase: PipelinePhase = "compile_and_profile"
 
     @field_validator("workflow", "models", "candidate_artifact")
@@ -97,7 +96,6 @@ class ResolvedPipelineConfig(StrictModel):
     candidate_artifact: Path
     compile: CompileConfig
     profile: ResolvedProfileConfig | None = None
-    metadata: Path | None = None
     default_phase: PipelinePhase = "compile_and_profile"
 
 
@@ -125,11 +123,6 @@ def load_pipeline_config(path: str | Path) -> ResolvedPipelineConfig:
                 output=_resolve_config_path(config_path, config.profile.output),
             )
             if config.profile
-            else None
-        ),
-        metadata=(
-            _resolve_config_path(config_path, config.metadata)
-            if config.metadata
             else None
         ),
         default_phase=config.default_phase,

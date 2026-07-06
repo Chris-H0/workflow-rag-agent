@@ -7,7 +7,7 @@ from pathlib import Path
 from placement_compiler.adapters.profile_workflows import build_repository_profile_adapters
 from placement_compiler.adapters.repository_workflows import load_existing_workflow_metadata
 from placement_compiler.core.artifacts import build_artifact, write_artifact
-from placement_compiler.core.catalogue import load_model_catalogue, load_node_registry
+from placement_compiler.core.catalogue import load_model_catalogue
 from placement_compiler.generation.candidates import CandidateGenerator, CompilerLLM
 from placement_compiler.generation.llm import LangChainCompilerLLM
 from placement_compiler.pipeline.config import PipelinePhase, ResolvedPipelineConfig
@@ -48,11 +48,7 @@ def compile_candidates(
     *,
     compiler_llm: CompilerLLM | None = None,
 ) -> Path:
-    registry = load_node_registry(config.metadata) if config.metadata else None
-    workflow = load_existing_workflow_metadata(
-        config.workflow,
-        registry_overrides=registry,
-    )
+    workflow = load_existing_workflow_metadata(config.workflow)
     endpoints = load_model_catalogue(config.models)
     if compiler_llm is None:
         compiler_llm = build_compiler_llm(config)

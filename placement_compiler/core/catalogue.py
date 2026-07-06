@@ -1,4 +1,4 @@
-"""Load model endpoint catalogues and optional node metadata files."""
+"""Load model endpoint catalogues and workflow node placement manifests."""
 
 from __future__ import annotations
 

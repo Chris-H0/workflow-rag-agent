@@ -11,7 +11,7 @@ from typing import Any
 
 from placement_compiler.adapters.langgraph import extract_langgraph_metadata
 from placement_compiler.core.catalogue import load_node_registry
-from placement_compiler.core.models import NodeRegistryMetadata, WorkflowMetadata
+from placement_compiler.core.models import WorkflowMetadata
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -71,15 +71,9 @@ def available_workflows() -> list[str]:
     return sorted({"qa", "code"})
 
 
-def load_existing_workflow_metadata(
-    workflow: str,
-    *,
-    registry_overrides: dict[str, NodeRegistryMetadata] | None = None,
-) -> WorkflowMetadata:
+def load_existing_workflow_metadata(workflow: str) -> WorkflowMetadata:
     spec = _get_workflow_spec(workflow)
     registry = load_node_registry(spec.metadata_path)
-    if registry_overrides:
-        registry.update(registry_overrides)
 
     compiled = _build_existing_workflow(spec)
     return extract_langgraph_metadata(

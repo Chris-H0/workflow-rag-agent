@@ -1,7 +1,6 @@
 workflow: qa
 models: model_endpoints.yaml
 candidate_artifact: ../../placement_candidates/qa/candidates.json
-metadata: null
 default_phase: compile_and_profile
 
 compile:
