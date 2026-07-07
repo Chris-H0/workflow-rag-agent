@@ -27,7 +27,6 @@ class ProfileSettings(StrictModel):
     repeats: int = 1
     timeout_seconds: float = 120
     warmup_runs: int = 0
-    dataset_options: dict[str, Any] = Field(default_factory=dict)
     examples: list[dict[str, Any]] | None = None
 
     @model_validator(mode="after")

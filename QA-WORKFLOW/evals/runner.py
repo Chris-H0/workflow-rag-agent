@@ -18,7 +18,7 @@ def write_json(path: Path, data):
     path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
 
 
-def write_question_log(config_id: str, hotpotqa_level: str, examples, eval_examples):
+def write_question_log(config_id: str, examples, eval_examples):
     evaluated_ids = {example["id"] for example in eval_examples}
     questions = [
         {
@@ -34,7 +34,7 @@ def write_question_log(config_id: str, hotpotqa_level: str, examples, eval_examp
         output_path,
         {
             "config_id": config_id,
-            "hotpotqa_level": hotpotqa_level,
+            "selection": "first 500 validation examples in source order",
             "loaded_count": len(examples),
             "evaluated_count": len(eval_examples),
             "questions": questions,
@@ -120,12 +120,11 @@ def run_eval_loop(
     examples,
     all_examples,
     config_id: str,
-    hotpotqa_level: str,
     repeats: int,
     print_updates: bool,
     model_config: dict,
 ):
-    write_question_log(config_id, hotpotqa_level, all_examples, examples)
+    write_question_log(config_id, all_examples, examples)
 
     count = 0
     for repeat in range(repeats):

@@ -17,10 +17,7 @@ def load_examples(profile) -> list[dict[str, Any]]:
     if profile.examples is not None:
         return profile.examples
 
-    options = profile.dataset_options
-    task_ids = options.get("task_ids")
-    load_limit = int(options.get("load_limit", max(profile.sample_size * 5, profile.sample_size)))
-    return list(load_mbpp_plus_examples(load_limit, task_ids=task_ids))
+    return list(load_mbpp_plus_examples())
 
 
 def example_id(example: dict[str, Any]) -> str:

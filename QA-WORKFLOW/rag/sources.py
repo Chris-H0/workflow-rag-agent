@@ -1,21 +1,30 @@
-from datasets import load_dataset
+import json
+
 from langchain_core.documents import Document
 
+from paths import WORKFLOW_ROOT
 
-def load_hotpotqa_examples(limit: int, level: str):
-    dataset = load_dataset("hotpotqa/hotpot_qa", "distractor", split="validation")
-    examples = []
 
-    for example in dataset:
-        if level != "any" and example["level"] != level:
-            continue
+HOTPOTQA_DATA_PATH = (
+    WORKFLOW_ROOT / "data" / "hotpotqa_validation_distractor_first500.jsonl"
+)
+HOTPOTQA_MANIFEST_PATH = HOTPOTQA_DATA_PATH.with_suffix(".manifest.json")
+HOTPOTQA_DOWNLOAD_COMMAND = "python QA-WORKFLOW/download_data.py"
 
-        examples.append(example)
 
-        if len(examples) == limit:
-            break
+def load_hotpotqa_examples():
+    if not HOTPOTQA_DATA_PATH.exists():
+        raise FileNotFoundError(
+            f"Missing local HotpotQA data: {HOTPOTQA_DATA_PATH}. "
+            f"Run `{HOTPOTQA_DOWNLOAD_COMMAND}` from the repository root."
+        )
 
-    return examples
+    with HOTPOTQA_DATA_PATH.open(encoding="utf-8") as handle:
+        return [
+            json.loads(line)
+            for line in handle
+            if line.strip()
+        ]
 
 
 def hotpotqa_example_to_documents(example):

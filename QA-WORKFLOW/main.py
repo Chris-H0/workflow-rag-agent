@@ -9,8 +9,6 @@ from rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
 CONFIG_ID = "v3-refactor-test-11"
-HOTPOTQA_LOAD_LIMIT = 100
-HOTPOTQA_LEVEL = "hard"  # Options: "easy", "medium", "hard", "any"
 QUESTIONS = 2
 REPEATS = 1
 
@@ -48,7 +46,7 @@ if __name__ == "__main__":
     load_workflow_dotenv(override=True)
 
     # Load and prepare data
-    all_questions = load_hotpotqa_examples(HOTPOTQA_LOAD_LIMIT, HOTPOTQA_LEVEL)
+    all_questions = load_hotpotqa_examples()
     documents = build_hotpotqa_documents(all_questions)
     retriever = build_retriever_from_documents(documents)
     eval_questions = all_questions[:QUESTIONS]
@@ -66,7 +64,6 @@ if __name__ == "__main__":
         eval_questions,
         all_questions,
         CONFIG_ID,
-        HOTPOTQA_LEVEL,
         REPEATS,
         PRINT_UPDATES,
         model_router.model_config,

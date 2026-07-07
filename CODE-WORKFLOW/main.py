@@ -7,7 +7,6 @@ from paths import load_workflow_dotenv
 
 
 CONFIG_ID = "v2-qwen3.5-2b-gpt-5.5"
-MBPP_LOAD_LIMIT = 100
 TASKS = 75
 REPEATS = 1
 
@@ -55,7 +54,7 @@ if __name__ == "__main__":
     load_workflow_dotenv(override=True)
 
     # Load and prepare data
-    all_examples = load_mbpp_plus_examples(MBPP_LOAD_LIMIT)
+    all_examples = load_mbpp_plus_examples()
     eval_examples = all_examples[:TASKS]
 
     # Build agent

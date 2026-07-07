@@ -23,9 +23,6 @@ profile:
   repeats: 1
   timeout_seconds: 120
   warmup_runs: 0
-  dataset_options:
-    level: hard
-    load_limit: 100
   baseline:
     type: all_endpoint
     endpoint_id: gpt-4.1-mini-cloud

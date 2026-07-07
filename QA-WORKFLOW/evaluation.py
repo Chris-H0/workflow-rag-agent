@@ -36,10 +36,7 @@ def load_examples(profile) -> list[dict[str, Any]]:
     if profile.examples is not None:
         return profile.examples
 
-    options = profile.dataset_options
-    level = str(options.get("level", "hard"))
-    load_limit = int(options.get("load_limit", max(profile.sample_size * 5, profile.sample_size)))
-    return list(load_hotpotqa_examples(load_limit, level))
+    return list(load_hotpotqa_examples())
 
 
 def example_id(example: dict[str, Any]) -> str:

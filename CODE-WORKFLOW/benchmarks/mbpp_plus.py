@@ -1,38 +1,72 @@
-try:
-    from evalplus.data import get_mbpp_plus
-except ImportError as error:
-    get_mbpp_plus = None
-    IMPORT_ERROR = error
-else:
-    IMPORT_ERROR = None
+import json
+
+from paths import WORKFLOW_ROOT
 
 
-def load_mbpp_plus_examples(limit: int, task_ids=None):
-    if get_mbpp_plus is None:
-        raise RuntimeError(
-            "EvalPlus is required for MBPP+. Install dependencies with `uv sync`."
-        ) from IMPORT_ERROR
+MBPP_PLUS_DATA_PATH = WORKFLOW_ROOT / "data" / "mbpp_plus_valid.jsonl"
+MBPP_PLUS_MANIFEST_PATH = MBPP_PLUS_DATA_PATH.with_suffix(".manifest.json")
+MBPP_PLUS_DOWNLOAD_COMMAND = "python CODE-WORKFLOW/download_data.py"
+MBPP_PLUS_JSON_TYPE_KEY = "__mbpp_plus_type__"
+REQUIRED_FIELDS = (
+    "task_id",
+    "prompt",
+    "entry_point",
+    "canonical_solution",
+    "base_input",
+    "plus_input",
+    "atol",
+)
 
-    problems = get_mbpp_plus()
-    examples = sorted(problems.values(), key=lambda problem: task_sort_key(problem["task_id"]))
 
-    if task_ids:
-        task_ids = {normalize_task_id(task_id) for task_id in task_ids}
+def load_mbpp_plus_examples():
+    if not MBPP_PLUS_DATA_PATH.exists():
+        raise FileNotFoundError(
+            f"Missing local MBPP+ data: {MBPP_PLUS_DATA_PATH}. "
+            f"Run `{MBPP_PLUS_DOWNLOAD_COMMAND}` from the repository root."
+        )
+
+    with MBPP_PLUS_DATA_PATH.open(encoding="utf-8") as handle:
         examples = [
-            example
-            for example in examples
-            if normalize_task_id(example["task_id"]) in task_ids
+            decode_json_value(json.loads(line))
+            for line in handle
+            if line.strip()
         ]
 
-    return examples[:limit]
+    return examples
 
 
 def task_sort_key(task_id):
     return int(str(task_id).split("/")[-1])
 
 
-def normalize_task_id(task_id):
-    return str(task_id).split("/")[-1]
+def encode_json_value(value):
+    if isinstance(value, complex):
+        return {
+            MBPP_PLUS_JSON_TYPE_KEY: "complex",
+            "real": value.real,
+            "imag": value.imag,
+        }
+    if isinstance(value, dict):
+        return {
+            key: encode_json_value(item)
+            for key, item in value.items()
+        }
+    if isinstance(value, list | tuple):
+        return [encode_json_value(item) for item in value]
+    return value
+
+
+def decode_json_value(value):
+    if isinstance(value, dict):
+        if value.get(MBPP_PLUS_JSON_TYPE_KEY) == "complex":
+            return complex(value["real"], value["imag"])
+        return {
+            key: decode_json_value(item)
+            for key, item in value.items()
+        }
+    if isinstance(value, list):
+        return [decode_json_value(item) for item in value]
+    return value
 
 
 def make_problem_prompt(example):

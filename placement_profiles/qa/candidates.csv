@@ -1,5 +1,0 @@
-candidate_id,candidate_source,feasible,rank,diagnostic_rank,infeasible_reason,quality_metric,quality_value,cloud_api_cost,mean_latency_seconds,failed_run_count,timeout_run_count
-baseline-all-gpt-4.1-mini-cloud,baseline,False,,,,exact_match,0.6,0.016825200000000002,10.455192050006008,0,0
-quality_cloud,candidate,False,,,exact_match=0.5 violates quality constraint against baseline 0.6,exact_match,0.5,0.25625,8.334460029006005,0,0
-balanced_local_cloud,candidate,False,,,exact_match=0.5 violates quality constraint against baseline 0.6,exact_match,0.5,0.0158836,4.35498742890195,0,0
-local_first_low_cloud_cost,candidate,True,1,,,exact_match,0.6,0.0055876,4.994294045807328,0,0

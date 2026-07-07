@@ -118,7 +118,7 @@ def load_question_summary(config_dir: Path, warnings):
     if not path.exists():
         warnings.append(f"Missing question config file: {path}")
         return {
-            "hotpotqa_level": None,
+            "selection": None,
             "loaded_count": 0,
             "evaluated_count": 0,
             "evaluated_question_difficulties": {},
@@ -140,7 +140,7 @@ def load_question_summary(config_dir: Path, warnings):
     )
 
     return {
-        "hotpotqa_level": data.get("hotpotqa_level"),
+        "selection": data.get("selection"),
         "loaded_count": data.get("loaded_count"),
         "evaluated_count": data.get("evaluated_count"),
         "evaluated_question_difficulties": {

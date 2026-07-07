@@ -115,7 +115,6 @@ def load_pipeline_config(path: str | Path) -> ResolvedPipelineConfig:
                 repeats=config.profile.repeats,
                 timeout_seconds=config.profile.timeout_seconds,
                 warmup_runs=config.profile.warmup_runs,
-                dataset_options=config.profile.dataset_options,
                 examples=config.profile.examples,
                 baseline=config.profile.baseline,
                 quality_constraint=config.profile.quality_constraint,
