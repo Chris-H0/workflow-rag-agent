@@ -55,26 +55,18 @@ class ProfileConfig(ProfileSettings):
     baseline: BaselineConfig
     quality_constraint: QualityConstraint
     ranking: RankingConfig = Field(default_factory=RankingConfig)
-    output: str
-
-    @field_validator("output")
-    @classmethod
-    def non_empty_string(cls, value: str) -> str:
-        value = value.strip()
-        if not value:
-            raise ValueError("must not be empty")
-        return value
+    output: Path
 
 
 class PipelineConfig(StrictModel):
     workflow: str
-    models: str
-    candidate_artifact: str
+    models: Path
+    candidate_artifact: Path
     compile: CompileConfig
     profile: ProfileConfig | None = None
     default_phase: PipelinePhase = "compile_and_profile"
 
-    @field_validator("workflow", "models", "candidate_artifact")
+    @field_validator("workflow")
     @classmethod
     def non_empty_string(cls, value: str) -> str:
         value = value.strip()
@@ -83,53 +75,29 @@ class PipelineConfig(StrictModel):
         return value
 
 
-class ResolvedProfileConfig(ProfileSettings):
-    baseline: BaselineConfig
-    quality_constraint: QualityConstraint
-    ranking: RankingConfig
-    output: Path
-
-
-class ResolvedPipelineConfig(StrictModel):
-    workflow: str
-    models: Path
-    candidate_artifact: Path
-    compile: CompileConfig
-    profile: ResolvedProfileConfig | None = None
-    default_phase: PipelinePhase = "compile_and_profile"
-
-
-def load_pipeline_config(path: str | Path) -> ResolvedPipelineConfig:
+def load_pipeline_config(path: str | Path) -> PipelineConfig:
     config_path = Path(path).resolve()
     config = PipelineConfig.model_validate(load_json_or_yaml(config_path))
-    return ResolvedPipelineConfig(
-        workflow=config.workflow,
-        models=_resolve_config_path(config_path, config.models),
-        candidate_artifact=_resolve_config_path(config_path, config.candidate_artifact),
-        compile=config.compile,
-        profile=(
-            ResolvedProfileConfig(
-                split=config.profile.split,
-                sample_size=config.profile.sample_size,
-                seed=config.profile.seed,
-                repeats=config.profile.repeats,
-                timeout_seconds=config.profile.timeout_seconds,
-                warmup_runs=config.profile.warmup_runs,
-                examples=config.profile.examples,
-                baseline=config.profile.baseline,
-                quality_constraint=config.profile.quality_constraint,
-                ranking=config.profile.ranking,
-                output=_resolve_config_path(config_path, config.profile.output),
-            )
-            if config.profile
-            else None
-        ),
-        default_phase=config.default_phase,
+    profile = (
+        config.profile.model_copy(
+            update={"output": _resolve_config_path(config_path, config.profile.output)}
+        )
+        if config.profile
+        else None
+    )
+    return config.model_copy(
+        update={
+            "models": _resolve_config_path(config_path, config.models),
+            "candidate_artifact": _resolve_config_path(
+                config_path, config.candidate_artifact
+            ),
+            "profile": profile,
+        }
     )
 
 
-def _resolve_config_path(config_path: Path, value: str) -> Path:
-    path = Path(value).expanduser()
+def _resolve_config_path(config_path: Path, value: Path) -> Path:
+    path = value.expanduser()
     if path.is_absolute():
         return path
     return (config_path.parent / path).resolve()

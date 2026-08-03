@@ -3,13 +3,15 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any, Callable
 
 from placement_compiler.adapters.workflows import load_workflow_driver
 from placement_compiler.core.artifacts import build_artifact, write_artifact
 from placement_compiler.core.catalogue import load_model_catalogue
+from placement_compiler.core.models import ModelEndpoint
 from placement_compiler.generation.candidates import CandidateGenerator, CompilerLLM
 from placement_compiler.generation.llm import LangChainCompilerLLM
-from placement_compiler.pipeline.config import PipelinePhase, ResolvedPipelineConfig
+from placement_compiler.pipeline.config import PipelineConfig, PipelinePhase
 from placement_compiler.profiling.runner import (
     CandidateProfiler,
     build_baseline_plan,
@@ -20,10 +22,11 @@ from placement_compiler.runtime.endpoint_registry import EndpointRegistry
 
 
 def run_pipeline(
-    config: ResolvedPipelineConfig,
+    config: PipelineConfig,
     *,
     phase: PipelinePhase | None = None,
     compiler_llm: CompilerLLM | None = None,
+    model_factory: Callable[[ModelEndpoint], Any] | None = None,
 ) -> dict[str, Path | dict[str, Path]]:
     selected_phase = phase or config.default_phase
     if selected_phase == "compile":
@@ -37,13 +40,15 @@ def run_pipeline(
         candidate_path = compile_candidates(config, compiler_llm=compiler_llm)
         return {
             "candidate_artifact": candidate_path,
-            "profile_artifacts": profile_candidates(config),
+            "profile_artifacts": profile_candidates(
+                config, model_factory=model_factory
+            ),
         }
     raise ValueError(f"unknown pipeline phase {selected_phase!r}")
 
 
 def compile_candidates(
-    config: ResolvedPipelineConfig,
+    config: PipelineConfig,
     *,
     compiler_llm: CompilerLLM | None = None,
 ) -> Path:
@@ -70,25 +75,30 @@ def compile_candidates(
     return write_artifact(artifact, config.candidate_artifact)
 
 
-def profile_candidates(config: ResolvedPipelineConfig) -> dict[str, Path]:
+def profile_candidates(
+    config: PipelineConfig,
+    *,
+    model_factory: Callable[[ModelEndpoint], Any] | None = None,
+) -> dict[str, Path]:
     if config.profile is None:
         raise ValueError("pipeline profile section is required for compile_and_profile")
 
     loaded_artifact = load_candidate_artifact(config.candidate_artifact)
-    endpoint_registry = EndpointRegistry(loaded_artifact.artifact.model_endpoints)
+    endpoint_registry = EndpointRegistry(
+        loaded_artifact.model_endpoints,
+        model_factory=model_factory,
+    )
     baseline_plan = build_baseline_plan(
-        artifact=loaded_artifact.artifact,
+        artifact=loaded_artifact,
         baseline_type=config.profile.baseline.type,
         endpoint_id=config.profile.baseline.endpoint_id,
         candidate_id=config.profile.baseline.candidate_id,
     )
-    driver = load_workflow_driver(
-        config.workflow,
-        candidate_artifact=loaded_artifact.artifact,
-        endpoint_registry=endpoint_registry,
-    )
+    driver = load_workflow_driver(config.workflow)
     profiler = CandidateProfiler(
         candidate_artifact=loaded_artifact,
+        source_candidate_artifact=config.candidate_artifact,
+        endpoint_registry=endpoint_registry,
         driver=driver,
         profile=config.profile,
         baseline_plan=baseline_plan,
@@ -104,7 +114,7 @@ def profile_candidates(config: ResolvedPipelineConfig) -> dict[str, Path]:
     )
 
 
-def build_compiler_llm(config: ResolvedPipelineConfig) -> LangChainCompilerLLM:
+def build_compiler_llm(config: PipelineConfig) -> LangChainCompilerLLM:
     model_kwargs = dict(config.compile.compiler.model_kwargs)
     if config.compile.compiler.temperature is not None:
         model_kwargs["temperature"] = config.compile.compiler.temperature

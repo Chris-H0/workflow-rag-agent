@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import json
+import re
 import tempfile
 import time
 import unittest
 from pathlib import Path
 
 from pydantic import create_model
+from langchain_core.messages import AIMessage
 
 from placement_compiler.core.artifacts import build_artifact
 from placement_compiler.pipeline.config import load_pipeline_config
@@ -27,8 +29,9 @@ from placement_compiler.profiling.models import (
     QualityConstraint,
     RankingConfig,
     RankingObjective,
+    RunRecord,
     RunTrace,
-    WorkflowExecution,
+    WorkflowResult,
 )
 from placement_compiler.profiling import (
     CandidateProfiler,
@@ -38,7 +41,6 @@ from placement_compiler.profiling import (
     deterministic_sample,
     load_candidate_artifact,
     rank_candidates,
-    run_record_from_execution,
     write_profile_artifacts,
 )
 from placement_compiler.adapters.workflows import load_workflow_driver
@@ -73,6 +75,61 @@ def mock_endpoint(endpoint_id="mock-cloud", location="cloud", cost=1.0):
     )
 
 
+class MockPlacementModel:
+    def __init__(self, model_kwargs=None):
+        self.model_kwargs = model_kwargs or {}
+        self.structured_schema = None
+        self.include_raw = False
+
+    def bind_tools(self, tools):
+        return self
+
+    def with_structured_output(self, schema, *, include_raw=False):
+        clone = MockPlacementModel(self.model_kwargs)
+        clone.structured_schema = schema
+        clone.include_raw = include_raw
+        return clone
+
+    def invoke(self, messages):
+        text = "\n".join(str(getattr(message, "content", message)) for message in messages)
+        content = self._content(text)
+        usage = {
+            "input_tokens": max(1, len(text.split())),
+            "output_tokens": max(1, len(content.split())),
+        }
+        usage["total_tokens"] = usage["input_tokens"] + usage["output_tokens"]
+        if self.structured_schema is not None:
+            data = self.model_kwargs.get("structured_payload") or {"decision": "answer"}
+            parsed = self.structured_schema.model_validate(data)
+            if self.include_raw:
+                return {
+                    "raw": AIMessage(content=json.dumps(data), usage_metadata=usage),
+                    "parsed": parsed,
+                    "parsing_error": None,
+                }
+            return parsed
+        return AIMessage(content=content, usage_metadata=usage)
+
+    def _content(self, text):
+        if "Review" in text or "generated_test_result" in text:
+            return json.dumps({"decision": "final", "comments": "mock review"})
+        entry_point_match = re.search(
+            r"Entry point:\s*([A-Za-z_][A-Za-z0-9_]*)", text
+        )
+        entry_point = entry_point_match.group(1) if entry_point_match else "add"
+        if "Generate tests" in text or "test" in text.lower():
+            return f"assert {entry_point}(1, 2) == 3"
+        if "Entry point:" in text or "Solve this MBPP" in text:
+            return f"def {entry_point}(a, b):\n    return a + b"
+        if "plan" in text.lower() or "programming task" in text.lower():
+            return "Use a direct implementation."
+        return str(self.model_kwargs.get("default_answer", "Paris"))
+
+
+def mock_model_factory(endpoint):
+    return MockPlacementModel(dict(endpoint.model_kwargs))
+
+
 def write_artifact(path: Path, workflow, endpoints, candidates):
     artifact = build_artifact(
         workflow=workflow,
@@ -99,24 +156,20 @@ class FakeDriver:
     def example_id(self, example):
         return str(example["id"])
 
-    def score(self, example, output):
-        return {"quality": output["quality"]}
-
     def prepare(self, examples):
         self.prepared_ids = [example["id"] for example in examples]
 
-    def run_example(self, plan, example):
+    def run_example(self, model_resolver, example, **kwargs):
+        plan = model_resolver.plan
         self.calls.append((plan.id, example["id"]))
         if self.delay:
             time.sleep(self.delay)
         if plan.id == self.fail_candidate:
-            return WorkflowExecution(
-                output={},
-                latency_seconds=0.01,
-                error="forced failure",
-            )
-        return WorkflowExecution(
+            raise RuntimeError("forced failure")
+        quality = self.qualities.get(plan.id, 0.0)
+        return WorkflowResult(
             output={"quality": self.qualities.get(plan.id, 0.0)},
+            metrics={"quality": quality},
             latency_seconds=0.01,
             trace=RunTrace(),
         )
@@ -141,12 +194,12 @@ class PlacementProfilerTests(unittest.TestCase):
 
             loaded = load_candidate_artifact(path)
             baseline = build_baseline_plan(
-                artifact=loaded.artifact,
+                artifact=loaded,
                 baseline_type="all_endpoint",
                 endpoint_id="mock-cloud",
             )
 
-        self.assertEqual(loaded.artifact.workflow_id, artifact.workflow_id)
+        self.assertEqual(loaded.workflow_id, artifact.workflow_id)
         self.assertEqual(baseline.assignments, {"plan": "mock-cloud", "act": "mock-cloud"})
 
     def test_stable_plan_to_placement_unit_resolution(self):
@@ -156,7 +209,9 @@ class PlacementProfilerTests(unittest.TestCase):
                 id="ok",
                 assignments={"plan": "mock-cloud", "act": "mock-cloud"},
             ),
-            endpoint_registry=EndpointRegistry([mock_endpoint()]),
+            endpoint_registry=EndpointRegistry(
+                [mock_endpoint()], model_factory=mock_model_factory
+            ),
             workflow=workflow,
             trace_collector=TraceCollector(),
         )
@@ -166,7 +221,9 @@ class PlacementProfilerTests(unittest.TestCase):
         with self.assertRaisesRegex(Exception, "missing assignments"):
             ModelResolver(
                 plan=PlacementPlan(id="bad", assignments={"plan": "mock-cloud"}),
-                endpoint_registry=EndpointRegistry([mock_endpoint()]),
+                endpoint_registry=EndpointRegistry(
+                    [mock_endpoint()], model_factory=mock_model_factory
+                ),
                 workflow=workflow,
                 trace_collector=TraceCollector(),
             )
@@ -186,7 +243,8 @@ class PlacementProfilerTests(unittest.TestCase):
             ModelResolver(
                 plan=PlacementPlan(id="too-small", assignments={"plan": "small"}),
                 endpoint_registry=EndpointRegistry(
-                    [mock_endpoint(endpoint_id="small").model_copy(update={"context_window": 10})]
+                    [mock_endpoint(endpoint_id="small").model_copy(update={"context_window": 10})],
+                    model_factory=mock_model_factory,
                 ),
                 workflow=context_workflow,
                 trace_collector=TraceCollector(),
@@ -220,8 +278,12 @@ class PlacementProfilerTests(unittest.TestCase):
             )
             profiler = CandidateProfiler(
                 candidate_artifact=loaded,
+                source_candidate_artifact=path,
+                endpoint_registry=EndpointRegistry(
+                    artifact.model_endpoints, model_factory=mock_model_factory
+                ),
                 driver=driver,
-                profile=ProfileSettings(sample_size=2, seed=1, repeats=1, timeout_seconds=5),
+                profile=ProfileSettings(sample_size=2, seed=1, repeats=1),
                 baseline_plan=build_baseline_plan(
                     artifact=artifact,
                     baseline_type="all_endpoint",
@@ -314,13 +376,15 @@ class PlacementProfilerTests(unittest.TestCase):
         )
         self.assertIsNotNone(candidates[0].diagnostic_rank)
 
-    def test_timeout_failed_run_and_cost_accounting(self):
+    def test_failed_run_and_cost_accounting(self):
         workflow = tiny_workflow()
         endpoint = mock_endpoint(cost=2.0)
         trace_collector = TraceCollector()
         resolver = ModelResolver(
             plan=PlacementPlan(id="cost", assignments={"plan": "mock-cloud", "act": "mock-cloud"}),
-            endpoint_registry=EndpointRegistry([endpoint]),
+            endpoint_registry=EndpointRegistry(
+                [endpoint], model_factory=mock_model_factory
+            ),
             workflow=workflow,
             trace_collector=trace_collector,
         )
@@ -329,20 +393,18 @@ class PlacementProfilerTests(unittest.TestCase):
         resolver.get_model("plan").with_structured_output(decision_schema).invoke(
             [{"role": "user", "content": "choose"}]
         )
-        execution = WorkflowExecution(
-            output={"quality": 1.0},
-            trace=RunTrace(invocations=trace_collector.invocations),
-            latency_seconds=0.01,
-        )
         profile = aggregate_candidate_profile(
             PlacementPlan(id="cost", assignments={"plan": "mock-cloud", "act": "mock-cloud"}),
             [
-                run_record_from_execution(
-                    plan=PlacementPlan(id="cost", assignments={"plan": "mock-cloud", "act": "mock-cloud"}),
+                RunRecord(
+                    candidate_id="cost",
+                    candidate_source="candidate",
                     example_id="1",
                     repeat=0,
-                    execution=execution,
                     metrics={"quality": 1.0},
+                    output={"quality": 1.0},
+                    trace=RunTrace(invocations=trace_collector.invocations),
+                    latency_seconds=0.01,
                 )
             ],
         )
@@ -350,18 +412,25 @@ class PlacementProfilerTests(unittest.TestCase):
         self.assertGreater(profile.metrics["cloud_api_cost"], 0)
         self.assertEqual(profile.metrics["failed_run_count"], 0)
 
-        driver = FakeDriver([{"id": "1"}], {}, delay=0.2)
+        artifact = build_artifact(
+            workflow=workflow, model_endpoints=[endpoint], candidates=[]
+        )
+        driver = FakeDriver([{"id": "1"}], {}, fail_candidate="baseline")
         profiler = CandidateProfiler(
-            candidate_artifact=type("Loaded", (), {"artifact": build_artifact(workflow=workflow, model_endpoints=[endpoint], candidates=[]), "path": Path("x")})(),
+            candidate_artifact=artifact,
+            source_candidate_artifact="x",
+            endpoint_registry=EndpointRegistry(
+                [endpoint], model_factory=mock_model_factory
+            ),
             driver=driver,
-            profile=ProfileSettings(sample_size=1, timeout_seconds=0.01),
+            profile=ProfileSettings(sample_size=1),
             baseline_plan=PlacementPlan(id="baseline", source="baseline", assignments={"plan": "mock-cloud", "act": "mock-cloud"}),
             quality_constraint=QualityConstraint(metric="quality"),
             ranking=RankingConfig(),
             workflow_name="fake",
         )
         _, runs = profiler.run()
-        self.assertTrue(runs[0].timed_out)
+        self.assertIn("forced failure", runs[0].error)
 
     def test_json_jsonl_csv_artifact_generation(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -430,7 +499,6 @@ profile:
   sample_size: 1
   seed: 1
   repeats: 1
-  timeout_seconds: 20
   examples:
     - id: qa-smoke
       level: hard
@@ -455,7 +523,9 @@ profile:
   output: {tmp / "qa-profile"}
 """
             )
-            qa_paths = profile_candidates(load_pipeline_config(qa_config))
+            qa_paths = profile_candidates(
+                load_pipeline_config(qa_config), model_factory=mock_model_factory
+            )
             qa_profile = json.loads(qa_paths["profile"].read_text())
             self.assertEqual(qa_profile["selected_candidate_id"], "mock-qa")
 
@@ -485,7 +555,6 @@ profile:
   sample_size: 1
   seed: 1
   repeats: 1
-  timeout_seconds: 30
   examples:
     - task_id: Mbpp/999
       entry_point: add
@@ -512,7 +581,9 @@ profile:
   output: {tmp / "code-profile"}
 """
             )
-            code_paths = profile_candidates(load_pipeline_config(code_config))
+            code_paths = profile_candidates(
+                load_pipeline_config(code_config), model_factory=mock_model_factory
+            )
             code_profile = json.loads(code_paths["profile"].read_text())
             self.assertEqual(code_profile["selected_candidate_id"], "mock-code")
 

@@ -1,3 +1,4 @@
+from placement_compiler.adapters.workflows import load_workflow_driver
 from workflows.qa.analysis.analyse_run import analyse_run
 from workflows.qa.agent.graph import build_graph, save_graph_image
 from workflows.qa.agent.model_router import ModelRouter
@@ -54,13 +55,16 @@ if __name__ == "__main__":
     # Build agent
     retriever_tool = build_retriever_tool(retriever)
     model_router = ModelRouter(NODE_MODEL_CONFIG)
-    agent_graph = build_graph(model_router, {"retriever_tool": retriever_tool})
+    runtime = {"retriever_tool": retriever_tool}
+    driver = load_workflow_driver("qa")
+    driver.prepare(all_questions, runtime)
     if SAVE_GRAPH_PNG:
-        save_graph_image(agent_graph)
+        save_graph_image(build_graph(model_router, runtime))
 
     # Run agent + evaluate outputs
     run_eval_loop(
-        agent_graph,
+        driver,
+        model_router,
         eval_questions,
         all_questions,
         CONFIG_ID,

@@ -1,3 +1,4 @@
+from placement_compiler.adapters.workflows import load_workflow_driver
 from workflows.code.analysis.analyse_run import analyse_run
 from workflows.code.agent.graph import build_graph, save_graph_image
 from workflows.code.agent.model_router import ModelRouter
@@ -59,13 +60,15 @@ if __name__ == "__main__":
 
     # Build agent
     model_router = ModelRouter(NODE_MODEL_CONFIG)
-    agent_graph = build_graph(model_router)
+    driver = load_workflow_driver("code")
+    driver.prepare(eval_examples)
     if SAVE_GRAPH_PNG:
-        save_graph_image(agent_graph)
+        save_graph_image(build_graph(model_router))
 
     # Run agent + evaluate outputs
     run_eval_loop(
-        agent_graph,
+        driver,
+        model_router,
         eval_examples,
         all_examples,
         CONFIG_ID,

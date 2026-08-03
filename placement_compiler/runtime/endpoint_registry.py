@@ -2,13 +2,9 @@
 
 from __future__ import annotations
 
-import json
-import re
 import time
 from collections.abc import Mapping
-from typing import Any
-
-from langchain_core.messages import AIMessage
+from typing import Any, Callable
 
 from placement_compiler.core.models import ModelEndpoint, PlacementPlan, WorkflowMetadata
 from placement_compiler.core.validation import PlanValidationError, validate_plan
@@ -28,11 +24,16 @@ class TraceCollector:
 
 
 class EndpointRegistry:
-    def __init__(self, endpoints: list[ModelEndpoint]) -> None:
+    def __init__(
+        self,
+        endpoints: list[ModelEndpoint],
+        model_factory: Callable[[ModelEndpoint], Any] | None = None,
+    ) -> None:
         self.endpoints = {endpoint.id: endpoint for endpoint in endpoints}
         if len(self.endpoints) != len(endpoints):
             raise ValueError("duplicate endpoint IDs in endpoint registry")
-        self._client_cache: dict[tuple[str, str, str], Any] = {}
+        self._model_factory = model_factory or _build_langchain_model
+        self._client_cache: dict[str, Any] = {}
 
     def endpoint(self, endpoint_id: str) -> ModelEndpoint:
         try:
@@ -56,26 +57,11 @@ class EndpointRegistry:
         )
 
     def _base_model(self, endpoint: ModelEndpoint) -> Any:
-        cache_key = (
-            endpoint.provider,
-            endpoint.model,
-            json.dumps(endpoint.model_kwargs, sort_keys=True, default=str),
-        )
-        if cache_key in self._client_cache:
-            return self._client_cache[cache_key]
+        if endpoint.id in self._client_cache:
+            return self._client_cache[endpoint.id]
 
-        if endpoint.provider == "mock":
-            model = MockPlacementModel(endpoint.model, dict(endpoint.model_kwargs))
-        else:
-            from langchain.chat_models import init_chat_model
-
-            model = init_chat_model(
-                endpoint.model,
-                model_provider=endpoint.provider,
-                **endpoint.model_kwargs,
-            )
-
-        self._client_cache[cache_key] = model
+        model = self._model_factory(endpoint)
+        self._client_cache[endpoint.id] = model
         return model
 
 
@@ -209,65 +195,6 @@ class InstrumentedModel:
         )
 
 
-class MockPlacementModel:
-    def __init__(self, model: str, model_kwargs: dict[str, Any]) -> None:
-        self.model = model
-        self.model_kwargs = model_kwargs
-        self._structured_schema: Any = None
-        self._include_raw = False
-
-    def bind_tools(self, tools: list[Any]) -> "MockPlacementModel":
-        return self
-
-    def with_structured_output(
-        self,
-        schema: Any,
-        *,
-        include_raw: bool = False,
-    ) -> "MockPlacementModel":
-        clone = MockPlacementModel(self.model, self.model_kwargs)
-        clone._structured_schema = schema
-        clone._include_raw = include_raw
-        return clone
-
-    def invoke(self, messages: Any) -> Any:
-        content = self._content_for(messages)
-        usage = _mock_usage(messages, content)
-        if self._structured_schema is not None:
-            data = self._structured_payload()
-            parsed = self._structured_schema.model_validate(data)
-            if self._include_raw:
-                return {
-                    "raw": AIMessage(content=json.dumps(data), usage_metadata=usage),
-                    "parsed": parsed,
-                    "parsing_error": None,
-                }
-            return parsed
-        return AIMessage(content=content, usage_metadata=usage)
-
-    def _structured_payload(self) -> dict[str, str]:
-        return self.model_kwargs.get("structured_payload") or {"decision": "answer"}
-
-    def _content_for(self, messages: Any) -> str:
-        text = _messages_text(messages)
-        unit_outputs = self.model_kwargs.get("unit_outputs") or {}
-        for unit_hint, output in unit_outputs.items():
-            if str(unit_hint) in text:
-                return str(output)
-
-        if "Review" in text or "generated_test_result" in text:
-            return json.dumps({"decision": "final", "comments": "mock review"})
-        if "Generate tests" in text or "test" in text.lower():
-            entry_point = _entry_point(text)
-            return f"assert {entry_point}(1, 2) == 3"
-        if "Entry point:" in text or "Solve this MBPP" in text:
-            entry_point = _entry_point(text)
-            return f"def {entry_point}(a, b):\n    return a + b"
-        if "plan" in text.lower() or "programming task" in text.lower():
-            return "Use a direct implementation."
-        return str(self.model_kwargs.get("default_answer", "Paris"))
-
-
 def _cloud_api_cost(
     endpoint: ModelEndpoint,
     usage: Mapping[str, int | None],
@@ -337,24 +264,11 @@ def _int_or_none(value: Any) -> int | None:
     return int(value)
 
 
-def _mock_usage(messages: Any, content: str) -> dict[str, int]:
-    input_tokens = max(1, len(_messages_text(messages).split()))
-    output_tokens = max(1, len(content.split()))
-    return {
-        "input_tokens": input_tokens,
-        "output_tokens": output_tokens,
-        "total_tokens": input_tokens + output_tokens,
-    }
+def _build_langchain_model(endpoint: ModelEndpoint) -> Any:
+    from langchain.chat_models import init_chat_model
 
-
-def _messages_text(messages: Any) -> str:
-    if isinstance(messages, list):
-        return "\n".join(str(getattr(message, "content", message)) for message in messages)
-    return str(messages)
-
-
-def _entry_point(text: str) -> str:
-    match = re.search(r"Entry point:\s*([A-Za-z_][A-Za-z0-9_]*)", text)
-    if match:
-        return match.group(1)
-    return "add"
+    return init_chat_model(
+        endpoint.model,
+        model_provider=endpoint.provider,
+        **endpoint.model_kwargs,
+    )

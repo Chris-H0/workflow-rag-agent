@@ -2,7 +2,6 @@ from datetime import UTC, datetime
 import json
 from pathlib import Path
 
-from workflows.qa import evaluation as workflow_evaluation
 from workflows.qa.evals.metrics import get_supporting_titles
 from workflows.qa.evals.traces import download_trace
 from workflows.qa.paths import analysis_config_dir
@@ -44,7 +43,8 @@ def write_question_log(config_id: str, examples, eval_examples):
 
 
 def run_eval_example(
-    graph,
+    driver,
+    model_resolver,
     example,
     config_id: str,
     repeat: int,
@@ -56,27 +56,13 @@ def run_eval_example(
     gold_answer = example["answer"]
     supporting_titles = get_supporting_titles(example)
     run_id = make_run_id(config_id, example_id, repeat)
-    graph_input = workflow_evaluation.make_input(example)
-    chunks = []
-
-    if print_updates:
-        graph_input["messages"][0].pretty_print()
-        print("\n")
-
-    for chunk in graph.stream(
-        graph_input,
-        config={
-            "metadata": {
-                "config_id": config_id,
-                "run_id": run_id,
-            }
-        },
-    ):
-        chunks.append(chunk)
-        if print_updates:
-            _print_chunk(chunk)
-
-    output = workflow_evaluation.extract_output(chunks)
+    run = driver.run_example(
+        model_resolver,
+        example,
+        metadata={"config_id": config_id, "run_id": run_id},
+        on_chunk=_print_chunk if print_updates else None,
+    )
+    output = run.output
     retrieved_titles = output.get("retrieved_titles", [])
     supporting_titles = sorted(supporting_titles)
 
@@ -92,7 +78,7 @@ def run_eval_example(
         "retrieved_titles": retrieved_titles,
         "retrieval_rounds": output.get("retrieval_rounds", 0),
         "model_config": model_config,
-        "metrics": workflow_evaluation.score(example, output),
+        "metrics": run.metrics,
         "nodes": output.get("nodes", []),
     }
 
@@ -116,7 +102,8 @@ def _print_chunk(chunk):
 
 
 def run_eval_loop(
-    graph,
+    driver,
+    model_resolver,
     examples,
     all_examples,
     config_id: str,
@@ -130,7 +117,8 @@ def run_eval_loop(
     for repeat in range(repeats):
         for example in examples:
             result = run_eval_example(
-                graph,
+                driver,
+                model_resolver,
                 example,
                 config_id,
                 repeat,

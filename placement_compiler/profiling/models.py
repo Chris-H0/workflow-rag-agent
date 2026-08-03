@@ -3,17 +3,11 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from pathlib import Path
 from typing import Any, Literal
 
 from pydantic import Field, model_validator
 
-from placement_compiler.core.models import (
-    ModelEndpoint,
-    PlacementArtifact,
-    PlacementPlan,
-    StrictModel,
-)
+from placement_compiler.core.models import StrictModel
 
 
 MetricDirection = Literal["maximise", "minimise"]
@@ -30,7 +24,6 @@ class ProfileSettings(StrictModel):
     sample_size: int = 10
     seed: int = 42
     repeats: int = 1
-    timeout_seconds: float = 120
     warmup_runs: int = 0
     examples: list[dict[str, Any]] | None = None
 
@@ -40,8 +33,6 @@ class ProfileSettings(StrictModel):
             raise ValueError("profile.sample_size must be positive")
         if self.repeats <= 0:
             raise ValueError("profile.repeats must be positive")
-        if self.timeout_seconds <= 0:
-            raise ValueError("profile.timeout_seconds must be positive")
         if self.warmup_runs < 0:
             raise ValueError("profile.warmup_runs must not be negative")
         return self
@@ -97,12 +88,11 @@ class RunTrace(StrictModel):
     system_metrics: dict[str, Any] = Field(default_factory=dict)
 
 
-class WorkflowExecution(StrictModel):
+class WorkflowResult(StrictModel):
     output: dict[str, Any] = Field(default_factory=dict)
+    metrics: dict[str, Any] = Field(default_factory=dict)
     trace: RunTrace = Field(default_factory=RunTrace)
     latency_seconds: float
-    error: str | None = None
-    timed_out: bool = False
 
 
 class RunRecord(StrictModel):
@@ -111,17 +101,8 @@ class RunRecord(StrictModel):
     example_id: str
     repeat: int
     metrics: dict[str, Any] = Field(default_factory=dict)
-    latency_seconds: float | None = None
-    cloud_api_cost: float | None = None
-    input_tokens: int | None = None
-    output_tokens: int | None = None
-    total_tokens: int | None = None
-    local_call_count: int = 0
-    cloud_call_count: int = 0
-    invocation_count: int = 0
-    per_placement_unit: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    latency_seconds: float
     error: str | None = None
-    timed_out: bool = False
     output: dict[str, Any] = Field(default_factory=dict)
     trace: RunTrace = Field(default_factory=RunTrace)
 
@@ -138,7 +119,7 @@ class CandidateProfile(StrictModel):
 
 
 class ProfileArtifact(StrictModel):
-    schema_version: str = "2.0"
+    schema_version: str = "3.0"
     generated_at: str = Field(default_factory=lambda: datetime.now(UTC).isoformat())
     source_candidate_artifact: str
     workflow_id: str
@@ -151,16 +132,3 @@ class ProfileArtifact(StrictModel):
     ranking: RankingConfig
     candidates: list[CandidateProfile]
     selected_candidate_id: str | None = None
-    failures: list[str] = Field(default_factory=list)
-    warnings: list[str] = Field(default_factory=list)
-
-
-class LoadedCandidateArtifact(StrictModel):
-    path: Path
-    artifact: PlacementArtifact
-
-    def endpoint_by_id(self) -> dict[str, ModelEndpoint]:
-        return {endpoint.id: endpoint for endpoint in self.artifact.model_endpoints}
-
-    def candidate_by_id(self) -> dict[str, PlacementPlan]:
-        return {candidate.id: candidate for candidate in self.artifact.candidates}

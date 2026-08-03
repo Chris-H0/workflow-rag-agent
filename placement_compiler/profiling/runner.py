@@ -8,7 +8,6 @@ import math
 import random
 import statistics
 import time
-from concurrent.futures import ThreadPoolExecutor, TimeoutError
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -16,7 +15,6 @@ from placement_compiler.core.models import PlacementArtifact, PlacementPlan
 from placement_compiler.core.validation import validate_plan
 from placement_compiler.profiling.models import (
     CandidateProfile,
-    LoadedCandidateArtifact,
     MetricDefinition,
     ProfileArtifact,
     ProfileSettings,
@@ -25,27 +23,30 @@ from placement_compiler.profiling.models import (
     RankingObjective,
     RunRecord,
     RunTrace,
-    WorkflowExecution,
+)
+from placement_compiler.runtime.endpoint_registry import (
+    EndpointRegistry,
+    ModelResolver,
+    TraceCollector,
 )
 
 if TYPE_CHECKING:
     from placement_compiler.adapters.workflows import WorkflowDriver
 
 
-def load_candidate_artifact(path: str | Path) -> LoadedCandidateArtifact:
+def load_candidate_artifact(path: str | Path) -> PlacementArtifact:
     artifact_path = Path(path).resolve()
     data = json.loads(artifact_path.read_text())
-    return LoadedCandidateArtifact(
-        path=artifact_path,
-        artifact=PlacementArtifact.model_validate(data),
-    )
+    return PlacementArtifact.model_validate(data)
 
 
 class CandidateProfiler:
     def __init__(
         self,
         *,
-        candidate_artifact: LoadedCandidateArtifact,
+        candidate_artifact: PlacementArtifact,
+        source_candidate_artifact: str | Path,
+        endpoint_registry: EndpointRegistry,
         driver: WorkflowDriver,
         profile: ProfileSettings,
         baseline_plan: PlacementPlan,
@@ -54,14 +55,14 @@ class CandidateProfiler:
         workflow_name: str,
     ) -> None:
         self.candidate_artifact = candidate_artifact
+        self.source_candidate_artifact = str(Path(source_candidate_artifact).resolve())
+        self.endpoint_registry = endpoint_registry
         self.driver = driver
         self.profile = profile
         self.baseline_plan = baseline_plan
         self.quality_constraint = quality_constraint
         self.ranking = ranking
         self.workflow_name = workflow_name
-        self.warnings: list[str] = []
-        self.failures: list[str] = []
 
     def run(self) -> tuple[ProfileArtifact, list[RunRecord]]:
         primary_metric = self.driver.primary_metric
@@ -105,8 +106,8 @@ class CandidateProfiler:
 
         return (
             ProfileArtifact(
-                source_candidate_artifact=str(self.candidate_artifact.path),
-                workflow_id=self.candidate_artifact.artifact.workflow_id,
+                source_candidate_artifact=self.source_candidate_artifact,
+                workflow_id=self.candidate_artifact.workflow_id,
                 workflow=self.workflow_name,
                 profile_config=self.profile.model_dump(mode="json", exclude_none=True),
                 primary_metric=primary_metric,
@@ -116,62 +117,62 @@ class CandidateProfiler:
                 ranking=self.ranking,
                 candidates=candidate_profiles,
                 selected_candidate_id=selected_candidate_id,
-                failures=self.failures,
-                warnings=self.warnings,
             ),
             run_records,
         )
 
     def _candidate_plans(self) -> list[PlacementPlan]:
-        return list(self.candidate_artifact.artifact.candidates)
+        return list(self.candidate_artifact.candidates)
 
     def _run_warmups(self, plan: PlacementPlan, examples: list[Any]) -> None:
         if not examples:
             return
         for _ in range(self.profile.warmup_runs):
-            self._run_with_timeout(plan, examples[0])
+            self._run(plan, examples[0], repeat=-1)
 
     def _run_measured(self, plan: PlacementPlan, example: Any, repeat: int) -> RunRecord:
         example_id = self.driver.example_id(example)
-        execution = self._run_with_timeout(plan, example)
-        metrics: dict[str, Any] = {}
-        if not execution.error and not execution.timed_out:
-            try:
-                metrics = self.driver.score(example, execution.output)
-            except Exception as exc:
-                execution.error = f"scoring failed: {exc!r}"
-        return run_record_from_execution(
-            plan=plan,
-            example_id=example_id,
-            repeat=repeat,
-            execution=execution,
-            metrics=metrics,
-        )
+        return self._run(plan, example, repeat=repeat, example_id=example_id)
 
-    def _run_with_timeout(
+    def _run(
         self,
         plan: PlacementPlan,
         example: Any,
-    ) -> WorkflowExecution:
+        *,
+        repeat: int,
+        example_id: str | None = None,
+    ) -> RunRecord:
         started = time.perf_counter()
-        executor = ThreadPoolExecutor(max_workers=1)
-        future = executor.submit(self.driver.run_example, plan, example)
+        trace_collector = TraceCollector()
+        resolver = ModelResolver(
+            plan=plan,
+            endpoint_registry=self.endpoint_registry,
+            workflow=self.candidate_artifact.workflow,
+            trace_collector=trace_collector,
+        )
         try:
-            return future.result(timeout=self.profile.timeout_seconds)
-        except TimeoutError:
-            future.cancel()
-            return WorkflowExecution(
-                latency_seconds=time.perf_counter() - started,
-                timed_out=True,
-                error=f"timed out after {self.profile.timeout_seconds} seconds",
+            result = self.driver.run_example(
+                resolver,
+                example,
+                metadata={"profile_candidate_id": plan.id},
+            )
+            return RunRecord(
+                candidate_id=plan.id,
+                candidate_source=plan.source,
+                example_id=example_id or self.driver.example_id(example),
+                repeat=repeat,
+                **result.model_dump(),
             )
         except Exception as exc:
-            return WorkflowExecution(
+            return RunRecord(
+                candidate_id=plan.id,
+                candidate_source=plan.source,
+                example_id=example_id or self.driver.example_id(example),
+                repeat=repeat,
                 latency_seconds=time.perf_counter() - started,
                 error=repr(exc),
+                trace=RunTrace(invocations=trace_collector.invocations),
             )
-        finally:
-            executor.shutdown(wait=False, cancel_futures=True)
 
 
 def build_baseline_plan(
@@ -226,70 +227,37 @@ def deterministic_sample(
     return sorted(ordered[:sample_size], key=example_id)
 
 
-def run_record_from_execution(
-    *,
-    plan: PlacementPlan,
-    example_id: str,
-    repeat: int,
-    execution: WorkflowExecution,
-    metrics: dict[str, Any],
-) -> RunRecord:
-    trace = execution.trace or RunTrace()
-    token_totals = _token_totals(trace)
-    return RunRecord(
-        candidate_id=plan.id,
-        candidate_source=plan.source,
-        example_id=example_id,
-        repeat=repeat,
-        metrics=metrics,
-        latency_seconds=execution.latency_seconds,
-        cloud_api_cost=_trace_cloud_cost(trace),
-        input_tokens=token_totals["input_tokens"],
-        output_tokens=token_totals["output_tokens"],
-        total_tokens=token_totals["total_tokens"],
-        local_call_count=sum(
-            1 for invocation in trace.invocations if invocation.location == "local"
-        ),
-        cloud_call_count=sum(
-            1 for invocation in trace.invocations if invocation.location == "cloud"
-        ),
-        invocation_count=len(trace.invocations),
-        per_placement_unit=_per_unit_stats(trace),
-        error=execution.error,
-        timed_out=execution.timed_out,
-        output=execution.output,
-        trace=trace,
-    )
-
-
 def aggregate_candidate_profile(
     plan: PlacementPlan,
     run_records: list[RunRecord],
 ) -> CandidateProfile:
     records = [record for record in run_records if record.candidate_id == plan.id]
+    invocations = [
+        invocation
+        for record in records
+        for invocation in record.trace.invocations
+    ]
     metrics: dict[str, Any] = {
         "run_count": len(records),
         "failed_run_count": sum(1 for record in records if record.error),
-        "timeout_run_count": sum(1 for record in records if record.timed_out),
-        "local_call_count": sum(record.local_call_count for record in records),
-        "cloud_call_count": sum(record.cloud_call_count for record in records),
-        "invocation_count": sum(record.invocation_count for record in records),
+        "local_call_count": sum(
+            1 for invocation in invocations if invocation.location == "local"
+        ),
+        "cloud_call_count": sum(
+            1 for invocation in invocations if invocation.location == "cloud"
+        ),
+        "invocation_count": len(invocations),
     }
 
-    latencies = [
-        record.latency_seconds for record in records if record.latency_seconds is not None
-    ]
+    latencies = [record.latency_seconds for record in records]
     metrics.update(_latency_summary(latencies))
-    metrics["cloud_api_cost"] = _sum_nullable(record.cloud_api_cost for record in records)
+    metrics["cloud_api_cost"] = _trace_cloud_cost(invocations)
     metrics["cloud_api_cost_unknown"] = any(
-        record.cloud_api_cost is None
-        and any(invocation.location == "cloud" for invocation in record.trace.invocations)
-        for record in records
+        invocation.location == "cloud" and invocation.cloud_api_cost is None
+        for invocation in invocations
     )
-    metrics["input_tokens"] = _sum_nullable(record.input_tokens for record in records)
-    metrics["output_tokens"] = _sum_nullable(record.output_tokens for record in records)
-    metrics["total_tokens"] = _sum_nullable(record.total_tokens for record in records)
-    metrics["per_placement_unit"] = _aggregate_per_unit(records)
+    metrics.update(_token_totals(invocations))
+    metrics["per_placement_unit"] = _per_unit_stats(invocations)
     metrics.update(_aggregate_quality_metrics(records))
 
     return CandidateProfile(
@@ -407,7 +375,6 @@ def _write_candidates_csv(path: Path, profile: ProfileArtifact) -> None:
         "cloud_api_cost",
         "mean_latency_seconds",
         "failed_run_count",
-        "timeout_run_count",
     ]
     quality_metric = profile.quality_constraint.metric
     with path.open("w", newline="", encoding="utf-8") as handle:
@@ -427,7 +394,6 @@ def _write_candidates_csv(path: Path, profile: ProfileArtifact) -> None:
                     "cloud_api_cost": row.metrics.get("cloud_api_cost"),
                     "mean_latency_seconds": row.metrics.get("mean_latency_seconds"),
                     "failed_run_count": row.metrics.get("failed_run_count"),
-                    "timeout_run_count": row.metrics.get("timeout_run_count"),
                 }
             )
 
@@ -442,7 +408,7 @@ def _write_selected_plan(path: Path, profile: ProfileArtifact) -> None:
         None,
     )
     payload: dict[str, Any] = {
-        "schema_version": "2.0",
+        "schema_version": "3.0",
         "generated_at": profile.generated_at,
         "source_candidate_artifact": profile.source_candidate_artifact,
         "workflow_id": profile.workflow_id,
@@ -537,7 +503,7 @@ def _latency_summary(values: list[float]) -> dict[str, float | None]:
 def _aggregate_quality_metrics(records: list[RunRecord]) -> dict[str, Any]:
     values_by_metric: dict[str, list[Any]] = {}
     for record in records:
-        if record.error or record.timed_out:
+        if record.error:
             continue
         for key, value in record.metrics.items():
             if isinstance(value, bool):
@@ -559,10 +525,10 @@ def _sum_nullable(values) -> int | float | None:
     return sum(values)
 
 
-def _trace_cloud_cost(trace: RunTrace) -> float | None:
+def _trace_cloud_cost(invocations: list[Any]) -> float | None:
     costs = [
         invocation.cloud_api_cost
-        for invocation in trace.invocations
+        for invocation in invocations
         if invocation.location == "cloud"
     ]
     if any(cost is None for cost in costs):
@@ -570,17 +536,17 @@ def _trace_cloud_cost(trace: RunTrace) -> float | None:
     return sum(costs)
 
 
-def _token_totals(trace: RunTrace) -> dict[str, int | None]:
+def _token_totals(invocations: list[Any]) -> dict[str, int | None]:
     return {
-        "input_tokens": _sum_nullable(invocation.input_tokens for invocation in trace.invocations),
-        "output_tokens": _sum_nullable(invocation.output_tokens for invocation in trace.invocations),
-        "total_tokens": _sum_nullable(invocation.total_tokens for invocation in trace.invocations),
+        "input_tokens": _sum_nullable(invocation.input_tokens for invocation in invocations),
+        "output_tokens": _sum_nullable(invocation.output_tokens for invocation in invocations),
+        "total_tokens": _sum_nullable(invocation.total_tokens for invocation in invocations),
     }
 
 
-def _per_unit_stats(trace: RunTrace) -> dict[str, dict[str, Any]]:
+def _per_unit_stats(invocations: list[Any]) -> dict[str, dict[str, Any]]:
     stats: dict[str, dict[str, Any]] = {}
-    for invocation in trace.invocations:
+    for invocation in invocations:
         unit = stats.setdefault(
             invocation.placement_unit_id,
             {
@@ -597,26 +563,3 @@ def _per_unit_stats(trace: RunTrace) -> dict[str, dict[str, Any]]:
         else:
             unit["cloud_api_cost"] += invocation.cloud_api_cost or 0.0
     return stats
-
-
-def _aggregate_per_unit(records: list[RunRecord]) -> dict[str, dict[str, Any]]:
-    aggregate: dict[str, dict[str, Any]] = {}
-    for record in records:
-        for unit_id, stats in record.per_placement_unit.items():
-            unit = aggregate.setdefault(
-                unit_id,
-                {
-                    "invocation_count": 0,
-                    "latency_seconds": 0.0,
-                    "cloud_api_cost": 0.0,
-                    "cloud_api_cost_unknown": False,
-                },
-            )
-            unit["invocation_count"] += stats.get("invocation_count", 0)
-            unit["latency_seconds"] += stats.get("latency_seconds", 0.0)
-            unit["cloud_api_cost"] += stats.get("cloud_api_cost", 0.0)
-            unit["cloud_api_cost_unknown"] = (
-                unit["cloud_api_cost_unknown"]
-                or stats.get("cloud_api_cost_unknown", False)
-            )
-    return aggregate

@@ -8,7 +8,6 @@ from placement_compiler.profiling.runner import (
     deterministic_sample,
     load_candidate_artifact,
     rank_candidates,
-    run_record_from_execution,
     write_profile_artifacts,
 )
 
@@ -20,6 +19,5 @@ __all__ = [
     "deterministic_sample",
     "load_candidate_artifact",
     "rank_candidates",
-    "run_record_from_execution",
     "write_profile_artifacts",
 ]
