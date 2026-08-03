@@ -2,8 +2,6 @@
 
 from placement_compiler.profiling.runner import (
     CandidateProfiler,
-    EvaluationAdapter,
-    RuntimeAdapter,
     aggregate_candidate_profile,
     apply_quality_constraints,
     build_baseline_plan,
@@ -16,8 +14,6 @@ from placement_compiler.profiling.runner import (
 
 __all__ = [
     "CandidateProfiler",
-    "EvaluationAdapter",
-    "RuntimeAdapter",
     "aggregate_candidate_profile",
     "apply_quality_constraints",
     "build_baseline_plan",

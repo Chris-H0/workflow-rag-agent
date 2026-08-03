@@ -4,8 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from placement_compiler.adapters.profile_workflows import build_repository_profile_adapters
-from placement_compiler.adapters.repository_workflows import load_existing_workflow_metadata
+from placement_compiler.adapters.workflows import load_workflow_driver
 from placement_compiler.core.artifacts import build_artifact, write_artifact
 from placement_compiler.core.catalogue import load_model_catalogue
 from placement_compiler.generation.candidates import CandidateGenerator, CompilerLLM
@@ -48,7 +47,7 @@ def compile_candidates(
     *,
     compiler_llm: CompilerLLM | None = None,
 ) -> Path:
-    workflow = load_existing_workflow_metadata(config.workflow)
+    workflow = load_workflow_driver(config.workflow).metadata()
     endpoints = load_model_catalogue(config.models)
     if compiler_llm is None:
         compiler_llm = build_compiler_llm(config)
@@ -83,15 +82,14 @@ def profile_candidates(config: ResolvedPipelineConfig) -> dict[str, Path]:
         endpoint_id=config.profile.baseline.endpoint_id,
         candidate_id=config.profile.baseline.candidate_id,
     )
-    evaluation_adapter, runtime_adapter = build_repository_profile_adapters(
-        workflow=config.workflow,
+    driver = load_workflow_driver(
+        config.workflow,
         candidate_artifact=loaded_artifact.artifact,
         endpoint_registry=endpoint_registry,
     )
     profiler = CandidateProfiler(
         candidate_artifact=loaded_artifact,
-        evaluation_adapter=evaluation_adapter,
-        runtime_adapter=runtime_adapter,
+        driver=driver,
         profile=config.profile,
         baseline_plan=baseline_plan,
         quality_constraint=config.profile.quality_constraint,

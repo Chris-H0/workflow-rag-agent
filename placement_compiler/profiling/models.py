@@ -8,7 +8,12 @@ from typing import Any, Literal
 
 from pydantic import Field, model_validator
 
-from placement_compiler.core.models import Candidate, ModelEndpoint, PlacementArtifact, StrictModel
+from placement_compiler.core.models import (
+    ModelEndpoint,
+    PlacementArtifact,
+    PlacementPlan,
+    StrictModel,
+)
 
 
 MetricDirection = Literal["maximise", "minimise"]
@@ -70,13 +75,6 @@ class RankingObjective(StrictModel):
 
 class RankingConfig(StrictModel):
     objectives: list[RankingObjective] = Field(default_factory=list)
-
-
-class PlacementPlan(StrictModel):
-    id: str
-    assignments: dict[str, str]
-    source: Literal["candidate", "baseline"] = "candidate"
-    description: str | None = None
 
 
 class ModelInvocation(StrictModel):
@@ -164,5 +162,5 @@ class LoadedCandidateArtifact(StrictModel):
     def endpoint_by_id(self) -> dict[str, ModelEndpoint]:
         return {endpoint.id: endpoint for endpoint in self.artifact.model_endpoints}
 
-    def candidate_by_id(self) -> dict[str, Candidate]:
+    def candidate_by_id(self) -> dict[str, PlacementPlan]:
         return {candidate.id: candidate for candidate in self.artifact.candidates}

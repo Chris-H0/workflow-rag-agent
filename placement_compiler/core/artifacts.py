@@ -5,14 +5,19 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from placement_compiler.core.models import Candidate, ModelEndpoint, PlacementArtifact, WorkflowMetadata
+from placement_compiler.core.models import (
+    ModelEndpoint,
+    PlacementArtifact,
+    PlacementPlan,
+    WorkflowMetadata,
+)
 
 
 def build_artifact(
     *,
     workflow: WorkflowMetadata,
     model_endpoints: list[ModelEndpoint],
-    candidates: list[Candidate],
+    candidates: list[PlacementPlan],
 ) -> PlacementArtifact:
     return PlacementArtifact(
         workflow_id=workflow.workflow_id,

@@ -83,13 +83,14 @@ class ModelEndpoint(StrictModel):
         return value
 
 
-class Candidate(StrictModel):
+class PlacementPlan(StrictModel):
     id: str
-    description: str
+    description: str | None = None
     assignments: dict[str, str]
     rationale: dict[str, str] = Field(default_factory=dict)
+    source: Literal["candidate", "baseline"] = "candidate"
 
-    @field_validator("id", "description")
+    @field_validator("id")
     @classmethod
     def non_empty_string(cls, value: str) -> str:
         value = value.strip()
@@ -101,20 +102,26 @@ class Candidate(StrictModel):
 class CandidateSetDraft(StrictModel):
     """Structured output expected from the compiler LLM."""
 
-    candidates: list[Candidate]
+    candidates: list[PlacementPlan]
 
 
 class PlacementArtifact(StrictModel):
-    schema_version: str = "1.0"
+    schema_version: str = "2.0"
     workflow_id: str
     generated_at: str = Field(default_factory=lambda: datetime.now(UTC).isoformat())
     candidate_count: int
     workflow: WorkflowMetadata
     model_endpoints: list[ModelEndpoint]
-    candidates: list[Candidate]
+    candidates: list[PlacementPlan]
 
     @model_validator(mode="after")
     def candidate_count_matches(self) -> "PlacementArtifact":
         if self.candidate_count != len(self.candidates):
             raise ValueError("candidate_count must match the number of candidates")
+        from placement_compiler.core.validation import validate_plan
+
+        for candidate in self.candidates:
+            if candidate.source != "candidate":
+                raise ValueError("candidate artifacts may only contain candidate plans")
+            validate_plan(candidate, self.workflow, self.model_endpoints)
         return self

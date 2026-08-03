@@ -13,11 +13,15 @@ from placement_compiler.pipeline.config import load_pipeline_config
 from placement_compiler.pipeline.runner import profile_candidates
 from placement_compiler.runtime.endpoint_registry import EndpointRegistry, ModelResolver, TraceCollector
 from placement_compiler.core.metadata import build_workflow_metadata
-from placement_compiler.core.models import Candidate, ModelEndpoint, NodeRegistryMetadata, WorkflowEdge
+from placement_compiler.core.models import (
+    ModelEndpoint,
+    NodeRegistryMetadata,
+    PlacementPlan,
+    WorkflowEdge,
+)
 from placement_compiler.profiling.models import (
     CandidateProfile,
     MetricDefinition,
-    PlacementPlan,
     ProfileArtifact,
     ProfileSettings,
     QualityConstraint,
@@ -37,7 +41,7 @@ from placement_compiler.profiling import (
     run_record_from_execution,
     write_profile_artifacts,
 )
-from placement_compiler.adapters.repository_workflows import load_existing_workflow_metadata
+from placement_compiler.adapters.workflows import load_workflow_driver
 
 
 def tiny_workflow():
@@ -85,11 +89,15 @@ def write_artifact(path: Path, workflow, endpoints, candidates):
     return artifact
 
 
-class FakeEvaluationAdapter:
+class FakeDriver:
     primary_metric = MetricDefinition(name="quality", direction="maximise")
 
-    def __init__(self, examples):
+    def __init__(self, examples, qualities, delay=0.0, fail_candidate=None):
         self.examples = examples
+        self.qualities = qualities
+        self.delay = delay
+        self.fail_candidate = fail_candidate
+        self.calls = []
 
     def load_examples(self, profile):
         return list(self.examples)
@@ -100,19 +108,11 @@ class FakeEvaluationAdapter:
     def score(self, example, output):
         return {"quality": output["quality"]}
 
-
-class FakeRuntimeAdapter:
-    def __init__(self, qualities, delay=0.0, fail_candidate=None):
-        self.qualities = qualities
-        self.delay = delay
-        self.fail_candidate = fail_candidate
-        self.calls = []
-
     def prepare(self, examples):
         self.prepared_ids = [example["id"] for example in examples]
 
-    def run_example(self, plan, example, repeat):
-        self.calls.append((plan.id, example["id"], repeat))
+    def run_example(self, plan, example):
+        self.calls.append((plan.id, example["id"]))
         if self.delay:
             time.sleep(self.delay)
         if plan.id == self.fail_candidate:
@@ -137,7 +137,7 @@ class PlacementProfilerTests(unittest.TestCase):
                 tiny_workflow(),
                 [mock_endpoint()],
                 [
-                    Candidate(
+                    PlacementPlan(
                         id="candidate-a",
                         description="A",
                         assignments={"plan": "mock-cloud", "act": "mock-cloud"},
@@ -169,7 +169,7 @@ class PlacementProfilerTests(unittest.TestCase):
 
         self.assertIsNotNone(resolver.get_model("plan"))
 
-        with self.assertRaisesRegex(Exception, "missing placement units"):
+        with self.assertRaisesRegex(Exception, "missing assignments"):
             ModelResolver(
                 plan=PlacementPlan(id="bad", assignments={"plan": "mock-cloud"}),
                 endpoint_registry=EndpointRegistry([mock_endpoint()]),
@@ -215,19 +215,21 @@ class PlacementProfilerTests(unittest.TestCase):
             workflow=workflow,
             model_endpoints=[mock_endpoint()],
             candidates=[
-                Candidate(id="a", description="A", assignments={"plan": "mock-cloud", "act": "mock-cloud"}),
-                Candidate(id="b", description="B", assignments={"plan": "mock-cloud", "act": "mock-cloud"}),
+                PlacementPlan(id="a", description="A", assignments={"plan": "mock-cloud", "act": "mock-cloud"}),
+                PlacementPlan(id="b", description="B", assignments={"plan": "mock-cloud", "act": "mock-cloud"}),
             ],
         )
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "candidates.json"
             path.write_text(json.dumps(artifact.model_dump(mode="json")) + "\n")
             loaded = load_candidate_artifact(path)
-            runtime = FakeRuntimeAdapter({"baseline-all-mock-cloud": 1.0, "a": 0.9, "b": 0.8})
+            driver = FakeDriver(
+                [{"id": "1"}, {"id": "2"}, {"id": "3"}],
+                {"baseline-all-mock-cloud": 1.0, "a": 0.9, "b": 0.8},
+            )
             profiler = CandidateProfiler(
                 candidate_artifact=loaded,
-                evaluation_adapter=FakeEvaluationAdapter([{"id": "1"}, {"id": "2"}, {"id": "3"}]),
-                runtime_adapter=runtime,
+                driver=driver,
                 profile=ProfileSettings(sample_size=2, seed=1, repeats=1, timeout_seconds=5),
                 baseline_plan=build_baseline_plan(
                     artifact=artifact,
@@ -357,11 +359,10 @@ class PlacementProfilerTests(unittest.TestCase):
         self.assertGreater(profile.metrics["cloud_api_cost"], 0)
         self.assertEqual(profile.metrics["failed_run_count"], 0)
 
-        runtime = FakeRuntimeAdapter({}, delay=0.2)
+        driver = FakeDriver([{"id": "1"}], {}, delay=0.2)
         profiler = CandidateProfiler(
             candidate_artifact=type("Loaded", (), {"artifact": build_artifact(workflow=workflow, model_endpoints=[endpoint], candidates=[]), "path": Path("x")})(),
-            evaluation_adapter=FakeEvaluationAdapter([{"id": "1"}]),
-            runtime_adapter=runtime,
+            driver=driver,
             profile=ProfileSettings(sample_size=1, timeout_seconds=0.01),
             baseline_plan=PlacementPlan(id="baseline", source="baseline", assignments={"plan": "mock-cloud", "act": "mock-cloud"}),
             quality_constraint=QualityConstraint(metric="quality"),
@@ -412,7 +413,7 @@ class PlacementProfilerTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp = Path(tmpdir)
             qa_artifact = tmp / "qa-candidates.json"
-            qa_workflow = load_existing_workflow_metadata("qa")
+            qa_workflow = load_workflow_driver("qa").metadata()
             qa_assignments = {
                 node.id: "mock-cloud" for node in qa_workflow.placement_units()
             }
@@ -420,7 +421,7 @@ class PlacementProfilerTests(unittest.TestCase):
                 qa_artifact,
                 qa_workflow,
                 [mock_endpoint()],
-                [Candidate(id="mock-qa", description="mock", assignments=qa_assignments)],
+                [PlacementPlan(id="mock-qa", description="mock", assignments=qa_assignments)],
             )
             qa_config = tmp / "qa-profile.yaml"
             models = Path.cwd() / "placement_compiler" / "examples" / "model_endpoints.yaml"
@@ -468,7 +469,7 @@ profile:
             self.assertEqual(qa_profile["selected_candidate_id"], "mock-qa")
 
             code_artifact = tmp / "code-candidates.json"
-            code_workflow = load_existing_workflow_metadata("code")
+            code_workflow = load_workflow_driver("code").metadata()
             code_assignments = {
                 node.id: "mock-cloud" for node in code_workflow.placement_units()
             }
@@ -476,7 +477,7 @@ profile:
                 code_artifact,
                 code_workflow,
                 [mock_endpoint()],
-                [Candidate(id="mock-code", description="mock", assignments=code_assignments)],
+                [PlacementPlan(id="mock-code", description="mock", assignments=code_assignments)],
             )
             code_config = tmp / "code-profile.yaml"
             code_config.write_text(

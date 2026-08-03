@@ -8,10 +8,10 @@ from pathlib import Path
 from placement_compiler.generation.candidates import CompilerLLM
 from placement_compiler.pipeline.config import PipelinePhase, load_pipeline_config
 from placement_compiler.pipeline.runner import run_pipeline
-from placement_compiler.adapters.repository_workflows import (
-    REPO_ROOT,
-    WORKFLOW_SPECS,
-)
+from placement_compiler.adapters.workflows import load_workflow_driver
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -76,6 +76,4 @@ def _load_dotenvs(workflow: str) -> None:
         return
 
     load_dotenv(REPO_ROOT / ".env", override=True)
-    spec = WORKFLOW_SPECS.get(workflow)
-    if spec is not None:
-        load_dotenv(spec.source_dir / ".env", override=True)
+    load_dotenv(load_workflow_driver(workflow).root / ".env", override=True)

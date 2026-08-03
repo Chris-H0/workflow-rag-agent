@@ -10,8 +10,9 @@ from typing import Any
 
 from langchain_core.messages import AIMessage
 
-from placement_compiler.core.models import ModelEndpoint, WorkflowMetadata, WorkflowNode
-from placement_compiler.profiling.models import ModelInvocation, PlacementPlan
+from placement_compiler.core.models import ModelEndpoint, PlacementPlan, WorkflowMetadata
+from placement_compiler.core.validation import PlanValidationError, validate_plan
+from placement_compiler.profiling.models import ModelInvocation
 
 
 class PlacementResolutionError(RuntimeError):
@@ -91,26 +92,14 @@ class ModelResolver:
         self.endpoint_registry = endpoint_registry
         self.workflow = workflow
         self.trace_collector = trace_collector
-        self._placement_units = {node.id: node for node in workflow.placement_units()}
-        self.validate_plan()
-
-    def validate_plan(self) -> None:
-        expected = set(self._placement_units)
-        actual = set(self.plan.assignments)
-        missing = sorted(expected - actual)
-        unknown = sorted(actual - expected)
-        if missing:
-            raise PlacementResolutionError(
-                f"plan {self.plan.id!r} is missing placement units {missing}"
+        try:
+            validate_plan(
+                self.plan,
+                self.workflow,
+                list(self.endpoint_registry.endpoints.values()),
             )
-        if unknown:
-            raise PlacementResolutionError(
-                f"plan {self.plan.id!r} contains unknown placement units {unknown}"
-            )
-
-        for unit_id, endpoint_id in sorted(self.plan.assignments.items()):
-            endpoint = self.endpoint_registry.endpoint(endpoint_id)
-            _validate_endpoint_capabilities(unit_id, self._placement_units[unit_id], endpoint)
+        except PlanValidationError as exc:
+            raise PlacementResolutionError(f"plan {self.plan.id!r}: {exc}") from exc
 
     def get_model(self, node_name: str) -> "InstrumentedModel":
         if node_name not in self.plan.assignments:
@@ -118,7 +107,6 @@ class ModelResolver:
                 f"placement unit {node_name!r} is not assigned in plan {self.plan.id!r}"
             )
         endpoint = self.endpoint_registry.endpoint(self.plan.assignments[node_name])
-        _validate_endpoint_capabilities(node_name, self._placement_units[node_name], endpoint)
         return self.endpoint_registry.build_model(
             endpoint=endpoint,
             placement_unit_id=node_name,
@@ -278,33 +266,6 @@ class MockPlacementModel:
         if "plan" in text.lower() or "programming task" in text.lower():
             return "Use a direct implementation."
         return str(self.model_kwargs.get("default_answer", "Paris"))
-
-
-def _validate_endpoint_capabilities(
-    unit_id: str,
-    node: WorkflowNode,
-    endpoint: ModelEndpoint,
-) -> None:
-    if node.tool_use and not endpoint.tool_calling:
-        raise PlacementResolutionError(
-            f"placement unit {unit_id!r} requires tool calling but endpoint "
-            f"{endpoint.id!r} does not support it"
-        )
-    if node.structured_output_required and not endpoint.structured_output:
-        raise PlacementResolutionError(
-            f"placement unit {unit_id!r} requires structured output but endpoint "
-            f"{endpoint.id!r} does not support it"
-        )
-    if (
-        node.required_context_window is not None
-        and endpoint.context_window is not None
-        and endpoint.context_window < node.required_context_window
-    ):
-        raise PlacementResolutionError(
-            f"placement unit {unit_id!r} requires context window "
-            f"{node.required_context_window} but endpoint {endpoint.id!r} only "
-            f"declares {endpoint.context_window}"
-        )
 
 
 def _cloud_api_cost(

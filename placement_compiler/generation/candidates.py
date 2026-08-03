@@ -10,12 +10,12 @@ from typing import Any, Protocol
 from pydantic import BaseModel, ValidationError
 
 from placement_compiler.core.models import (
-    Candidate,
     CandidateSetDraft,
     ModelEndpoint,
+    PlacementPlan,
     WorkflowMetadata,
-    WorkflowNode,
 )
+from placement_compiler.core.validation import PlanValidationError, validate_plan
 
 
 class CandidateGenerationError(RuntimeError):
@@ -43,7 +43,7 @@ class CandidateGenerator:
         model_endpoints: list[ModelEndpoint],
         candidate_count: int,
         priorities: Sequence[str] | None = None,
-    ) -> list[Candidate]:
+    ) -> list[PlacementPlan]:
         if candidate_count <= 0:
             raise ValueError("candidate_count must be positive")
         if not workflow.placement_units():
@@ -138,15 +138,13 @@ class CandidateGenerator:
 
     def _validate_candidates(
         self,
-        candidates: Sequence[Candidate],
+        candidates: Sequence[PlacementPlan],
         *,
         workflow: WorkflowMetadata,
         model_endpoints: list[ModelEndpoint],
         candidate_count: int,
-    ) -> tuple[list[Candidate], list[str]]:
-        placement_units = {node.id: node for node in workflow.placement_units()}
-        endpoints_by_id = {endpoint.id: endpoint for endpoint in model_endpoints}
-        accepted: list[Candidate] = []
+    ) -> tuple[list[PlacementPlan], list[str]]:
+        accepted: list[PlacementPlan] = []
         errors: list[str] = []
         seen_signatures: set[tuple[tuple[str, str], ...]] = set()
         seen_candidate_ids: set[str] = set()
@@ -157,11 +155,13 @@ class CandidateGenerator:
             )
 
         for candidate in candidates:
-            candidate_errors = _candidate_errors(
-                candidate,
-                placement_units=placement_units,
-                endpoints_by_id=endpoints_by_id,
-            )
+            try:
+                validate_plan(candidate, workflow, model_endpoints)
+                candidate_errors: list[str] = []
+            except PlanValidationError as exc:
+                candidate_errors = [str(exc)]
+            if candidate.source != "candidate":
+                candidate_errors.append("source must be 'candidate'")
             signature = tuple(sorted(candidate.assignments.items()))
             if signature in seen_signatures:
                 candidate_errors.append("duplicates another candidate configuration")
@@ -194,49 +194,3 @@ def _coerce_candidate_set(raw: CandidateSetDraft | Mapping[str, Any] | str) -> C
         return CandidateSetDraft.model_validate(raw)
     except ValidationError as exc:
         raise CandidateGenerationError(f"invalid structured LLM output: {exc}") from exc
-
-
-def _candidate_errors(
-    candidate: Candidate,
-    *,
-    placement_units: Mapping[str, WorkflowNode],
-    endpoints_by_id: Mapping[str, ModelEndpoint],
-) -> list[str]:
-    assignment_nodes = set(candidate.assignments)
-    expected_nodes = set(placement_units)
-    errors: list[str] = []
-
-    unknown_nodes = sorted(assignment_nodes - expected_nodes)
-    if unknown_nodes:
-        errors.append(f"unknown or non-placement node IDs {unknown_nodes}")
-
-    missing_nodes = sorted(expected_nodes - assignment_nodes)
-    if missing_nodes:
-        errors.append(f"missing assignments for {missing_nodes}")
-
-    for node_id, endpoint_id in sorted(candidate.assignments.items()):
-        endpoint = endpoints_by_id.get(endpoint_id)
-        if endpoint is None:
-            errors.append(f"{node_id} references unknown endpoint {endpoint_id!r}")
-            continue
-        node = placement_units.get(node_id)
-        if node is None:
-            continue
-        if node.tool_use and not endpoint.tool_calling:
-            errors.append(
-                f"{node_id} requires tool calling but {endpoint_id!r} does not support it"
-            )
-        if node.structured_output_required and not endpoint.structured_output:
-            errors.append(
-                f"{node_id} requires structured output but {endpoint_id!r} does not support it"
-            )
-        if (
-            node.required_context_window is not None
-            and endpoint.context_window is not None
-            and endpoint.context_window < node.required_context_window
-        ):
-            errors.append(
-                f"{node_id} requires context window {node.required_context_window} "
-                f"but {endpoint_id!r} only declares {endpoint.context_window}"
-            )
-    return errors

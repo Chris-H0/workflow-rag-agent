@@ -10,14 +10,14 @@ import statistics
 import time
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 from pathlib import Path
-from typing import Any, Protocol
+from typing import TYPE_CHECKING, Any
 
-from placement_compiler.core.models import PlacementArtifact
+from placement_compiler.core.models import PlacementArtifact, PlacementPlan
+from placement_compiler.core.validation import validate_plan
 from placement_compiler.profiling.models import (
     CandidateProfile,
     LoadedCandidateArtifact,
     MetricDefinition,
-    PlacementPlan,
     ProfileArtifact,
     ProfileSettings,
     QualityConstraint,
@@ -28,33 +28,8 @@ from placement_compiler.profiling.models import (
     WorkflowExecution,
 )
 
-
-class EvaluationAdapter(Protocol):
-    @property
-    def primary_metric(self) -> MetricDefinition:
-        ...
-
-    def load_examples(self, profile: ProfileSettings) -> list[Any]:
-        ...
-
-    def example_id(self, example: Any) -> str:
-        ...
-
-    def score(self, example: Any, output: dict[str, Any]) -> dict[str, Any]:
-        ...
-
-
-class RuntimeAdapter(Protocol):
-    def prepare(self, examples: list[Any]) -> None:
-        ...
-
-    def run_example(
-        self,
-        plan: PlacementPlan,
-        example: Any,
-        repeat: int,
-    ) -> WorkflowExecution:
-        ...
+if TYPE_CHECKING:
+    from placement_compiler.adapters.workflows import WorkflowDriver
 
 
 def load_candidate_artifact(path: str | Path) -> LoadedCandidateArtifact:
@@ -71,8 +46,7 @@ class CandidateProfiler:
         self,
         *,
         candidate_artifact: LoadedCandidateArtifact,
-        evaluation_adapter: EvaluationAdapter,
-        runtime_adapter: RuntimeAdapter,
+        driver: WorkflowDriver,
         profile: ProfileSettings,
         baseline_plan: PlacementPlan,
         quality_constraint: QualityConstraint,
@@ -80,8 +54,7 @@ class CandidateProfiler:
         workflow_name: str,
     ) -> None:
         self.candidate_artifact = candidate_artifact
-        self.evaluation_adapter = evaluation_adapter
-        self.runtime_adapter = runtime_adapter
+        self.driver = driver
         self.profile = profile
         self.baseline_plan = baseline_plan
         self.quality_constraint = quality_constraint
@@ -91,17 +64,18 @@ class CandidateProfiler:
         self.failures: list[str] = []
 
     def run(self) -> tuple[ProfileArtifact, list[RunRecord]]:
-        all_examples = self.evaluation_adapter.load_examples(self.profile)
+        primary_metric = self.driver.primary_metric
+        all_examples = self.driver.load_examples(self.profile)
         selected_examples = deterministic_sample(
             all_examples,
             sample_size=self.profile.sample_size,
             seed=self.profile.seed,
-            example_id=self.evaluation_adapter.example_id,
+            example_id=self.driver.example_id,
         )
         selected_example_ids = [
-            self.evaluation_adapter.example_id(example) for example in selected_examples
+            self.driver.example_id(example) for example in selected_examples
         ]
-        self.runtime_adapter.prepare(selected_examples)
+        self.driver.prepare(selected_examples)
 
         plans = [self.baseline_plan, *self._candidate_plans()]
         run_records: list[RunRecord] = []
@@ -120,13 +94,13 @@ class CandidateProfiler:
         apply_quality_constraints(
             baseline=baseline_profile,
             candidates=candidate_profiles,
-            primary_metric=self.evaluation_adapter.primary_metric,
+            primary_metric=primary_metric,
             quality_constraint=self.quality_constraint,
         )
         selected_candidate_id = rank_candidates(
             candidate_profiles,
             ranking=self.ranking,
-            primary_metric=self.evaluation_adapter.primary_metric,
+            primary_metric=primary_metric,
         )
 
         return (
@@ -135,7 +109,7 @@ class CandidateProfiler:
                 workflow_id=self.candidate_artifact.artifact.workflow_id,
                 workflow=self.workflow_name,
                 profile_config=self.profile.model_dump(mode="json", exclude_none=True),
-                primary_metric=self.evaluation_adapter.primary_metric,
+                primary_metric=primary_metric,
                 selected_example_ids=selected_example_ids,
                 baseline=baseline_profile,
                 quality_constraint=self.quality_constraint,
@@ -149,29 +123,21 @@ class CandidateProfiler:
         )
 
     def _candidate_plans(self) -> list[PlacementPlan]:
-        return [
-            PlacementPlan(
-                id=candidate.id,
-                assignments=candidate.assignments,
-                source="candidate",
-                description=candidate.description,
-            )
-            for candidate in self.candidate_artifact.artifact.candidates
-        ]
+        return list(self.candidate_artifact.artifact.candidates)
 
     def _run_warmups(self, plan: PlacementPlan, examples: list[Any]) -> None:
         if not examples:
             return
-        for repeat in range(self.profile.warmup_runs):
-            self._run_with_timeout(plan, examples[0], repeat=-repeat - 1)
+        for _ in range(self.profile.warmup_runs):
+            self._run_with_timeout(plan, examples[0])
 
     def _run_measured(self, plan: PlacementPlan, example: Any, repeat: int) -> RunRecord:
-        example_id = self.evaluation_adapter.example_id(example)
-        execution = self._run_with_timeout(plan, example, repeat)
+        example_id = self.driver.example_id(example)
+        execution = self._run_with_timeout(plan, example)
         metrics: dict[str, Any] = {}
         if not execution.error and not execution.timed_out:
             try:
-                metrics = self.evaluation_adapter.score(example, execution.output)
+                metrics = self.driver.score(example, execution.output)
             except Exception as exc:
                 execution.error = f"scoring failed: {exc!r}"
         return run_record_from_execution(
@@ -186,11 +152,10 @@ class CandidateProfiler:
         self,
         plan: PlacementPlan,
         example: Any,
-        repeat: int,
     ) -> WorkflowExecution:
         started = time.perf_counter()
         executor = ThreadPoolExecutor(max_workers=1)
-        future = executor.submit(self.runtime_adapter.run_example, plan, example, repeat)
+        future = executor.submit(self.driver.run_example, plan, example)
         try:
             return future.result(timeout=self.profile.timeout_seconds)
         except TimeoutError:
@@ -219,7 +184,7 @@ def build_baseline_plan(
     if baseline_type == "all_endpoint":
         if not endpoint_id:
             raise ValueError("endpoint_id is required for all_endpoint baseline")
-        return PlacementPlan(
+        plan = PlacementPlan(
             id=f"baseline-all-{endpoint_id}",
             source="baseline",
             assignments={
@@ -227,17 +192,19 @@ def build_baseline_plan(
             },
             description=f"All placement units assigned to {endpoint_id}",
         )
+        return validate_plan(plan, artifact.workflow, artifact.model_endpoints)
     if baseline_type == "candidate":
         if not candidate_id:
             raise ValueError("candidate_id is required for candidate baseline")
         for candidate in artifact.candidates:
             if candidate.id == candidate_id:
-                return PlacementPlan(
+                plan = PlacementPlan(
                     id=f"baseline-candidate-{candidate.id}",
                     source="baseline",
                     assignments=candidate.assignments,
                     description=f"Candidate baseline {candidate.id}",
                 )
+                return validate_plan(plan, artifact.workflow, artifact.model_endpoints)
         raise ValueError(f"candidate baseline {candidate_id!r} not found")
     raise ValueError(f"unknown baseline type {baseline_type!r}")
 

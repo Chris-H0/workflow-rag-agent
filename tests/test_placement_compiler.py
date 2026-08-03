@@ -10,14 +10,14 @@ from placement_compiler.generation.candidates import CandidateGenerationError, C
 from placement_compiler.cli import pipeline_from_config
 from placement_compiler.core.metadata import build_workflow_metadata
 from placement_compiler.core.models import (
-    Candidate,
     CandidateSetDraft,
     ModelEndpoint,
     NodeRegistryMetadata,
+    PlacementPlan,
     WorkflowEdge,
 )
 from placement_compiler.pipeline.config import load_pipeline_config
-from placement_compiler.adapters.repository_workflows import load_existing_workflow_metadata
+from placement_compiler.adapters.workflows import load_workflow_driver
 
 
 class FakeCompilerLLM:
@@ -77,7 +77,7 @@ def sample_endpoints():
 
 class PlacementCompilerTests(unittest.TestCase):
     def test_existing_qa_workflow_metadata_extraction(self):
-        metadata = load_existing_workflow_metadata("qa")
+        metadata = load_workflow_driver("qa").metadata()
 
         self.assertEqual(metadata.workflow_id, "qa-workflow")
         self.assertIn("generate_query_or_respond", metadata.entry_nodes)
@@ -120,12 +120,12 @@ class PlacementCompilerTests(unittest.TestCase):
     def test_generation_of_exactly_n_complete_candidates(self):
         response = CandidateSetDraft(
             candidates=[
-                Candidate(
+                PlacementPlan(
                     id="quality",
                     description="Cloud for every placement unit.",
                     assignments={"plan": "cloud", "act": "cloud"},
                 ),
-                Candidate(
+                PlacementPlan(
                     id="balanced",
                     description="Cloud for structured planning, local for action.",
                     assignments={"plan": "cloud", "act": "local"},
@@ -147,7 +147,7 @@ class PlacementCompilerTests(unittest.TestCase):
     def test_invalid_model_and_node_rejection(self):
         response = CandidateSetDraft(
             candidates=[
-                Candidate(
+                PlacementPlan(
                     id="bad",
                     description="Invalid candidate.",
                     assignments={"plan": "missing-endpoint", "extra": "cloud"},
@@ -164,12 +164,12 @@ class PlacementCompilerTests(unittest.TestCase):
     def test_duplicate_candidate_detection(self):
         response = CandidateSetDraft(
             candidates=[
-                Candidate(
+                PlacementPlan(
                     id="one",
                     description="First.",
                     assignments={"plan": "cloud", "act": "local"},
                 ),
-                Candidate(
+                PlacementPlan(
                     id="two",
                     description="Duplicate assignments.",
                     assignments={"plan": "cloud", "act": "local"},
@@ -186,7 +186,7 @@ class PlacementCompilerTests(unittest.TestCase):
     def test_capability_incompatibility_rejection(self):
         response = CandidateSetDraft(
             candidates=[
-                Candidate(
+                PlacementPlan(
                     id="bad-capabilities",
                     description="Local endpoint cannot handle structured planning.",
                     assignments={"plan": "local", "act": "local"},
@@ -217,7 +217,7 @@ class PlacementCompilerTests(unittest.TestCase):
         )
         response = CandidateSetDraft(
             candidates=[
-                Candidate(
+                PlacementPlan(
                     id="too-small",
                     description="Endpoint context window is too small.",
                     assignments={"plan": "small"},
@@ -243,7 +243,7 @@ class PlacementCompilerTests(unittest.TestCase):
 
     def test_valid_json_serialization(self):
         candidates = [
-            Candidate(
+            PlacementPlan(
                 id="balanced",
                 description="Valid.",
                 assignments={"plan": "cloud", "act": "local"},
@@ -259,7 +259,7 @@ class PlacementCompilerTests(unittest.TestCase):
             output = write_artifact(artifact, Path(tmpdir) / "candidates.json")
             data = json.loads(output.read_text())
 
-        self.assertEqual(data["schema_version"], "1.0")
+        self.assertEqual(data["schema_version"], "2.0")
         self.assertEqual(data["candidate_count"], 1)
         self.assertEqual(data["candidates"][0]["assignments"]["plan"], "cloud")
 
@@ -279,7 +279,7 @@ class PlacementCompilerTests(unittest.TestCase):
     def test_pipeline_compile_phase_against_existing_qa_workflow(self):
         response = CandidateSetDraft(
             candidates=[
-                Candidate(
+                PlacementPlan(
                     id="quality",
                     description="Cloud endpoints for all QA placement units.",
                     assignments={
