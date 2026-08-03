@@ -7,7 +7,7 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
-from placement_compiler.core.models import ModelEndpoint, NodeRegistryMetadata
+from placement_compiler.core.models import ModelEndpoint, PlacementUnitSpec
 
 
 def load_model_catalogue(path: str | Path) -> list[ModelEndpoint]:
@@ -25,17 +25,16 @@ def load_model_catalogue(path: str | Path) -> list[ModelEndpoint]:
     return endpoints
 
 
-def load_node_registry(
+def load_placement_manifest(
     path: str | Path,
-) -> dict[str, NodeRegistryMetadata]:
+) -> dict[str, PlacementUnitSpec]:
     data = load_json_or_yaml(Path(path))
-    if isinstance(data, Mapping) and "nodes" in data:
-        data = data["nodes"]
-    if not isinstance(data, Mapping):
-        raise ValueError("node registry must be a mapping of node ID to metadata")
+    units = data.get("placement_units") if isinstance(data, Mapping) else None
+    if not isinstance(units, Mapping):
+        raise ValueError("placement manifest must contain a placement_units mapping")
     return {
-        str(node_id): NodeRegistryMetadata.model_validate(metadata)
-        for node_id, metadata in data.items()
+        str(unit_id): PlacementUnitSpec.model_validate(metadata)
+        for unit_id, metadata in units.items()
     }
 
 

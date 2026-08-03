@@ -15,8 +15,8 @@ from placement_compiler.runtime.endpoint_registry import EndpointRegistry, Model
 from placement_compiler.core.metadata import build_workflow_metadata
 from placement_compiler.core.models import (
     ModelEndpoint,
-    NodeRegistryMetadata,
     PlacementPlan,
+    PlacementUnitSpec,
     WorkflowEdge,
 )
 from placement_compiler.profiling.models import (
@@ -53,15 +53,9 @@ def tiny_workflow():
             WorkflowEdge(source="plan", target="act"),
             WorkflowEdge(source="act", target="__end__"),
         ],
-        registry={
-            "plan": NodeRegistryMetadata(
-                is_llm_placement_unit=True,
-                structured_output_required=True,
-            ),
-            "act": NodeRegistryMetadata(
-                is_llm_placement_unit=True,
-                tool_use=True,
-            ),
+        placement_units={
+            "plan": PlacementUnitSpec(structured_output_required=True),
+            "act": PlacementUnitSpec(tool_use=True),
         },
     )
 
@@ -184,11 +178,8 @@ class PlacementProfilerTests(unittest.TestCase):
                 WorkflowEdge(source="__start__", target="plan"),
                 WorkflowEdge(source="plan", target="__end__"),
             ],
-            registry={
-                "plan": NodeRegistryMetadata(
-                    is_llm_placement_unit=True,
-                    required_context_window=1000,
-                )
+            placement_units={
+                "plan": PlacementUnitSpec(required_context_window=1000)
             },
         )
         with self.assertRaisesRegex(Exception, "context window"):
@@ -415,7 +406,7 @@ class PlacementProfilerTests(unittest.TestCase):
             qa_artifact = tmp / "qa-candidates.json"
             qa_workflow = load_workflow_driver("qa").metadata()
             qa_assignments = {
-                node.id: "mock-cloud" for node in qa_workflow.placement_units()
+                unit.id: "mock-cloud" for unit in qa_workflow.placement_units
             }
             write_artifact(
                 qa_artifact,
@@ -471,7 +462,7 @@ profile:
             code_artifact = tmp / "code-candidates.json"
             code_workflow = load_workflow_driver("code").metadata()
             code_assignments = {
-                node.id: "mock-cloud" for node in code_workflow.placement_units()
+                unit.id: "mock-cloud" for unit in code_workflow.placement_units
             }
             write_artifact(
                 code_artifact,

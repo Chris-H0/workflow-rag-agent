@@ -1,4 +1,4 @@
-"""Extract framework-neutral workflow metadata from compiled LangGraph graphs."""
+"""Enrich manifest-owned placement metadata with LangGraph structure."""
 
 from __future__ import annotations
 
@@ -6,16 +6,16 @@ from collections.abc import Callable, Mapping
 from typing import Any
 
 from placement_compiler.core.metadata import build_workflow_metadata
-from placement_compiler.core.models import NodeRegistryMetadata, WorkflowEdge, WorkflowMetadata
+from placement_compiler.core.models import PlacementUnitSpec, WorkflowEdge, WorkflowMetadata
 
 
-def extract_langgraph_metadata(
+def enrich_with_langgraph(
     workflow: Any | Callable[[], Any],
     *,
     workflow_id: str,
-    registry: Mapping[str, NodeRegistryMetadata | Mapping[str, object]] | None = None,
+    placement_units: Mapping[str, PlacementUnitSpec | Mapping[str, object]],
 ) -> WorkflowMetadata:
-    """Extract metadata from a compiled or buildable LangGraph workflow.
+    """Add public LangGraph topology to authoritative placement units.
 
     The adapter only relies on the public compiled-graph ``get_graph()`` method
     and the public drawable graph's ``nodes`` and ``edges`` attributes.
@@ -48,5 +48,5 @@ def extract_langgraph_metadata(
         workflow_id=workflow_id,
         node_ids=nodes,
         edges=edges,
-        registry=registry,
+        placement_units=placement_units,
     )

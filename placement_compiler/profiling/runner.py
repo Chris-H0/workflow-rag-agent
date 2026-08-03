@@ -188,7 +188,7 @@ def build_baseline_plan(
             id=f"baseline-all-{endpoint_id}",
             source="baseline",
             assignments={
-                node.id: endpoint_id for node in artifact.workflow.placement_units()
+                unit.id: endpoint_id for unit in artifact.workflow.placement_units
             },
             description=f"All placement units assigned to {endpoint_id}",
         )

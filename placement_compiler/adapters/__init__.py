@@ -1,1 +1,1 @@
-"""Framework-specific workflow metadata adapters."""
+"""Workflow drivers and optional framework topology enrichment."""

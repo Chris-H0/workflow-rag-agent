@@ -16,7 +16,7 @@ def validate_plan(
     workflow: WorkflowMetadata,
     endpoints: Sequence[ModelEndpoint],
 ) -> PlacementPlan:
-    units = {node.id: node for node in workflow.placement_units()}
+    units = {unit.id: unit for unit in workflow.placement_units}
     endpoints_by_id = {endpoint.id: endpoint for endpoint in endpoints}
     assigned = set(plan.assignments)
     expected = set(units)

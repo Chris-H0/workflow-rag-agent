@@ -7,7 +7,8 @@ from placement_compiler.pipeline.config import CompilerConfig, PipelineConfig, l
 from placement_compiler.pipeline.runner import run_pipeline
 from placement_compiler.core.models import (
     ModelEndpoint,
-    NodeRegistryMetadata,
+    PlacementUnit,
+    PlacementUnitSpec,
     PlacementArtifact,
     PlacementPlan,
     WorkflowMetadata,
@@ -18,9 +19,10 @@ __all__ = [
     "CandidateGenerator",
     "CompilerConfig",
     "ModelEndpoint",
-    "NodeRegistryMetadata",
     "PlacementArtifact",
     "PlacementPlan",
+    "PlacementUnit",
+    "PlacementUnitSpec",
     "PlanValidationError",
     "PipelineConfig",
     "WorkflowMetadata",

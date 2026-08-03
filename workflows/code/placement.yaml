@@ -1,21 +1,14 @@
-nodes:
+placement_units:
   understand_and_plan:
-    is_llm_placement_unit: true
     semantic_role: task understanding and planning
     description: Creates a plan for solving the programming task.
   implement_solution:
-    is_llm_placement_unit: true
     semantic_role: solution implementation
     description: Generates or revises the Python solution.
   generate_tests:
-    is_llm_placement_unit: true
     semantic_role: test generation
     description: Generates tests for the current solution.
-  run_tests:
-    semantic_role: test execution
-    description: Executes generated tests in the local sandbox.
   review_solution:
-    is_llm_placement_unit: true
     semantic_role: solution review and routing
     description: Reviews test results and decides whether to revise or finish.
     structured_output_required: true

@@ -7,8 +7,8 @@ import time
 from pathlib import Path
 from typing import Any, Protocol
 
-from placement_compiler.adapters.langgraph import extract_langgraph_metadata
-from placement_compiler.core.catalogue import load_node_registry
+from placement_compiler.adapters.langgraph import enrich_with_langgraph
+from placement_compiler.core.catalogue import load_placement_manifest
 from placement_compiler.core.models import PlacementArtifact, PlacementPlan, WorkflowMetadata
 from placement_compiler.profiling.models import (
     MetricDefinition,
@@ -87,12 +87,12 @@ class LangGraphWorkflowDriver:
 
     def metadata(self) -> WorkflowMetadata:
         if self._metadata is None:
-            registry = load_node_registry(self.root / "placement.yaml")
+            placement_units = load_placement_manifest(self.root / "placement.yaml")
             compiled = self._graph.build_graph(_NoopModelResolver(), None)
-            self._metadata = extract_langgraph_metadata(
+            self._metadata = enrich_with_langgraph(
                 compiled,
                 workflow_id=self.workflow_id,
-                registry=registry,
+                placement_units=placement_units,
             )
         return self._metadata
 

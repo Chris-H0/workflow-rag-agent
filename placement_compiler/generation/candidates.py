@@ -46,7 +46,7 @@ class CandidateGenerator:
     ) -> list[PlacementPlan]:
         if candidate_count <= 0:
             raise ValueError("candidate_count must be positive")
-        if not workflow.placement_units():
+        if not workflow.placement_units:
             raise ValueError("workflow has no declared LLM placement units")
         if not model_endpoints:
             raise ValueError("model endpoint catalogue must not be empty")
@@ -89,8 +89,8 @@ class CandidateGenerator:
         previous_errors: Sequence[str],
     ) -> list[dict[str, str]]:
         placement_units = [
-            node.model_dump(mode="json", exclude_none=True)
-            for node in workflow.placement_units()
+            unit.model_dump(mode="json", exclude_none=True)
+            for unit in workflow.placement_units
         ]
         endpoint_data = [
             endpoint.model_dump(mode="json", exclude_none=True)

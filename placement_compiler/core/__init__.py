@@ -1,2 +1,1 @@
-"""Shared schemas, metadata extraction helpers, catalogue loading, and artifacts."""
-
+"""Shared schemas, manifest-first metadata, validation, and artifacts."""

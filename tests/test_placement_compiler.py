@@ -12,8 +12,8 @@ from placement_compiler.core.metadata import build_workflow_metadata
 from placement_compiler.core.models import (
     CandidateSetDraft,
     ModelEndpoint,
-    NodeRegistryMetadata,
     PlacementPlan,
+    PlacementUnitSpec,
     WorkflowEdge,
 )
 from placement_compiler.pipeline.config import load_pipeline_config
@@ -41,15 +41,9 @@ def sample_workflow():
             WorkflowEdge(source="plan", target="act"),
             WorkflowEdge(source="act", target="__end__"),
         ],
-        registry={
-            "plan": NodeRegistryMetadata(
-                is_llm_placement_unit=True,
-                structured_output_required=True,
-            ),
-            "act": NodeRegistryMetadata(
-                is_llm_placement_unit=True,
-                tool_use=True,
-            ),
+        placement_units={
+            "plan": PlacementUnitSpec(structured_output_required=True),
+            "act": PlacementUnitSpec(tool_use=True),
         },
     )
 
@@ -85,14 +79,22 @@ class PlacementCompilerTests(unittest.TestCase):
         self.assertIn("generate_query_or_respond", metadata.terminal_nodes)
         self.assertTrue(metadata.conditional_edges)
 
-        nodes = {node.id: node for node in metadata.nodes}
-        self.assertTrue(nodes["generate_query_or_respond"].is_llm_placement_unit)
-        self.assertTrue(nodes["generate_query_or_respond"].tool_use)
-        self.assertTrue(nodes["decide_after_retrieval"].structured_output_required)
-        self.assertFalse(nodes["generate_followup_query"].is_llm_placement_unit)
-        self.assertTrue(nodes["retrieve"].in_cycle)
+        units = {unit.id: unit for unit in metadata.placement_units}
+        self.assertEqual(
+            set(units),
+            {
+                "generate_query_or_respond",
+                "decide_after_retrieval",
+                "rewrite_question",
+                "generate_answer",
+            },
+        )
+        self.assertTrue(units["generate_query_or_respond"].tool_use)
+        self.assertTrue(units["generate_query_or_respond"].structural)
+        self.assertTrue(units["decide_after_retrieval"].structured_output_required)
+        self.assertFalse(units["decide_after_retrieval"].structural)
 
-    def test_metadata_registry_merging(self):
+    def test_manifest_units_are_authoritative_and_graph_enriched(self):
         metadata = build_workflow_metadata(
             workflow_id="tiny",
             node_ids=["__start__", "a", "b", "__end__"],
@@ -101,20 +103,20 @@ class PlacementCompilerTests(unittest.TestCase):
                 WorkflowEdge(source="a", target="b", conditional=True, label="ok"),
                 WorkflowEdge(source="b", target="__end__"),
             ],
-            registry={
-                "a": {
-                    "is_llm_placement_unit": True,
-                    "semantic_role": "router",
-                    "branch_control": True,
-                }
+            placement_units={
+                "a": PlacementUnitSpec(
+                    semantic_role="router",
+                    branch_control=True,
+                ),
+                "hidden": PlacementUnitSpec(semantic_role="hidden router"),
             },
         )
 
-        nodes = {node.id: node for node in metadata.nodes}
-        self.assertTrue(nodes["a"].is_llm_placement_unit)
-        self.assertEqual(nodes["a"].semantic_role, "router")
-        self.assertEqual(nodes["a"].stage, "entry")
-        self.assertEqual(nodes["b"].stage, "terminal")
+        units = {unit.id: unit for unit in metadata.placement_units}
+        self.assertEqual(set(units), {"a", "hidden"})
+        self.assertEqual(units["a"].semantic_role, "router")
+        self.assertTrue(units["a"].structural)
+        self.assertFalse(units["hidden"].structural)
         self.assertEqual(metadata.conditional_edges[0].label, "ok")
 
     def test_generation_of_exactly_n_complete_candidates(self):
@@ -208,11 +210,8 @@ class PlacementCompilerTests(unittest.TestCase):
                 WorkflowEdge(source="__start__", target="plan"),
                 WorkflowEdge(source="plan", target="__end__"),
             ],
-            registry={
-                "plan": NodeRegistryMetadata(
-                    is_llm_placement_unit=True,
-                    required_context_window=1000,
-                )
+            placement_units={
+                "plan": PlacementUnitSpec(required_context_window=1000)
             },
         )
         response = CandidateSetDraft(
@@ -259,7 +258,7 @@ class PlacementCompilerTests(unittest.TestCase):
             output = write_artifact(artifact, Path(tmpdir) / "candidates.json")
             data = json.loads(output.read_text())
 
-        self.assertEqual(data["schema_version"], "2.0")
+        self.assertEqual(data["schema_version"], "3.0")
         self.assertEqual(data["candidate_count"], 1)
         self.assertEqual(data["candidates"][0]["assignments"]["plan"], "cloud")
 
