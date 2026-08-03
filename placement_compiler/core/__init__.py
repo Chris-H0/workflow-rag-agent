@@ -1,1 +1,1 @@
-"""Shared schemas, manifest-first metadata, validation, and artifacts."""
+"""Shared schemas, manifest-first metadata, and placement validation."""

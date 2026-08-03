@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import Any
 
-from placement_compiler.core.models import CandidateSetDraft, StructuredOutputMethod
+from placement_compiler.core.models import PlacementProposal, StructuredOutputMethod
 
 
 class LangChainCompilerLLM:
@@ -31,8 +31,8 @@ class LangChainCompilerLLM:
     def generate(
         self,
         messages: Sequence[Mapping[str, str]],
-        output_schema: type[CandidateSetDraft],
-    ) -> CandidateSetDraft:
+        output_schema: type[PlacementProposal],
+    ) -> PlacementProposal:
         try:
             structured = self._model.with_structured_output(
                 output_schema,

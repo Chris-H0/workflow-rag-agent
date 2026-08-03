@@ -1,4 +1,4 @@
-"""Orchestrate compile-only and compile-plus-profile pipeline phases."""
+"""Run the single sequential model-routing search."""
 
 from __future__ import annotations
 
@@ -6,17 +6,21 @@ from pathlib import Path
 from typing import Any, Callable
 
 from placement_compiler.adapters.workflows import load_workflow_driver
-from placement_compiler.core.artifacts import build_artifact, write_artifact
 from placement_compiler.core.catalogue import load_model_catalogue
 from placement_compiler.core.models import ModelEndpoint
 from placement_compiler.generation.candidates import CandidateGenerator, CompilerLLM
 from placement_compiler.generation.llm import LangChainCompilerLLM
-from placement_compiler.pipeline.config import PipelineConfig, PipelinePhase
+from placement_compiler.pipeline.config import PipelineConfig
+from placement_compiler.profiling.models import (
+    PlanResult,
+    EvaluationSettings,
+    RunRecord,
+    SearchArtifact,
+)
 from placement_compiler.profiling.runner import (
-    CandidateProfiler,
-    build_baseline_plan,
-    load_candidate_artifact,
-    write_profile_artifacts,
+    PlanEvaluator,
+    build_cloud_baseline,
+    write_search_artifacts,
 )
 from placement_compiler.runtime.endpoint_registry import EndpointRegistry
 
@@ -24,103 +28,97 @@ from placement_compiler.runtime.endpoint_registry import EndpointRegistry
 def run_pipeline(
     config: PipelineConfig,
     *,
-    phase: PipelinePhase | None = None,
     compiler_llm: CompilerLLM | None = None,
-    model_factory: Callable[[ModelEndpoint], Any] | None = None,
-) -> dict[str, Path | dict[str, Path]]:
-    selected_phase = phase or config.default_phase
-    if selected_phase == "compile":
-        return {
-            "candidate_artifact": compile_candidates(
-                config,
-                compiler_llm=compiler_llm,
-            )
-        }
-    if selected_phase == "compile_and_profile":
-        candidate_path = compile_candidates(config, compiler_llm=compiler_llm)
-        return {
-            "candidate_artifact": candidate_path,
-            "profile_artifacts": profile_candidates(
-                config, model_factory=model_factory
-            ),
-        }
-    raise ValueError(f"unknown pipeline phase {selected_phase!r}")
-
-
-def compile_candidates(
-    config: PipelineConfig,
-    *,
-    compiler_llm: CompilerLLM | None = None,
-) -> Path:
-    workflow = load_workflow_driver(config.workflow).metadata()
-    endpoints = load_model_catalogue(config.models)
-    if compiler_llm is None:
-        compiler_llm = build_compiler_llm(config)
-
-    generator = CandidateGenerator(
-        compiler_llm=compiler_llm,
-        max_attempts=config.compile.max_attempts,
-    )
-    candidates = generator.generate(
-        workflow=workflow,
-        model_endpoints=endpoints,
-        candidate_count=config.compile.candidates,
-        priorities=config.compile.priorities,
-    )
-    artifact = build_artifact(
-        workflow=workflow,
-        model_endpoints=endpoints,
-        candidates=candidates,
-    )
-    return write_artifact(artifact, config.candidate_artifact)
-
-
-def profile_candidates(
-    config: PipelineConfig,
-    *,
     model_factory: Callable[[ModelEndpoint], Any] | None = None,
 ) -> dict[str, Path]:
-    if config.profile is None:
-        raise ValueError("pipeline profile section is required for compile_and_profile")
-
-    loaded_artifact = load_candidate_artifact(config.candidate_artifact)
-    endpoint_registry = EndpointRegistry(
-        loaded_artifact.model_endpoints,
-        model_factory=model_factory,
-    )
-    baseline_plan = build_baseline_plan(
-        artifact=loaded_artifact,
-        baseline_type=config.profile.baseline.type,
-        endpoint_id=config.profile.baseline.endpoint_id,
-        candidate_id=config.profile.baseline.candidate_id,
-    )
     driver = load_workflow_driver(config.workflow)
-    profiler = CandidateProfiler(
-        candidate_artifact=loaded_artifact,
-        source_candidate_artifact=config.candidate_artifact,
+    workflow = driver.metadata()
+    endpoints = load_model_catalogue(config.models)
+    endpoint_registry = EndpointRegistry(endpoints, model_factory=model_factory)
+    evaluator = PlanEvaluator(
+        workflow=workflow,
         endpoint_registry=endpoint_registry,
         driver=driver,
-        profile=config.profile,
-        baseline_plan=baseline_plan,
-        quality_constraint=config.profile.quality_constraint,
-        ranking=config.profile.ranking,
-        workflow_name=config.workflow,
+        settings=_evaluation_settings(config),
     )
-    profile, runs = profiler.run()
-    return write_profile_artifacts(
-        profile=profile,
+    selected_example_ids = evaluator.prepare()
+
+    baseline = build_cloud_baseline(
+        workflow,
+        endpoints,
+        config.strongest_cloud_endpoint,
+    )
+    baseline_result, baseline_runs = evaluator.evaluate(baseline)
+    results = [baseline_result]
+    runs = list(baseline_runs)
+    compiler_history = [_compiler_history_entry(baseline_result, baseline_runs)]
+
+    generator = CandidateGenerator(
+        compiler_llm=compiler_llm or build_compiler_llm(config),
+        max_attempts=config.max_attempts,
+    )
+    for iteration in range(1, config.iterations + 1):
+        candidate = generator.propose(
+            workflow=workflow,
+            model_endpoints=endpoints,
+            iteration=iteration,
+            evaluated_results=compiler_history,
+        )
+        result, candidate_runs = evaluator.evaluate(candidate)
+        results.append(result)
+        runs.extend(candidate_runs)
+        compiler_history.append(_compiler_history_entry(result, candidate_runs))
+
+    artifact = SearchArtifact(
+        workflow_id=workflow.workflow_id,
+        workflow=config.workflow,
+        search_config=config.model_dump(mode="json", exclude_none=True),
+        primary_metric=driver.primary_metric,
+        selected_example_ids=selected_example_ids,
+        results=results,
+    )
+    return write_search_artifacts(
+        artifact=artifact,
         runs=runs,
-        output_dir=config.profile.output,
+        output_dir=config.output,
     )
 
 
 def build_compiler_llm(config: PipelineConfig) -> LangChainCompilerLLM:
-    model_kwargs = dict(config.compile.compiler.model_kwargs)
-    if config.compile.compiler.temperature is not None:
-        model_kwargs["temperature"] = config.compile.compiler.temperature
+    model_kwargs = dict(config.compiler.model_kwargs)
+    if config.compiler.temperature is not None:
+        model_kwargs["temperature"] = config.compiler.temperature
     return LangChainCompilerLLM(
-        provider=config.compile.compiler.provider,
-        model=config.compile.compiler.model,
-        structured_output_method=config.compile.compiler.structured_output_method,
+        provider=config.compiler.provider,
+        model=config.compiler.model,
+        structured_output_method=config.compiler.structured_output_method,
         **model_kwargs,
     )
+
+
+def _evaluation_settings(config: PipelineConfig) -> EvaluationSettings:
+    return EvaluationSettings(
+        split=config.split,
+        sample_size=config.sample_size,
+        seed=config.seed,
+        repeats=config.repeats,
+        warmup_runs=config.warmup_runs,
+        examples=config.examples,
+    )
+
+
+def _compiler_history_entry(
+    result: PlanResult,
+    runs: list[RunRecord],
+) -> dict[str, Any]:
+    return {
+        **result.model_dump(mode="json", exclude_none=True),
+        "evaluation_runs": [
+            run.model_dump(
+                mode="json",
+                include={"example_id", "repeat", "metrics", "latency_seconds", "error"},
+                exclude_none=True,
+            )
+            for run in runs
+        ],
+    }

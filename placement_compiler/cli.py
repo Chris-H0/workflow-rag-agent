@@ -6,7 +6,7 @@ import argparse
 from pathlib import Path
 
 from placement_compiler.generation.candidates import CompilerLLM
-from placement_compiler.pipeline.config import PipelinePhase, load_pipeline_config
+from placement_compiler.pipeline.config import load_pipeline_config
 from placement_compiler.pipeline.runner import run_pipeline
 from placement_compiler.adapters.workflows import load_workflow_driver
 
@@ -28,45 +28,34 @@ def main(argv: list[str] | None = None) -> int:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python -m placement_compiler",
-        description="Run model placement compilation and profiling.",
+        description="Run sequential model-routing search.",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
     run = subparsers.add_parser("run")
     run.add_argument(
         "--config",
         required=True,
-        help="Path to the unified compile/profile pipeline YAML/JSON config.",
-    )
-    run.add_argument(
-        "--phase",
-        choices=["compile", "compile_and_profile"],
-        help="Override the config default_phase.",
+        help="Path to the model-routing search YAML/JSON config.",
     )
     return parser
 
 
-def pipeline_command(args: argparse.Namespace) -> dict[str, Path | dict[str, Path]]:
-    return pipeline_from_config(args.config, phase=args.phase)
+def pipeline_command(args: argparse.Namespace) -> dict[str, Path]:
+    return pipeline_from_config(args.config)
 
 
 def pipeline_from_config(
     config_path: str | Path,
     *,
-    phase: PipelinePhase | None = None,
     compiler_llm: CompilerLLM | None = None,
-) -> dict[str, Path | dict[str, Path]]:
+) -> dict[str, Path]:
     config = load_pipeline_config(config_path)
     _load_dotenvs(config.workflow)
-    return run_pipeline(config, phase=phase, compiler_llm=compiler_llm)
+    return run_pipeline(config, compiler_llm=compiler_llm)
 
 
-def print_pipeline_outputs(output_paths: dict[str, Path | dict[str, Path]]) -> None:
-    candidate_path = output_paths.get("candidate_artifact")
-    if candidate_path:
-        print(f"Wrote placement candidates to {candidate_path}")
-    profile_artifacts = output_paths.get("profile_artifacts")
-    if isinstance(profile_artifacts, dict):
-        print(f"Wrote placement profile to {profile_artifacts['profile']}")
+def print_pipeline_outputs(output_paths: dict[str, Path]) -> None:
+    print(f"Wrote routing results to {output_paths['results']}")
 
 
 def _load_dotenvs(workflow: str) -> None:

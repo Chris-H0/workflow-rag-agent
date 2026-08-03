@@ -12,7 +12,7 @@ from placement_compiler.core.catalogue import load_placement_manifest
 from placement_compiler.core.models import WorkflowMetadata
 from placement_compiler.profiling.models import (
     MetricDefinition,
-    ProfileSettings,
+    EvaluationSettings,
     RunTrace,
     WorkflowResult,
 )
@@ -27,7 +27,7 @@ WORKFLOW_PACKAGES = {
 
 
 class WorkflowDriver(Protocol):
-    """Everything the compiler and profiler need from a workflow."""
+    """Everything evaluation and routing search need from a workflow."""
 
     root: Path
 
@@ -36,7 +36,7 @@ class WorkflowDriver(Protocol):
 
     def metadata(self) -> WorkflowMetadata: ...
 
-    def load_examples(self, profile: ProfileSettings) -> list[Any]: ...
+    def load_examples(self, settings: EvaluationSettings) -> list[Any]: ...
 
     def example_id(self, example: Any) -> str: ...
 
@@ -84,8 +84,8 @@ class LangGraphWorkflowDriver:
             )
         return self._metadata
 
-    def load_examples(self, profile: ProfileSettings) -> list[Any]:
-        return list(self._evaluation.load_examples(profile))
+    def load_examples(self, settings: EvaluationSettings) -> list[Any]:
+        return list(self._evaluation.load_examples(settings))
 
     def example_id(self, example: Any) -> str:
         return str(self._evaluation.example_id(example))

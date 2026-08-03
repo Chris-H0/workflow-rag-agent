@@ -1,23 +1,17 @@
-"""Fixed-candidate profiling, ranking, and artifact generation."""
+"""Measured evaluation of complete model placements."""
 
 from placement_compiler.profiling.runner import (
-    CandidateProfiler,
-    aggregate_candidate_profile,
-    apply_quality_constraints,
-    build_baseline_plan,
+    PlanEvaluator,
+    aggregate_plan_result,
+    build_cloud_baseline,
     deterministic_sample,
-    load_candidate_artifact,
-    rank_candidates,
-    write_profile_artifacts,
+    write_search_artifacts,
 )
 
 __all__ = [
-    "CandidateProfiler",
-    "aggregate_candidate_profile",
-    "apply_quality_constraints",
-    "build_baseline_plan",
+    "PlanEvaluator",
+    "aggregate_plan_result",
+    "build_cloud_baseline",
     "deterministic_sample",
-    "load_candidate_artifact",
-    "rank_candidates",
-    "write_profile_artifacts",
+    "write_search_artifacts",
 ]

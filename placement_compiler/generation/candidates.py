@@ -1,4 +1,4 @@
-"""Prompt and validate compiler LLM placement candidate proposals."""
+"""Propose one measured-informed model placement at a time."""
 
 from __future__ import annotations
 
@@ -10,9 +10,9 @@ from typing import Any, Protocol
 from pydantic import BaseModel, ValidationError
 
 from placement_compiler.core.models import (
-    CandidateSetDraft,
     ModelEndpoint,
     PlacementPlan,
+    PlacementProposal,
     WorkflowMetadata,
 )
 from placement_compiler.core.validation import PlanValidationError, validate_plan
@@ -26,9 +26,9 @@ class CompilerLLM(Protocol):
     def generate(
         self,
         messages: Sequence[Mapping[str, str]],
-        output_schema: type[CandidateSetDraft],
-    ) -> CandidateSetDraft | Mapping[str, Any] | str:
-        """Return structured candidate proposals from an LLM."""
+        output_schema: type[PlacementProposal],
+    ) -> PlacementProposal | Mapping[str, Any] | str:
+        """Return one complete placement proposal."""
 
 
 @dataclass
@@ -36,16 +36,14 @@ class CandidateGenerator:
     compiler_llm: CompilerLLM
     max_attempts: int = 2
 
-    def generate(
+    def propose(
         self,
         *,
         workflow: WorkflowMetadata,
         model_endpoints: list[ModelEndpoint],
-        candidate_count: int,
-        priorities: Sequence[str] | None = None,
-    ) -> list[PlacementPlan]:
-        if candidate_count <= 0:
-            raise ValueError("candidate_count must be positive")
+        iteration: int,
+        evaluated_results: Sequence[Mapping[str, Any]],
+    ) -> PlacementPlan:
         if not workflow.placement_units:
             raise ValueError("workflow has no declared LLM placement units")
         if not model_endpoints:
@@ -57,25 +55,36 @@ class CandidateGenerator:
                 self._build_messages(
                     workflow=workflow,
                     model_endpoints=model_endpoints,
-                    candidate_count=candidate_count,
-                    priorities=priorities or [],
+                    iteration=iteration,
+                    evaluated_results=evaluated_results,
                     previous_errors=previous_errors,
                 ),
-                CandidateSetDraft,
+                PlacementProposal,
             )
-            draft = _coerce_candidate_set(raw)
-            candidates, errors = self._validate_candidates(
-                draft.candidates,
+            try:
+                proposal = _coerce_proposal(raw)
+            except CandidateGenerationError as exc:
+                previous_errors = [str(exc)]
+                continue
+
+            candidate = PlacementPlan(
+                id=f"candidate-{iteration}",
+                description=proposal.description,
+                assignments=proposal.assignments,
+                rationale=proposal.rationale,
+            )
+            errors = _candidate_errors(
+                candidate,
                 workflow=workflow,
                 model_endpoints=model_endpoints,
-                candidate_count=candidate_count,
+                evaluated_results=evaluated_results,
             )
-            if len(candidates) == candidate_count and not errors:
-                return candidates
+            if not errors:
+                return candidate
             previous_errors = errors
 
         raise CandidateGenerationError(
-            "compiler LLM did not produce a valid candidate set: "
+            "compiler LLM did not produce a valid new placement: "
             + "; ".join(previous_errors)
         )
 
@@ -84,113 +93,82 @@ class CandidateGenerator:
         *,
         workflow: WorkflowMetadata,
         model_endpoints: list[ModelEndpoint],
-        candidate_count: int,
-        priorities: Sequence[str],
+        iteration: int,
+        evaluated_results: Sequence[Mapping[str, Any]],
         previous_errors: Sequence[str],
     ) -> list[dict[str, str]]:
-        placement_units = [
-            unit.model_dump(mode="json", exclude_none=True)
-            for unit in workflow.placement_units
-        ]
-        endpoint_data = [
-            endpoint.model_dump(mode="json", exclude_none=True)
-            for endpoint in model_endpoints
-        ]
-        workflow_summary = {
-            "workflow_id": workflow.workflow_id,
-            "entry_nodes": workflow.entry_nodes,
-            "terminal_nodes": workflow.terminal_nodes,
-            "placement_units": placement_units,
-            "edges": [
-                edge.model_dump(mode="json", exclude_none=True)
-                for edge in workflow.edges
+        payload = {
+            "iteration": iteration,
+            "workflow": workflow.model_dump(mode="json", exclude_none=True),
+            "model_endpoints": [
+                endpoint.model_dump(mode="json", exclude_none=True)
+                for endpoint in model_endpoints
             ],
-        }
-        user_payload = {
-            "candidate_count": candidate_count,
-            "priorities": list(priorities),
-            "workflow": workflow_summary,
-            "model_endpoints": endpoint_data,
+            "evaluated_results": list(evaluated_results),
             "previous_validation_errors": list(previous_errors),
         }
         return [
             {
                 "role": "system",
                 "content": (
-                    "You are a compile-time workflow placement planner. "
-                    "Propose diverse complete model-placement configurations. "
-                    "Do not modify workflow code and do not choose a final winner. "
-                    "Every LLM placement unit must be assigned exactly one valid endpoint. "
-                    "Respect endpoint capabilities for tool calling and structured output."
+                    "You optimise model routing for a fixed workflow. Propose one new, "
+                    "complete placement using the measured evaluation results from every "
+                    "previous run. You may change any number of placement units. Explore "
+                    "quality, cloud cost, and latency trade-offs, but do not repeat an "
+                    "evaluated assignment map. Respect endpoint tool-calling, structured-"
+                    "output, and context-window capabilities. Do not select a final winner."
                 ),
             },
             {
                 "role": "user",
                 "content": (
-                    "Return exactly the requested number of candidates using the "
-                    "provided structured schema. Prefer a mix of quality-oriented, "
-                    "balanced local/cloud, and local-first or low-cloud-cost trade-offs "
-                    "where the endpoint catalogue supports them.\n\n"
-                    + json.dumps(user_payload, indent=2)
+                    "Return one complete, previously unevaluated placement using the "
+                    "provided structured schema. The evaluated_results field contains the "
+                    "baseline and all earlier aggregate and per-example evaluation metrics.\n\n"
+                    + json.dumps(payload, indent=2)
                 ),
             },
         ]
 
-    def _validate_candidates(
-        self,
-        candidates: Sequence[PlacementPlan],
-        *,
-        workflow: WorkflowMetadata,
-        model_endpoints: list[ModelEndpoint],
-        candidate_count: int,
-    ) -> tuple[list[PlacementPlan], list[str]]:
-        accepted: list[PlacementPlan] = []
-        errors: list[str] = []
-        seen_signatures: set[tuple[tuple[str, str], ...]] = set()
-        seen_candidate_ids: set[str] = set()
 
-        if len(candidates) != candidate_count:
-            errors.append(
-                f"LLM returned {len(candidates)} candidates, expected {candidate_count}"
-            )
+def _candidate_errors(
+    candidate: PlacementPlan,
+    *,
+    workflow: WorkflowMetadata,
+    model_endpoints: list[ModelEndpoint],
+    evaluated_results: Sequence[Mapping[str, Any]],
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        validate_plan(candidate, workflow, model_endpoints)
+    except PlanValidationError as exc:
+        errors.append(str(exc))
 
-        for candidate in candidates:
-            try:
-                validate_plan(candidate, workflow, model_endpoints)
-                candidate_errors: list[str] = []
-            except PlanValidationError as exc:
-                candidate_errors = [str(exc)]
-            if candidate.source != "candidate":
-                candidate_errors.append("source must be 'candidate'")
-            signature = tuple(sorted(candidate.assignments.items()))
-            if signature in seen_signatures:
-                candidate_errors.append("duplicates another candidate configuration")
-            if candidate.id in seen_candidate_ids:
-                candidate_errors.append("duplicates another candidate ID")
-
-            if candidate_errors:
-                errors.append(f"{candidate.id}: {', '.join(candidate_errors)}")
-                continue
-
-            seen_signatures.add(signature)
-            seen_candidate_ids.add(candidate.id)
-            accepted.append(candidate)
-
-        if len(accepted) != candidate_count:
-            errors.append(
-                f"expected {candidate_count} valid candidates, got {len(accepted)}"
-            )
-        return accepted, errors
+    signature = tuple(sorted(candidate.assignments.items()))
+    evaluated_signatures = {
+        tuple(sorted(result["plan"]["assignments"].items()))
+        for result in evaluated_results
+    }
+    if signature in evaluated_signatures:
+        errors.append("duplicates an evaluated placement")
+    return errors
 
 
-def _coerce_candidate_set(raw: CandidateSetDraft | Mapping[str, Any] | str) -> CandidateSetDraft:
-    if isinstance(raw, CandidateSetDraft):
+def _coerce_proposal(
+    raw: PlacementProposal | Mapping[str, Any] | str,
+) -> PlacementProposal:
+    if isinstance(raw, PlacementProposal):
         return raw
     if isinstance(raw, str):
-        raw = json.loads(raw)
+        try:
+            raw = json.loads(raw)
+        except json.JSONDecodeError as exc:
+            raise CandidateGenerationError(
+                f"invalid structured LLM output: {exc}"
+            ) from exc
     if isinstance(raw, BaseModel):
         raw = raw.model_dump()
     try:
-        return CandidateSetDraft.model_validate(raw)
-    except ValidationError as exc:
+        return PlacementProposal.model_validate(raw)
+    except (ValidationError, TypeError) as exc:
         raise CandidateGenerationError(f"invalid structured LLM output: {exc}") from exc

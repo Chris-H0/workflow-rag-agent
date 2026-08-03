@@ -1,6 +1,6 @@
-"""Unified compile/profile pipeline configuration and orchestration."""
+"""Sequential routing search configuration and orchestration."""
 
 from placement_compiler.pipeline.config import load_pipeline_config
-from placement_compiler.pipeline.runner import compile_candidates, profile_candidates, run_pipeline
+from placement_compiler.pipeline.runner import run_pipeline
 
-__all__ = ["compile_candidates", "load_pipeline_config", "profile_candidates", "run_pipeline"]
+__all__ = ["load_pipeline_config", "run_pipeline"]

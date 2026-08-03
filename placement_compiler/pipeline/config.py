@@ -1,23 +1,15 @@
-"""Typed config loading for unified compile and profile pipeline runs."""
+"""Typed config for the sequential model-routing search."""
 
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any
 
 from pydantic import Field, field_validator, model_validator
 
 from placement_compiler.core.catalogue import load_json_or_yaml
 from placement_compiler.core.models import StrictModel, StructuredOutputMethod
-from placement_compiler.profiling.models import (
-    BaselineConfig,
-    ProfileSettings,
-    QualityConstraint,
-    RankingConfig,
-)
-
-
-PipelinePhase = Literal["compile", "compile_and_profile"]
+from placement_compiler.profiling.models import EvaluationSettings
 
 
 class CompilerConfig(StrictModel):
@@ -36,37 +28,16 @@ class CompilerConfig(StrictModel):
         return value
 
 
-class CompileConfig(StrictModel):
-    candidates: int
-    compiler: CompilerConfig
-    priorities: list[str] = Field(default_factory=list)
-    max_attempts: int = 2
-
-    @model_validator(mode="after")
-    def validate_positive_counts(self) -> "CompileConfig":
-        if self.candidates <= 0:
-            raise ValueError("compile.candidates must be positive")
-        if self.max_attempts <= 0:
-            raise ValueError("compile.max_attempts must be positive")
-        return self
-
-
-class ProfileConfig(ProfileSettings):
-    baseline: BaselineConfig
-    quality_constraint: QualityConstraint
-    ranking: RankingConfig = Field(default_factory=RankingConfig)
-    output: Path
-
-
-class PipelineConfig(StrictModel):
+class PipelineConfig(EvaluationSettings):
     workflow: str
     models: Path
-    candidate_artifact: Path
-    compile: CompileConfig
-    profile: ProfileConfig | None = None
-    default_phase: PipelinePhase = "compile_and_profile"
+    strongest_cloud_endpoint: str
+    iterations: int = 3
+    compiler: CompilerConfig
+    max_attempts: int = 2
+    output: Path
 
-    @field_validator("workflow")
+    @field_validator("workflow", "strongest_cloud_endpoint")
     @classmethod
     def non_empty_string(cls, value: str) -> str:
         value = value.strip()
@@ -74,24 +45,22 @@ class PipelineConfig(StrictModel):
             raise ValueError("must not be empty")
         return value
 
+    @model_validator(mode="after")
+    def validate_counts(self) -> "PipelineConfig":
+        if self.iterations <= 0:
+            raise ValueError("iterations must be positive")
+        if self.max_attempts <= 0:
+            raise ValueError("max_attempts must be positive")
+        return self
+
 
 def load_pipeline_config(path: str | Path) -> PipelineConfig:
     config_path = Path(path).resolve()
     config = PipelineConfig.model_validate(load_json_or_yaml(config_path))
-    profile = (
-        config.profile.model_copy(
-            update={"output": _resolve_config_path(config_path, config.profile.output)}
-        )
-        if config.profile
-        else None
-    )
     return config.model_copy(
         update={
             "models": _resolve_config_path(config_path, config.models),
-            "candidate_artifact": _resolve_config_path(
-                config_path, config.candidate_artifact
-            ),
-            "profile": profile,
+            "output": _resolve_config_path(config_path, config.output),
         }
     )
 

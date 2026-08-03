@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 EndpointLocation = Literal["local", "cloud"]
@@ -48,6 +47,7 @@ class WorkflowMetadata(StrictModel):
     terminal_nodes: list[str] = Field(default_factory=list)
     conditional_edges: list[WorkflowEdge] = Field(default_factory=list)
 
+
 class ModelEndpoint(StrictModel):
     id: str
     model: str
@@ -85,29 +85,9 @@ class PlacementPlan(StrictModel):
         return value
 
 
-class CandidateSetDraft(StrictModel):
-    """Structured output expected from the compiler LLM."""
+class PlacementProposal(StrictModel):
+    """One complete placement proposed by the compiler."""
 
-    candidates: list[PlacementPlan]
-
-
-class PlacementArtifact(StrictModel):
-    schema_version: str = "3.0"
-    workflow_id: str
-    generated_at: str = Field(default_factory=lambda: datetime.now(UTC).isoformat())
-    candidate_count: int
-    workflow: WorkflowMetadata
-    model_endpoints: list[ModelEndpoint]
-    candidates: list[PlacementPlan]
-
-    @model_validator(mode="after")
-    def candidate_count_matches(self) -> "PlacementArtifact":
-        if self.candidate_count != len(self.candidates):
-            raise ValueError("candidate_count must match the number of candidates")
-        from placement_compiler.core.validation import validate_plan
-
-        for candidate in self.candidates:
-            if candidate.source != "candidate":
-                raise ValueError("candidate artifacts may only contain candidate plans")
-            validate_plan(candidate, self.workflow, self.model_endpoints)
-        return self
+    description: str | None = None
+    assignments: dict[str, str]
+    rationale: dict[str, str] = Field(default_factory=dict)
