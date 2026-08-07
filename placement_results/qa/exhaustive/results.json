@@ -1,0 +1,3381 @@
+{
+  "schema_version": "4.0",
+  "generated_at": "2026-08-05T12:07:14.907160+00:00",
+  "workflow_id": "qa-workflow",
+  "workflow": "qa",
+  "search_config": {
+    "kind": "exhaustive_valid_placement_evaluation",
+    "models": "/Users/chris/Documents/GitHub/workflow-rag-agent/placement_compiler/examples/model_endpoints.yaml",
+    "strongest_cloud_endpoint": "gpt-5.5-cloud",
+    "sample_size": 50,
+    "seed": 42,
+    "repeats": 1,
+    "warmup_runs": 0,
+    "valid_placement_count": 54,
+    "source_results": "/Users/chris/Documents/GitHub/workflow-rag-agent/placement_results/qa/results.json"
+  },
+  "primary_metric": {
+    "name": "exact_match",
+    "direction": "maximise"
+  },
+  "selected_example_ids": [
+    "5a722b8655429971e9dc9329",
+    "5a74c85055429916b0164218",
+    "5a774e9c55429972597f14f3",
+    "5a77a65b5542992a6e59df57",
+    "5a78db8055429970f5fffdb2",
+    "5a79b7f6554299029c4b5f6f",
+    "5a7a276d5542996c55b2dd27",
+    "5a7a5b3a5542996c55b2dd71",
+    "5a7b12a355429927d897bf2a",
+    "5a7cbf8c554299452d57b9f4",
+    "5a834ed95542990548d0b1ca",
+    "5a8488f45542992a431d1a47",
+    "5a8574945542997b5ce3fffb",
+    "5a867089554299211dda2b30",
+    "5a8704f8554299211dda2ba4",
+    "5a874ce15542996432c57256",
+    "5a87ab9b5542996e4f3088c2",
+    "5a87bada5542994846c1cddc",
+    "5a87c13f5542996e4f30890c",
+    "5a88d745554299206df2b378",
+    "5a89706055429951533612f9",
+    "5a89f5815542993b751ca9c5",
+    "5a8e3dc05542995085b37401",
+    "5a8e3ea95542995a26add48d",
+    "5a8eb4d65542990e94052b82",
+    "5a8ef2a75542995a26add583",
+    "5a8f45ca5542997ba9cb320e",
+    "5a9068a95542990a98493621",
+    "5a90b43455429916514e7523",
+    "5ab1d7ac554299449642c7e6",
+    "5ab3e45655429976abd1bcd4",
+    "5ab47cd75542991751b4d78d",
+    "5ab48c325542996a3a969f93",
+    "5ab7bbbf55429928e1fe38bf",
+    "5ab85a1155429934fafe6d7c",
+    "5abcc96c5542996583600492",
+    "5abd259d55429924427fcf1a",
+    "5abe689a55429976d4830b16",
+    "5ac01bca5542992a796dec8d",
+    "5adbda2755429944faac2385",
+    "5adbe1a7554299438c868cc3",
+    "5add564a5542990dbb2f7e38",
+    "5adddccd5542997dc7907069",
+    "5ade7a435542997c77adee3a",
+    "5adf043b5542993a75d263d4",
+    "5adfeb0555429942ec259b88",
+    "5ae1f596554299234fd04372",
+    "5ae2dfd155429928c423951b",
+    "5ae4d3c95542990ba0bbb165",
+    "5ae68fcb5542992ae0d1635b"
+  ],
+  "results": [
+    {
+      "plan": {
+        "id": "placement-001",
+        "description": "Exhaustive valid placement 001; reused from baseline",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "baseline"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 208,
+        "invocation_count": 208,
+        "mean_latency_seconds": 12.53944897503883,
+        "median_latency_seconds": 9.340683061993332,
+        "p95_latency_seconds": 28.586537791998126,
+        "cloud_api_cost": 1.696875,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 204621,
+        "output_tokens": 22459,
+        "total_tokens": 227080,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 86,
+            "latency_seconds": 239.74884008511435,
+            "cloud_api_cost": 0.6412499999999998,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 74,
+            "latency_seconds": 175.15588412620127,
+            "cloud_api_cost": 0.5782649999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 41,
+            "latency_seconds": 166.4463567879866,
+            "cloud_api_cost": 0.41214999999999996,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 7,
+            "latency_seconds": 43.54148712399183,
+            "cloud_api_cost": 0.06520999999999999,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.56,
+        "contains_gold_answer": 0.7,
+        "contains_partial_gold_answer": 0.8,
+        "answer_token_precision": 0.7362619047619048,
+        "answer_token_recall": 0.8036666666666666,
+        "answer_token_f1": 0.7321428571428571,
+        "supporting_title_hit": 0.94,
+        "supporting_title_recall": 0.76
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-002",
+        "description": "Exhaustive valid placement 002",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 201,
+        "invocation_count": 201,
+        "mean_latency_seconds": 10.535945634222008,
+        "median_latency_seconds": 9.274363271004404,
+        "p95_latency_seconds": 20.11615787501796,
+        "cloud_api_cost": 1.5521866,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 207421,
+        "output_tokens": 17412,
+        "total_tokens": 224833,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 88,
+            "latency_seconds": 254.66291349881794,
+            "cloud_api_cost": 0.7012100000000003,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 69,
+            "latency_seconds": 178.62090716522653,
+            "cloud_api_cost": 0.56701,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 9,
+            "latency_seconds": 7.466320376028307,
+            "cloud_api_cost": 0.0004816,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 35,
+            "latency_seconds": 83.91478966598515,
+            "cloud_api_cost": 0.283485,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.52,
+        "contains_gold_answer": 0.64,
+        "contains_partial_gold_answer": 0.68,
+        "answer_token_precision": 0.624433621933622,
+        "answer_token_recall": 0.727,
+        "answer_token_f1": 0.6359981293216588,
+        "supporting_title_hit": 0.88,
+        "supporting_title_recall": 0.71
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-003",
+        "description": "Exhaustive valid placement 003",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 9,
+        "cloud_call_count": 196,
+        "invocation_count": 205,
+        "mean_latency_seconds": 13.254065845001605,
+        "median_latency_seconds": 11.019071875503869,
+        "p95_latency_seconds": 26.27610320900567,
+        "cloud_api_cost": 1.546575,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 195812,
+        "output_tokens": 20164,
+        "total_tokens": 215976,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 86,
+            "latency_seconds": 313.62670674794936,
+            "cloud_api_cost": 0.65081,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 70,
+            "latency_seconds": 202.79894683288876,
+            "cloud_api_cost": 0.55014,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 40,
+            "latency_seconds": 115.79506999699515,
+            "cloud_api_cost": 0.34562499999999996,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 9,
+            "latency_seconds": 28.684361876017647,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.56,
+        "contains_gold_answer": 0.7,
+        "contains_partial_gold_answer": 0.78,
+        "answer_token_precision": 0.6941284271284272,
+        "answer_token_recall": 0.7646666666666667,
+        "answer_token_f1": 0.6912654012654013,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.75
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-004",
+        "description": "Exhaustive valid placement 004",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 211,
+        "invocation_count": 211,
+        "mean_latency_seconds": 12.6764261574822,
+        "median_latency_seconds": 9.356729312508833,
+        "p95_latency_seconds": 22.88865262499894,
+        "cloud_api_cost": 1.2361313999999999,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 237903,
+        "output_tokens": 17863,
+        "total_tokens": 255766,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 86,
+            "latency_seconds": 90.88250737512135,
+            "cloud_api_cost": 0.0403664,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 74,
+            "latency_seconds": 241.96829161807545,
+            "cloud_api_cost": 0.56458,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 288.6108329189883,
+            "cloud_api_cost": 0.6270499999999998,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 1,
+            "latency_seconds": 10.332278791000135,
+            "cloud_api_cost": 0.004135,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.68,
+        "contains_gold_answer": 0.7,
+        "contains_partial_gold_answer": 0.8,
+        "answer_token_precision": 0.8133333333333332,
+        "answer_token_recall": 0.787,
+        "answer_token_f1": 0.7941428571428572,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.79
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-005",
+        "description": "Exhaustive valid placement 005; reused from candidate-8",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {
+          "decide_after_retrieval": "This unit requires structured output and branch control, so qwen-local is ineligible. Candidate-7 isolated gpt-5.5-cloud on this router with mini elsewhere and improved answer quality over the all-mini candidate-2, including exact match 0.58 versus 0.52 and answer F1 0.704 versus 0.667, with supporting-title recall 0.77. Upgrading this router while also retaining the strong final answerer tests whether better sufficiency/rerouting decisions can lift candidate-1-style quality, accepting added cost relative to the mini router.",
+          "generate_answer": "Final answer generation is user-facing and quality-critical. Candidate-2 and candidate-4 showed clear quality drops when moving this unit to gpt-4.1-mini-cloud or qwen-local, while candidate-1 and candidate-5 had the best observed exact match and answer F1 with gpt-5.5-cloud here. Keeping gpt-5.5-cloud preserves the strongest answer synthesis capability.",
+          "generate_query_or_respond": "This initial controller requires tool calling and branch control. gpt-4.1-mini-cloud supports tool use and was much cheaper and faster than gpt-5.5-cloud in this high-invocation role. Candidate-6, which upgraded this controller to gpt-5.5-cloud, had worse aggregate quality and higher cost than the all-mini configuration, so this proposal avoids spending gpt-5.5 tokens on the initial controller.",
+          "rewrite_question": "Question rewriting is non-user-facing and requires neither structured output nor tool calling. gpt-4.1-mini-cloud is capability-safe, cheap, and avoids local latency variability; it also matches the faster cloud rewrite pattern from candidate-1/candidate-2 while keeping this overall assignment map previously unevaluated."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 212,
+        "invocation_count": 212,
+        "mean_latency_seconds": 8.245149211639655,
+        "median_latency_seconds": 6.000474291489809,
+        "p95_latency_seconds": 25.096225875022355,
+        "cloud_api_cost": 1.1198198,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 227756,
+        "output_tokens": 14326,
+        "total_tokens": 242082,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 85,
+            "latency_seconds": 80.41144411993446,
+            "cloud_api_cost": 0.03667559999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 74,
+            "latency_seconds": 159.2714201330964,
+            "cloud_api_cost": 0.56005,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 168.51850762905087,
+            "cloud_api_cost": 0.5229349999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 3,
+            "latency_seconds": 2.046665126021253,
+            "cloud_api_cost": 0.00015920000000000002,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.66,
+        "contains_gold_answer": 0.68,
+        "contains_partial_gold_answer": 0.78,
+        "answer_token_precision": 0.7883333333333333,
+        "answer_token_recall": 0.7683333333333333,
+        "answer_token_f1": 0.7718095238095237,
+        "supporting_title_hit": 0.9,
+        "supporting_title_recall": 0.79
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-006",
+        "description": "Exhaustive valid placement 006; reused from candidate-9",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {
+          "decide_after_retrieval": "This unit requires structured output and branch control, so qwen-local is ineligible. Candidate-8, which used gpt-5.5-cloud here with a strong answerer and mini initial controller, produced the best observed exact match (0.66) and strongest supporting-title recall (0.79), suggesting the stronger sufficiency router may be valuable when paired with gpt-5.5 final answers despite higher cost than mini routing.",
+          "generate_answer": "Final answer generation is user-facing and quality-critical. Prior runs moving this unit to gpt-4.1-mini-cloud or qwen-local reduced quality substantially: candidate-2 dropped to 0.52 exact match and 0.667 F1, and candidate-4 dropped to 0.32 exact match and 0.479 F1. Keeping gpt-5.5-cloud preserves the stronger answer synthesis used in the best exact-match configurations.",
+          "generate_query_or_respond": "This unit requires tool calling and branch control. gpt-4.1-mini-cloud is tool-capable and much cheaper/faster than gpt-5.5-cloud for this high-invocation controller. Candidate-6 showed that upgrading this controller to gpt-5.5-cloud increased cost and worsened aggregate quality, while candidate-8 achieved the best observed exact match with this unit on mini.",
+          "rewrite_question": "Question rewriting is non-user-facing and requires neither structured output nor tool calling, so qwen-local is capability-compatible with its 32k context window. Rewrite invocations were rare in prior runs, and using local here explores a small cloud-cost reduction from candidate-8 while avoiding changes to the capability-sensitive router, tool controller, and final answerer. This assignment map has not been evaluated previously."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 1,
+        "cloud_call_count": 204,
+        "invocation_count": 205,
+        "mean_latency_seconds": 9.414170779181296,
+        "median_latency_seconds": 6.514603646006435,
+        "p95_latency_seconds": 25.69966037501581,
+        "cloud_api_cost": 1.053944,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 228267,
+        "output_tokens": 12687,
+        "total_tokens": 240954,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 83,
+            "latency_seconds": 85.80254429398337,
+            "cloud_api_cost": 0.03817399999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 72,
+            "latency_seconds": 193.18897562500206,
+            "cloud_api_cost": 0.55046,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 49,
+            "latency_seconds": 184.94433762296103,
+            "cloud_api_cost": 0.46531,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 1,
+            "latency_seconds": 4.834383500012336,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.62,
+        "contains_gold_answer": 0.66,
+        "contains_partial_gold_answer": 0.78,
+        "answer_token_precision": 0.7783333333333333,
+        "answer_token_recall": 0.7563333333333334,
+        "answer_token_f1": 0.7565714285714286,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.81
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-007",
+        "description": "Exhaustive valid placement 007",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 88,
+        "cloud_call_count": 129,
+        "invocation_count": 217,
+        "mean_latency_seconds": 19.358465028337086,
+        "median_latency_seconds": 16.870929728989722,
+        "p95_latency_seconds": 36.45374583400553,
+        "cloud_api_cost": 1.101555,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 246086,
+        "output_tokens": 15814,
+        "total_tokens": 261900,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 88,
+            "latency_seconds": 179.67505966906901,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 77,
+            "latency_seconds": 480.1676077898301,
+            "cloud_api_cost": 0.6158399999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 276.5750254979939,
+            "cloud_api_cost": 0.4524850000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 2,
+            "latency_seconds": 29.739105582993943,
+            "cloud_api_cost": 0.033229999999999996,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.64,
+        "contains_gold_answer": 0.68,
+        "contains_partial_gold_answer": 0.8,
+        "answer_token_precision": 0.8116666666666668,
+        "answer_token_recall": 0.7936666666666666,
+        "answer_token_f1": 0.7934761904761904,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.82
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-008",
+        "description": "Exhaustive valid placement 008; reused from candidate-11",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {
+          "decide_after_retrieval": "This unit requires structured output and branch control, so qwen-local is ineligible. Candidate-8/9 with gpt-5.5-cloud here produced the strongest supporting-title recall observed (0.79\u20130.81) and the best exact-match run (0.66), suggesting the stronger sufficiency router may improve downstream routing when paired with a strong answerer.",
+          "generate_answer": "Final answer generation is user-facing and quality-critical. Prior runs with gpt-4.1-mini-cloud or qwen-local answerers showed substantial quality drops versus gpt-5.5-cloud; retaining gpt-5.5-cloud keeps the strongest observed answer synthesis component.",
+          "generate_query_or_respond": "This initial controller requires tool calling and branch control but not structured output; qwen-local supports tool calling and has sufficient context. Candidate-3 showed local control can reduce cloud cost while retaining reasonable quality when paired with gpt-5.5 answers, though with latency overhead. This new map tests that local controller together with a stronger gpt-5.5 post-retrieval router, unlike candidate-3's mini router.",
+          "rewrite_question": "Question rewriting is non-user-facing and requires neither tool calling nor structured output. gpt-4.1-mini-cloud is cheap, capability-safe, and avoids the local rewrite latency variability seen in local-controller configurations, while keeping this assignment distinct from all previously evaluated maps."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 89,
+        "cloud_call_count": 129,
+        "invocation_count": 218,
+        "mean_latency_seconds": 10.649320937538869,
+        "median_latency_seconds": 7.919790562998969,
+        "p95_latency_seconds": 21.894721999997273,
+        "cloud_api_cost": 1.1192028,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 247946,
+        "output_tokens": 16593,
+        "total_tokens": 264539,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 89,
+            "latency_seconds": 186.27909936697688,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 78,
+            "latency_seconds": 164.02402303603594,
+            "cloud_api_cost": 0.59901,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 49,
+            "latency_seconds": 179.00128291908186,
+            "cloud_api_cost": 0.5200800000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 2,
+            "latency_seconds": 1.3266201670048758,
+            "cloud_api_cost": 0.0001128,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.66,
+        "contains_gold_answer": 0.68,
+        "contains_partial_gold_answer": 0.78,
+        "answer_token_precision": 0.8069791666666667,
+        "answer_token_recall": 0.7903333333333333,
+        "answer_token_f1": 0.788082251082251,
+        "supporting_title_hit": 0.9,
+        "supporting_title_recall": 0.81
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-009",
+        "description": "Exhaustive valid placement 009",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 88,
+        "cloud_call_count": 125,
+        "invocation_count": 213,
+        "mean_latency_seconds": 17.06499131003977,
+        "median_latency_seconds": 14.655829916504445,
+        "p95_latency_seconds": 35.73728095900151,
+        "cloud_api_cost": 1.15233,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 240278,
+        "output_tokens": 18361,
+        "total_tokens": 258639,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 87,
+            "latency_seconds": 177.50385908188764,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 76,
+            "latency_seconds": 364.33976166613866,
+            "cloud_api_cost": 0.5955699999999997,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 49,
+            "latency_seconds": 306.7756825829856,
+            "cloud_api_cost": 0.5567600000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 1,
+            "latency_seconds": 2.8589608339825645,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.7,
+        "contains_gold_answer": 0.72,
+        "contains_partial_gold_answer": 0.8,
+        "answer_token_precision": 0.8216666666666668,
+        "answer_token_recall": 0.807,
+        "answer_token_f1": 0.8081428571428572,
+        "supporting_title_hit": 0.9,
+        "supporting_title_recall": 0.81
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-010",
+        "description": "Exhaustive valid placement 010",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 198,
+        "invocation_count": 198,
+        "mean_latency_seconds": 9.782919245802331,
+        "median_latency_seconds": 7.4281625210132916,
+        "p95_latency_seconds": 21.37115779099986,
+        "cloud_api_cost": 1.2237698,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 193012,
+        "output_tokens": 15756,
+        "total_tokens": 208768,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 84,
+            "latency_seconds": 245.41519386600703,
+            "cloud_api_cost": 0.6089349999999998,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 68,
+            "latency_seconds": 159.82412008484243,
+            "cloud_api_cost": 0.521965,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 8,
+            "latency_seconds": 52.02114270997117,
+            "cloud_api_cost": 0.074375,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 38,
+            "latency_seconds": 30.11261325192754,
+            "cloud_api_cost": 0.018494800000000002,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.5,
+        "contains_gold_answer": 0.64,
+        "contains_partial_gold_answer": 0.68,
+        "answer_token_precision": 0.6165829004329004,
+        "answer_token_recall": 0.7066666666666667,
+        "answer_token_f1": 0.6288681318681318,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.74
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-011",
+        "description": "Exhaustive valid placement 011",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 203,
+        "invocation_count": 203,
+        "mean_latency_seconds": 9.796975322557847,
+        "median_latency_seconds": 8.537802625491167,
+        "p95_latency_seconds": 22.238309582986403,
+        "cloud_api_cost": 1.2974958,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 209680,
+        "output_tokens": 15628,
+        "total_tokens": 225308,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 88,
+            "latency_seconds": 265.1976790817571,
+            "cloud_api_cost": 0.6975750000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 71,
+            "latency_seconds": 184.88909120403696,
+            "cloud_api_cost": 0.5810300000000002,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 7,
+            "latency_seconds": 6.358205291006016,
+            "cloud_api_cost": 0.0003532,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 37,
+            "latency_seconds": 31.579871622030623,
+            "cloud_api_cost": 0.0185376,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.5,
+        "contains_gold_answer": 0.72,
+        "contains_partial_gold_answer": 0.72,
+        "answer_token_precision": 0.5993331635684577,
+        "answer_token_recall": 0.7583333333333333,
+        "answer_token_f1": 0.6341740481740481,
+        "supporting_title_hit": 0.88,
+        "supporting_title_recall": 0.7
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-012",
+        "description": "Exhaustive valid placement 012",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 7,
+        "cloud_call_count": 193,
+        "invocation_count": 200,
+        "mean_latency_seconds": 10.332894913280034,
+        "median_latency_seconds": 9.020806708504097,
+        "p95_latency_seconds": 25.20096320801531,
+        "cloud_api_cost": 1.2568706,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 191324,
+        "output_tokens": 17107,
+        "total_tokens": 208431,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 88,
+            "latency_seconds": 281.29500025114976,
+            "cloud_api_cost": 0.6937050000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 70,
+            "latency_seconds": 186.61577495810343,
+            "cloud_api_cost": 0.54729,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 35,
+            "latency_seconds": 25.48384220787557,
+            "cloud_api_cost": 0.0158756,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 7,
+            "latency_seconds": 21.481492292979965,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.42,
+        "contains_gold_answer": 0.62,
+        "contains_partial_gold_answer": 0.66,
+        "answer_token_precision": 0.5667460317460318,
+        "answer_token_recall": 0.7083333333333333,
+        "answer_token_f1": 0.5893844225949489,
+        "supporting_title_hit": 0.88,
+        "supporting_title_recall": 0.68
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-013",
+        "description": "Exhaustive valid placement 013",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 223,
+        "invocation_count": 223,
+        "mean_latency_seconds": 7.229396375921787,
+        "median_latency_seconds": 5.538762896001572,
+        "p95_latency_seconds": 16.07180483400589,
+        "cloud_api_cost": 0.7356476,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 262652,
+        "output_tokens": 10037,
+        "total_tokens": 272689,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 92,
+            "latency_seconds": 96.82926204800606,
+            "cloud_api_cost": 0.04608879999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 77,
+            "latency_seconds": 197.6047592900286,
+            "cloud_api_cost": 0.6240299999999996,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 34.84963229103596,
+            "cloud_api_cost": 0.027868800000000006,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 4,
+            "latency_seconds": 30.07500074998825,
+            "cloud_api_cost": 0.03766,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.56,
+        "contains_gold_answer": 0.64,
+        "contains_partial_gold_answer": 0.72,
+        "answer_token_precision": 0.7033333333333333,
+        "answer_token_recall": 0.715,
+        "answer_token_f1": 0.6991428571428571,
+        "supporting_title_hit": 0.94,
+        "supporting_title_recall": 0.77
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-014",
+        "description": "Exhaustive valid placement 014; reused from candidate-7",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {
+          "decide_after_retrieval": "This unit requires structured output and branch control, so qwen-local is ineligible. Prior all-mini and mini-router runs were cheap and fast, but supporting-title hit lagged the strongest configurations in some cases; moving only this structured sufficiency router to gpt-5.5-cloud tests whether stronger relevance/completeness decisions improve retrieval/answer routing while adding less cloud spend than using gpt-5.5 for the high-invocation initial controller or final answers.",
+          "generate_answer": "Candidate-2 showed gpt-4.1-mini-cloud answer generation provides the lowest cloud-only latency and cost, though with lower QA quality than gpt-5.5. Keeping mini here maintains a low-cost/low-latency profile and lets the evaluation isolate whether better upstream sufficiency routing can recover some quality for the cheaper answerer.",
+          "generate_query_or_respond": "This unit is user-facing, branch-controlling, and requires tool calling. gpt-4.1-mini-cloud supports tool use and was much cheaper and generally faster than gpt-5.5; candidate-6 suggested moving this high-invocation controller to gpt-5.5 increased cost and did not improve aggregate quality, so this proposal keeps it on mini.",
+          "rewrite_question": "Question rewriting is non-user-facing and does not require tools or structured output. gpt-4.1-mini-cloud is capability-safe, fast, and cheap; keeping it on mini avoids local latency variability while making the assignment distinct from all previously evaluated maps."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 219,
+        "invocation_count": 219,
+        "mean_latency_seconds": 5.909508226679172,
+        "median_latency_seconds": 4.829278874996817,
+        "p95_latency_seconds": 11.952415083011147,
+        "cloud_api_cost": 0.6749964,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 247796,
+        "output_tokens": 8984,
+        "total_tokens": 256780,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 91,
+            "latency_seconds": 91.2466297489882,
+            "cloud_api_cost": 0.0438268,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 75,
+            "latency_seconds": 160.6157646170177,
+            "cloud_api_cost": 0.6050699999999998,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 48,
+            "latency_seconds": 35.34039100006339,
+            "cloud_api_cost": 0.0258332,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 5,
+            "latency_seconds": 6.207377249986166,
+            "cloud_api_cost": 0.00026639999999999997,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.58,
+        "contains_gold_answer": 0.64,
+        "contains_partial_gold_answer": 0.72,
+        "answer_token_precision": 0.7115897435897436,
+        "answer_token_recall": 0.725,
+        "answer_token_f1": 0.7044047619047619,
+        "supporting_title_hit": 0.9,
+        "supporting_title_recall": 0.77
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-015",
+        "description": "Exhaustive valid placement 015",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 2,
+        "cloud_call_count": 206,
+        "invocation_count": 208,
+        "mean_latency_seconds": 7.257652746682288,
+        "median_latency_seconds": 5.6486981460038805,
+        "p95_latency_seconds": 19.89589725001133,
+        "cloud_api_cost": 0.6916846,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 227228,
+        "output_tokens": 10256,
+        "total_tokens": 237484,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 85,
+            "latency_seconds": 81.37044633217738,
+            "cloud_api_cost": 0.037418400000000004,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 73,
+            "latency_seconds": 229.40882662602235,
+            "cloud_api_cost": 0.6293650000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 48,
+            "latency_seconds": 42.8667469570355,
+            "cloud_api_cost": 0.0249012,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 2,
+            "latency_seconds": 7.268382417008979,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.62,
+        "contains_gold_answer": 0.68,
+        "contains_partial_gold_answer": 0.74,
+        "answer_token_precision": 0.7413333333333334,
+        "answer_token_recall": 0.755,
+        "answer_token_f1": 0.7393333333333334,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.82
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-016",
+        "description": "Exhaustive valid placement 016",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 88,
+        "cloud_call_count": 128,
+        "invocation_count": 216,
+        "mean_latency_seconds": 13.534798919200547,
+        "median_latency_seconds": 11.560425208503148,
+        "p95_latency_seconds": 25.92317575000925,
+        "cloud_api_cost": 0.637321,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 246894,
+        "output_tokens": 10045,
+        "total_tokens": 256939,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 88,
+            "latency_seconds": 179.0406703398039,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 77,
+            "latency_seconds": 444.6907673740643,
+            "cloud_api_cost": 0.5888549999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 36.19755862708553,
+            "cloud_api_cost": 0.024966,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 1,
+            "latency_seconds": 15.003740166022908,
+            "cloud_api_cost": 0.023499999999999997,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.56,
+        "contains_gold_answer": 0.64,
+        "contains_partial_gold_answer": 0.7,
+        "answer_token_precision": 0.6946666666666667,
+        "answer_token_recall": 0.7083333333333333,
+        "answer_token_f1": 0.6926666666666667,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.83
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-017",
+        "description": "Exhaustive valid placement 017",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 89,
+        "cloud_call_count": 131,
+        "invocation_count": 220,
+        "mean_latency_seconds": 14.395155488304445,
+        "median_latency_seconds": 14.050937291016453,
+        "p95_latency_seconds": 28.964559584012022,
+        "cloud_api_cost": 0.6424456,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 251022,
+        "output_tokens": 10042,
+        "total_tokens": 261064,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 89,
+            "latency_seconds": 178.58469882883946,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 78,
+            "latency_seconds": 493.66722345608287,
+            "cloud_api_cost": 0.6166800000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 42.093555330939125,
+            "cloud_api_cost": 0.025595200000000002,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 3,
+            "latency_seconds": 3.632752709003398,
+            "cloud_api_cost": 0.00017040000000000002,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.58,
+        "contains_gold_answer": 0.62,
+        "contains_partial_gold_answer": 0.68,
+        "answer_token_precision": 0.7166666666666667,
+        "answer_token_recall": 0.7183333333333333,
+        "answer_token_f1": 0.7112380952380952,
+        "supporting_title_hit": 0.9,
+        "supporting_title_recall": 0.81
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-018",
+        "description": "Exhaustive valid placement 018",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 88,
+        "cloud_call_count": 125,
+        "invocation_count": 213,
+        "mean_latency_seconds": 13.39962467754376,
+        "median_latency_seconds": 12.089500395493815,
+        "p95_latency_seconds": 26.214783207979053,
+        "cloud_api_cost": 0.6374324,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 240327,
+        "output_tokens": 10522,
+        "total_tokens": 250849,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 87,
+            "latency_seconds": 177.40206525300164,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 76,
+            "latency_seconds": 421.40213050087914,
+            "cloud_api_cost": 0.61324,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 49,
+            "latency_seconds": 66.60052208515117,
+            "cloud_api_cost": 0.0241924,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 1,
+            "latency_seconds": 2.844812290975824,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.6,
+        "contains_gold_answer": 0.66,
+        "contains_partial_gold_answer": 0.7,
+        "answer_token_precision": 0.7066666666666667,
+        "answer_token_recall": 0.725,
+        "answer_token_f1": 0.7085714285714286,
+        "supporting_title_hit": 0.9,
+        "supporting_title_recall": 0.81
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-019",
+        "description": "Exhaustive valid placement 019",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 36,
+        "cloud_call_count": 167,
+        "invocation_count": 203,
+        "mean_latency_seconds": 11.397314631775952,
+        "median_latency_seconds": 9.670733458508039,
+        "p95_latency_seconds": 23.82848391600419,
+        "cloud_api_cost": 1.369395,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 216173,
+        "output_tokens": 17457,
+        "total_tokens": 233630,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 88,
+            "latency_seconds": 250.98974333523074,
+            "cloud_api_cost": 0.6832350000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 71,
+            "latency_seconds": 198.39374358468922,
+            "cloud_api_cost": 0.5973399999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 36,
+            "latency_seconds": 53.563954749843106,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 8,
+            "latency_seconds": 65.13272674992913,
+            "cloud_api_cost": 0.08881999999999998,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.26,
+        "contains_gold_answer": 0.4,
+        "contains_partial_gold_answer": 0.48,
+        "answer_token_precision": 0.4168268398268398,
+        "answer_token_recall": 0.507,
+        "answer_token_f1": 0.42217016317016315,
+        "supporting_title_hit": 0.9,
+        "supporting_title_recall": 0.72
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-020",
+        "description": "Exhaustive valid placement 020",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 37,
+        "cloud_call_count": 163,
+        "invocation_count": 200,
+        "mean_latency_seconds": 9.962036037506769,
+        "median_latency_seconds": 7.157417687529232,
+        "p95_latency_seconds": 22.877157417009585,
+        "cloud_api_cost": 1.1143922,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 191186,
+        "output_tokens": 13944,
+        "total_tokens": 205130,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 85,
+            "latency_seconds": 252.06508133449825,
+            "cloud_api_cost": 0.57898,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 68,
+            "latency_seconds": 176.4244366195635,
+            "cloud_api_cost": 0.534805,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 10,
+            "latency_seconds": 11.172792040044442,
+            "cloud_api_cost": 0.0006072,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 37,
+            "latency_seconds": 56.70362803997705,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.32,
+        "contains_gold_answer": 0.42,
+        "contains_partial_gold_answer": 0.46,
+        "answer_token_precision": 0.43503052503052503,
+        "answer_token_recall": 0.503,
+        "answer_token_f1": 0.43952813852813855,
+        "supporting_title_hit": 0.94,
+        "supporting_title_recall": 0.73
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-021",
+        "description": "Exhaustive valid placement 021",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 44,
+        "cloud_call_count": 155,
+        "invocation_count": 199,
+        "mean_latency_seconds": 10.013918122581671,
+        "median_latency_seconds": 7.926533792022383,
+        "p95_latency_seconds": 22.25893204199383,
+        "cloud_api_cost": 1.23626,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 199312,
+        "output_tokens": 17028,
+        "total_tokens": 216340,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 89,
+            "latency_seconds": 247.372943709197,
+            "cloud_api_cost": 0.7131,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 66,
+            "latency_seconds": 165.64057204511482,
+            "cloud_api_cost": 0.52316,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 11,
+            "latency_seconds": 31.426136749912985,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 33,
+            "latency_seconds": 54.50116920901928,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.3,
+        "contains_gold_answer": 0.46,
+        "contains_partial_gold_answer": 0.48,
+        "answer_token_precision": 0.39617080745341615,
+        "answer_token_recall": 0.547,
+        "answer_token_f1": 0.41833162743689056,
+        "supporting_title_hit": 0.88,
+        "supporting_title_recall": 0.67
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-022",
+        "description": "Exhaustive valid placement 022",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 50,
+        "cloud_call_count": 164,
+        "invocation_count": 214,
+        "mean_latency_seconds": 7.352821215020958,
+        "median_latency_seconds": 5.875113979011076,
+        "p95_latency_seconds": 15.941157791996375,
+        "cloud_api_cost": 0.6462888,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 255671,
+        "output_tokens": 8854,
+        "total_tokens": 264525,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 89,
+            "latency_seconds": 99.08188737893943,
+            "cloud_api_cost": 0.04430879999999998,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 75,
+            "latency_seconds": 181.84989900095388,
+            "cloud_api_cost": 0.6019800000000003,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 84.72178628802067,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.34,
+        "contains_gold_answer": 0.36,
+        "contains_partial_gold_answer": 0.46,
+        "answer_token_precision": 0.50363184079602,
+        "answer_token_recall": 0.4796666666666667,
+        "answer_token_f1": 0.4791511387163561,
+        "supporting_title_hit": 0.9,
+        "supporting_title_recall": 0.8
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-023",
+        "description": "Exhaustive valid placement 023",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 48,
+        "cloud_call_count": 164,
+        "invocation_count": 212,
+        "mean_latency_seconds": 7.461327036677394,
+        "median_latency_seconds": 6.041445708513493,
+        "p95_latency_seconds": 16.306481041014194,
+        "cloud_api_cost": 0.6497138,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 236663,
+        "output_tokens": 9738,
+        "total_tokens": 246401,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 87,
+            "latency_seconds": 90.8201396712102,
+            "cloud_api_cost": 0.0396268,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 74,
+            "latency_seconds": 197.78502717072843,
+            "cloud_api_cost": 0.6099250000000002,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 48,
+            "latency_seconds": 80.18439666909399,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 3,
+            "latency_seconds": 2.3560843750019558,
+            "cloud_api_cost": 0.000162,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.34,
+        "contains_gold_answer": 0.36,
+        "contains_partial_gold_answer": 0.48,
+        "answer_token_precision": 0.5233333333333333,
+        "answer_token_recall": 0.483,
+        "answer_token_f1": 0.49457142857142855,
+        "supporting_title_hit": 0.86,
+        "supporting_title_recall": 0.73
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-024",
+        "description": "Exhaustive valid placement 024",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 50,
+        "cloud_call_count": 160,
+        "invocation_count": 210,
+        "mean_latency_seconds": 7.555369079078082,
+        "median_latency_seconds": 6.343183874996612,
+        "p95_latency_seconds": 17.751686500036158,
+        "cloud_api_cost": 0.6161618,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 239783,
+        "output_tokens": 8821,
+        "total_tokens": 248604,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 87,
+            "latency_seconds": 100.86526037415024,
+            "cloud_api_cost": 0.04023680000000002,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 73,
+            "latency_seconds": 185.76211491785944,
+            "cloud_api_cost": 0.5759250000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 47,
+            "latency_seconds": 80.70000129309483,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 3,
+            "latency_seconds": 8.534409290994518,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.36,
+        "contains_gold_answer": 0.38,
+        "contains_partial_gold_answer": 0.5,
+        "answer_token_precision": 0.5343214959684337,
+        "answer_token_recall": 0.523,
+        "answer_token_f1": 0.5064844720496895,
+        "supporting_title_hit": 0.88,
+        "supporting_title_recall": 0.78
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-025",
+        "description": "Exhaustive valid placement 025",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 141,
+        "cloud_call_count": 80,
+        "invocation_count": 221,
+        "mean_latency_seconds": 9.334538939100458,
+        "median_latency_seconds": 8.226932416495401,
+        "p95_latency_seconds": 19.666012125031557,
+        "cloud_api_cost": 0.638085,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 264045,
+        "output_tokens": 10715,
+        "total_tokens": 274760,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 91,
+            "latency_seconds": 186.1625521631795,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 79,
+            "latency_seconds": 185.10898536926834,
+            "cloud_api_cost": 0.6216949999999997,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 82.37335412477842,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 1,
+            "latency_seconds": 11.340088166005444,
+            "cloud_api_cost": 0.016390000000000002,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.36,
+        "contains_gold_answer": 0.4,
+        "contains_partial_gold_answer": 0.52,
+        "answer_token_precision": 0.5604166666666667,
+        "answer_token_recall": 0.5396666666666667,
+        "answer_token_f1": 0.5353714285714285,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.83
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-026",
+        "description": "Exhaustive valid placement 026",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 139,
+        "cloud_call_count": 80,
+        "invocation_count": 219,
+        "mean_latency_seconds": 8.961050824975828,
+        "median_latency_seconds": 7.337518562504556,
+        "p95_latency_seconds": 19.64756758301519,
+        "cloud_api_cost": 0.5977778,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 256914,
+        "output_tokens": 9708,
+        "total_tokens": 266622,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 90,
+            "latency_seconds": 183.94335666502593,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 78,
+            "latency_seconds": 180.90830137691228,
+            "cloud_api_cost": 0.5976649999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 49,
+            "latency_seconds": 79.63149295811309,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 2,
+            "latency_seconds": 1.830848415964283,
+            "cloud_api_cost": 0.0001128,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.36,
+        "contains_gold_answer": 0.42,
+        "contains_partial_gold_answer": 0.54,
+        "answer_token_precision": 0.5610724043715847,
+        "answer_token_recall": 0.5596666666666666,
+        "answer_token_f1": 0.5366412698412699,
+        "supporting_title_hit": 0.9,
+        "supporting_title_recall": 0.81
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-027",
+        "description": "Exhaustive valid placement 027",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 137,
+        "cloud_call_count": 76,
+        "invocation_count": 213,
+        "mean_latency_seconds": 9.1197647392191,
+        "median_latency_seconds": 8.37472456251271,
+        "p95_latency_seconds": 19.13816658296855,
+        "cloud_api_cost": 0.57496,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 245434,
+        "output_tokens": 9421,
+        "total_tokens": 254855,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 87,
+            "latency_seconds": 175.26786874706158,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 76,
+            "latency_seconds": 197.69844762329012,
+            "cloud_api_cost": 0.5749600000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 49,
+            "latency_seconds": 78.44814820797183,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 1,
+            "latency_seconds": 2.8654167909990065,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.36,
+        "contains_gold_answer": 0.4,
+        "contains_partial_gold_answer": 0.52,
+        "answer_token_precision": 0.5604166666666667,
+        "answer_token_recall": 0.5396666666666667,
+        "answer_token_f1": 0.5353714285714285,
+        "supporting_title_hit": 0.9,
+        "supporting_title_recall": 0.81
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-028",
+        "description": "Exhaustive valid placement 028",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 180,
+        "invocation_count": 180,
+        "mean_latency_seconds": 8.184594478440705,
+        "median_latency_seconds": 7.018917791487183,
+        "p95_latency_seconds": 17.306465125002433,
+        "cloud_api_cost": 0.8462984,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 160884,
+        "output_tokens": 11672,
+        "total_tokens": 172556,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 76,
+            "latency_seconds": 230.24775370792486,
+            "cloud_api_cost": 0.4925700000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 64,
+            "latency_seconds": 51.29071704216767,
+            "cloud_api_cost": 0.0264784,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 40,
+            "latency_seconds": 126.08552783296909,
+            "cloud_api_cost": 0.32724999999999993,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.52,
+        "contains_gold_answer": 0.62,
+        "contains_partial_gold_answer": 0.72,
+        "answer_token_precision": 0.6756309523809524,
+        "answer_token_recall": 0.7046666666666667,
+        "answer_token_f1": 0.6568744588744589,
+        "supporting_title_hit": 0.88,
+        "supporting_title_recall": 0.66
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-029",
+        "description": "Exhaustive valid placement 029; reused from candidate-10",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {
+          "decide_after_retrieval": "This router requires structured output and branch control, so qwen-local is ineligible. gpt-4.1-mini-cloud is the cheapest capable structured-output endpoint. Prior runs with mini in this role and gpt-5.5 final answers (candidate-1 and candidate-5) achieved among the best answer F1 values at much lower cost than using gpt-5.5 for the router; candidates 7\u20139 showed that upgrading this router to gpt-5.5 adds substantial cost and latency, with mixed quality gains. Keeping mini here controls cost while maintaining capability compliance.",
+          "generate_answer": "Final answer generation is user-facing and quality-critical. Runs that moved this unit to gpt-4.1-mini-cloud or qwen-local showed clear quality degradation: candidate-2 had lower exact match and F1 than the strong-answerer configurations, and candidate-4 dropped sharply with local answer generation. Keeping gpt-5.5-cloud preserves the stronger synthesis capability used in the best observed exact-match/F1 configurations.",
+          "generate_query_or_respond": "This initial controller is user-facing, branch-controlling, and requires tool calling; gpt-5.5-cloud supports tool use. Candidate-6 tested gpt-5.5 here with a cheaper final answerer and performed poorly, but that result is confounded by mini answer generation. This new assignment isolates whether stronger first-query/tool decisions provide benefit when downstream answer synthesis remains on gpt-5.5, while still using the cheaper mini router rather than the costly gpt-5.5 router from candidates 8\u20139.",
+          "rewrite_question": "Question rewriting is non-user-facing and requires neither structured output nor tool calling. gpt-4.1-mini-cloud is capability-safe, cheap, and faster/more stable than local in prior rewrite-compatible configurations. Using mini here keeps the map distinct from the baseline and from candidate-5/candidate-9 local-rewrite variants while avoiding unnecessary gpt-5.5 spend on rare rewrite calls."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 178,
+        "invocation_count": 178,
+        "mean_latency_seconds": 8.793139930001926,
+        "median_latency_seconds": 6.296075521007879,
+        "p95_latency_seconds": 21.298734542011516,
+        "cloud_api_cost": 0.9161232,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 163929,
+        "output_tokens": 12793,
+        "total_tokens": 176722,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 74,
+            "latency_seconds": 220.12643049799954,
+            "cloud_api_cost": 0.5143300000000002,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 61,
+            "latency_seconds": 45.42716729291715,
+            "cloud_api_cost": 0.024673200000000006,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 43,
+            "latency_seconds": 172.4600765860523,
+            "cloud_api_cost": 0.37712000000000007,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.56,
+        "contains_gold_answer": 0.64,
+        "contains_partial_gold_answer": 0.72,
+        "answer_token_precision": 0.704017316017316,
+        "answer_token_recall": 0.7203333333333333,
+        "answer_token_f1": 0.6864568764568765,
+        "supporting_title_hit": 0.88,
+        "supporting_title_recall": 0.63
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-030",
+        "description": "Exhaustive valid placement 030",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 1,
+        "cloud_call_count": 174,
+        "invocation_count": 175,
+        "mean_latency_seconds": 7.65347343833535,
+        "median_latency_seconds": 5.064838228543522,
+        "p95_latency_seconds": 22.87511754099978,
+        "cloud_api_cost": 0.8731912000000001,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 155244,
+        "output_tokens": 12747,
+        "total_tokens": 167991,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 78,
+            "latency_seconds": 216.21667474525748,
+            "cloud_api_cost": 0.5316299999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 60,
+            "latency_seconds": 42.21182979090372,
+            "cloud_api_cost": 0.024151199999999998,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 36,
+            "latency_seconds": 118.07272029208252,
+            "cloud_api_cost": 0.31741,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 1,
+            "latency_seconds": 4.552571000007447,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.48,
+        "contains_gold_answer": 0.54,
+        "contains_partial_gold_answer": 0.64,
+        "answer_token_precision": 0.6292222222222222,
+        "answer_token_recall": 0.6403333333333333,
+        "answer_token_f1": 0.6056666666666666,
+        "supporting_title_hit": 0.88,
+        "supporting_title_recall": 0.6
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-031",
+        "description": "Exhaustive valid placement 031",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 203,
+        "invocation_count": 203,
+        "mean_latency_seconds": 6.151781492645386,
+        "median_latency_seconds": 4.759964791999664,
+        "p95_latency_seconds": 15.500291291042231,
+        "cloud_api_cost": 0.547035,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 212867,
+        "output_tokens": 8950,
+        "total_tokens": 221817,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 81,
+            "latency_seconds": 75.11016016622307,
+            "cloud_api_cost": 0.03365319999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 72,
+            "latency_seconds": 54.51477846316993,
+            "cloud_api_cost": 0.0322468,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 176.06174079084303,
+            "cloud_api_cost": 0.4811349999999999,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.62,
+        "contains_gold_answer": 0.68,
+        "contains_partial_gold_answer": 0.78,
+        "answer_token_precision": 0.7886666666666666,
+        "answer_token_recall": 0.7803333333333333,
+        "answer_token_f1": 0.7758095238095238,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.74
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-032",
+        "description": "Exhaustive valid placement 032; reused from candidate-1",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {
+          "decide_after_retrieval": "This unit requires structured output and branch control, so qwen-local is ineligible because it lacks structured_output. gpt-4.1-mini-cloud satisfies structured output at much lower cost and should reduce the baseline router spend/latency without changing endpoint capability.",
+          "generate_answer": "Final answer generation is user-facing and quality-critical; keeping gpt-5.5-cloud preserves the strongest observed answer-generation capacity while isolating cost reductions to controller/router calls.",
+          "generate_query_or_respond": "This unit needs tool calling and branch control. gpt-4.1-mini-cloud supports tool calling and has a much lower token price than gpt-5.5-cloud, targeting the largest invocation count/cost component from the baseline.",
+          "rewrite_question": "Question rewriting is non-user-facing, does not require tools or structured output, and had low invocation count but high per-call latency/cost on gpt-5.5-cloud; gpt-4.1-mini-cloud is a capability-safe cheaper alternative."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 201,
+        "invocation_count": 201,
+        "mean_latency_seconds": 6.741923819080694,
+        "median_latency_seconds": 5.056171896008891,
+        "p95_latency_seconds": 16.909605708002346,
+        "cloud_api_cost": 0.5568298,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 213304,
+        "output_tokens": 9163,
+        "total_tokens": 222467,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 80,
+            "latency_seconds": 80.2953236271278,
+            "cloud_api_cost": 0.03357359999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 71,
+            "latency_seconds": 59.18788287974894,
+            "cloud_api_cost": 0.0323012,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 195.72756625304464,
+            "cloud_api_cost": 0.4909549999999998,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.64,
+        "contains_gold_answer": 0.66,
+        "contains_partial_gold_answer": 0.78,
+        "answer_token_precision": 0.8066666666666668,
+        "answer_token_recall": 0.767,
+        "answer_token_f1": 0.7774761904761905,
+        "supporting_title_hit": 0.94,
+        "supporting_title_recall": 0.76
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-033",
+        "description": "Exhaustive valid placement 033; reused from candidate-5",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {
+          "decide_after_retrieval": "This placement unit requires structured output and branch control, so qwen-local is not eligible. Prior runs showed gpt-4.1-mini-cloud is the cheapest capable structured-output option and was much faster and cheaper than gpt-5.5-cloud, while candidate-1 achieved the strongest aggregate exact match and answer F1 with mini in this role.",
+          "generate_answer": "Final answer generation is user-facing and quality-critical. Candidate-2 and candidate-4 showed substantial quality drops when moving this unit from gpt-5.5-cloud to cheaper/local models, while candidate-1 achieved the best observed exact match and answer-token F1 with gpt-5.5-cloud here, so this proposal keeps the stronger answerer.",
+          "generate_query_or_respond": "This initial controller requires tool calling and branch control. gpt-4.1-mini-cloud supports tool calling and, compared with qwen-local in candidate-3, provided lower latency and slightly better aggregate quality when paired with the strong final answerer; it also avoids the high cost of the baseline gpt-5.5-cloud controller.",
+          "rewrite_question": "Question rewriting is non-user-facing and requires neither tool calling nor structured output, so qwen-local is capability-compatible. Candidate-1 used gpt-4.1-mini-cloud for this role and candidate-3/candidate-4 used qwen-local, but this exact combination has not been evaluated; it tests whether rare rewrite calls can be made zero cloud-cost while preserving candidate-1's stronger mini controller/router and gpt-5.5 answerer."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 202,
+        "invocation_count": 202,
+        "mean_latency_seconds": 8.738434210819541,
+        "median_latency_seconds": 5.450894874986261,
+        "p95_latency_seconds": 17.819907833007164,
+        "cloud_api_cost": 0.6762418,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 215731,
+        "output_tokens": 12954,
+        "total_tokens": 228685,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 80,
+            "latency_seconds": 86.01082691684132,
+            "cloud_api_cost": 0.03293279999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 72,
+            "latency_seconds": 54.2375244598079,
+            "cloud_api_cost": 0.03340399999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 294.74972633612924,
+            "cloud_api_cost": 0.6099049999999999,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.64,
+        "contains_gold_answer": 0.68,
+        "contains_partial_gold_answer": 0.78,
+        "answer_token_precision": 0.7966666666666667,
+        "answer_token_recall": 0.7803333333333333,
+        "answer_token_f1": 0.7808095238095238,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.76
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-034",
+        "description": "Exhaustive valid placement 034",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 80,
+        "cloud_call_count": 120,
+        "invocation_count": 200,
+        "mean_latency_seconds": 7.7505475990369455,
+        "median_latency_seconds": 6.032479562505614,
+        "p95_latency_seconds": 20.743733624985907,
+        "cloud_api_cost": 0.4969102,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 216043,
+        "output_tokens": 9668,
+        "total_tokens": 225711,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 80,
+            "latency_seconds": 157.92548929090844,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 70,
+            "latency_seconds": 57.604473127343226,
+            "cloud_api_cost": 0.030285199999999998,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 170.34516833600355,
+            "cloud_api_cost": 0.466625,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.64,
+        "contains_gold_answer": 0.68,
+        "contains_partial_gold_answer": 0.82,
+        "answer_token_precision": 0.8353333333333333,
+        "answer_token_recall": 0.8003333333333333,
+        "answer_token_f1": 0.8064761904761905,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.76
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-035",
+        "description": "Exhaustive valid placement 035; reused from candidate-12",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {
+          "decide_after_retrieval": "This unit requires structured output and branch control, so qwen-local is ineligible. gpt-4.1-mini-cloud is the cheapest compliant structured-output endpoint. Candidate-3 used this router with local initial control and gpt-5.5 final answers, achieving reasonable quality (0.60 exact match, 0.769 answer F1) at much lower cloud cost than gpt-5.5-router configurations, so keeping mini here explores the lower-cost strong-answerer region rather than the expensive candidate-11 pattern.",
+          "generate_answer": "Final answer generation is user-facing and quality-critical. Prior runs moving this unit to gpt-4.1-mini-cloud or qwen-local degraded quality substantially: all-mini candidate-2 fell to 0.52 exact match and local-answer candidate-4 to 0.32. Keeping gpt-5.5-cloud preserves the stronger answer synthesis used by the best F1/exact-match configurations.",
+          "generate_query_or_respond": "This initial controller requires tool calling and branch control but not structured output; qwen-local supports tool calling and has a sufficient 32k context window. Candidate-3 showed that using qwen-local here can reduce cloud spend versus mini/gpt-5.5 controllers while maintaining quality near candidate-1, though with added local latency. This proposal keeps that cost-saving controller choice while changing the rewrite model to isolate a new latency/quality trade-off.",
+          "rewrite_question": "Question rewriting is non-user-facing and requires neither structured output nor tool calling. gpt-4.1-mini-cloud is capability-safe, cheap, and was generally fast/stable in prior rewrite-compatible cloud configurations. This differs from candidate-3, which paired the same router, answerer, and local initial controller with local rewriting; using mini for rewrite tests whether rare follow-up query generation benefits from the more capable low-cost cloud model without materially increasing cloud cost."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 83,
+        "cloud_call_count": 123,
+        "invocation_count": 206,
+        "mean_latency_seconds": 7.636817845798796,
+        "median_latency_seconds": 5.553100916498806,
+        "p95_latency_seconds": 18.771895292011322,
+        "cloud_api_cost": 0.5352876,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 229120,
+        "output_tokens": 10611,
+        "total_tokens": 239731,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 83,
+            "latency_seconds": 166.42355954094091,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 73,
+            "latency_seconds": 51.53622595581692,
+            "cloud_api_cost": 0.032027599999999996,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 162.15561329206685,
+            "cloud_api_cost": 0.50326,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.64,
+        "contains_gold_answer": 0.68,
+        "contains_partial_gold_answer": 0.8,
+        "answer_token_precision": 0.8183333333333332,
+        "answer_token_recall": 0.7936666666666666,
+        "answer_token_f1": 0.7941428571428572,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.78
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-036",
+        "description": "Exhaustive valid placement 036; reused from candidate-3",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {
+          "decide_after_retrieval": "This unit requires structured output and branch control, so qwen-local is not eligible. Prior runs showed gpt-4.1-mini-cloud is capability-safe here and reduced router cost/latency dramatically versus gpt-5.5-cloud while preserving aggregate supporting-title recall compared with baseline/candidate-1.",
+          "generate_answer": "Answer generation remains user-facing and quality-critical. Candidate-2 showed moving this unit to gpt-4.1-mini-cloud cut cost and latency but reduced exact match, answer F1, and gold-answer containment relative to candidate-1, so this placement keeps the stronger gpt-5.5-cloud answerer to test whether quality can stay closer to candidate-1.",
+          "generate_query_or_respond": "This unit requires tool calling but not structured output; qwen-local supports tool calling and has a sufficient 32k context window. Moving it local explores whether the largest-invocation controller can be made zero cloud-cost while retaining the strong final answerer and mini structured router. This is a new trade-off point versus candidate-1, which used mini here and had the best observed quality/cost balance so far.",
+          "rewrite_question": "Rewrite is non-user-facing and requires neither tool calling nor structured output, making qwen-local capability-compatible. Baseline showed this role can add disproportionate cloud latency/cost per call on gpt-5.5-cloud, while candidate-1/2 avoided that; local rewrite further tests a zero-cloud-cost alternative for rare follow-up retrieval attempts."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 81,
+        "cloud_call_count": 121,
+        "invocation_count": 202,
+        "mean_latency_seconds": 8.619912858277676,
+        "median_latency_seconds": 5.838884624987259,
+        "p95_latency_seconds": 20.851008792000357,
+        "cloud_api_cost": 0.524461,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 221061,
+        "output_tokens": 10480,
+        "total_tokens": 231541,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 81,
+            "latency_seconds": 164.72560708696255,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 71,
+            "latency_seconds": 63.88646579609485,
+            "cloud_api_cost": 0.030835999999999995,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 200.6050713339937,
+            "cloud_api_cost": 0.493625,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.6,
+        "contains_gold_answer": 0.64,
+        "contains_partial_gold_answer": 0.78,
+        "answer_token_precision": 0.7966666666666667,
+        "answer_token_recall": 0.767,
+        "answer_token_f1": 0.7691904761904762,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.77
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-037",
+        "description": "Exhaustive valid placement 037",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 183,
+        "invocation_count": 183,
+        "mean_latency_seconds": 5.858946601639036,
+        "median_latency_seconds": 5.067589332989883,
+        "p95_latency_seconds": 13.305474083987065,
+        "cloud_api_cost": 0.5626096,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 164309,
+        "output_tokens": 8366,
+        "total_tokens": 172675,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 77,
+            "latency_seconds": 214.90642474673223,
+            "cloud_api_cost": 0.5187100000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 65,
+            "latency_seconds": 48.85431400331436,
+            "cloud_api_cost": 0.026831600000000008,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 41,
+            "latency_seconds": 27.554064334195573,
+            "cloud_api_cost": 0.017068,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.42,
+        "contains_gold_answer": 0.58,
+        "contains_partial_gold_answer": 0.62,
+        "answer_token_precision": 0.5660574229691877,
+        "answer_token_recall": 0.6516666666666667,
+        "answer_token_f1": 0.5744444444444444,
+        "supporting_title_hit": 0.86,
+        "supporting_title_recall": 0.63
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-038",
+        "description": "Exhaustive valid placement 038; reused from candidate-6",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {
+          "decide_after_retrieval": "This unit requires structured output and branch control, so qwen-local is ineligible. gpt-4.1-mini-cloud is the cheapest capable structured-output endpoint and prior runs showed it kept supporting-title recall around the best observed level while greatly reducing latency/cost versus gpt-5.5-cloud.",
+          "generate_answer": "Candidate-2 showed gpt-4.1-mini-cloud final answers are much cheaper and faster than gpt-5.5-cloud but with a quality drop; retaining mini here keeps this proposal in the low-latency/low-answer-cost region while testing whether stronger upstream retrieval control can improve the evidence supplied to the mini answerer.",
+          "generate_query_or_respond": "This user-facing branch controller requires tool calling. Moving this high-leverage first retrieval controller to gpt-5.5-cloud explores whether stronger query/tool decisions improve retrieval and final QA quality relative to the all-mini candidate-2, without paying for gpt-5.5 on every downstream generation step.",
+          "rewrite_question": "Rewrite is non-user-facing and requires neither tools nor structured output. gpt-4.1-mini-cloud is capability-safe and was fast/cheap in prior cloud-only low-cost configurations, avoiding local-model latency variability while preserving a distinct assignment map from all previously evaluated runs."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 184,
+        "invocation_count": 184,
+        "mean_latency_seconds": 6.210712987523293,
+        "median_latency_seconds": 4.51659166700847,
+        "p95_latency_seconds": 15.452074792003259,
+        "cloud_api_cost": 0.6991748,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 193816,
+        "output_tokens": 9208,
+        "total_tokens": 203024,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 82,
+            "latency_seconds": 226.18847425404238,
+            "cloud_api_cost": 0.6521099999999997,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 64,
+            "latency_seconds": 46.31626029210747,
+            "cloud_api_cost": 0.028211200000000006,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 38,
+            "latency_seconds": 36.31308833195362,
+            "cloud_api_cost": 0.0188536,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.42,
+        "contains_gold_answer": 0.58,
+        "contains_partial_gold_answer": 0.62,
+        "answer_token_precision": 0.5516644466644467,
+        "answer_token_recall": 0.6533333333333333,
+        "answer_token_f1": 0.5646245421245422,
+        "supporting_title_hit": 0.84,
+        "supporting_title_recall": 0.61
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-039",
+        "description": "Exhaustive valid placement 039",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 186,
+        "invocation_count": 186,
+        "mean_latency_seconds": 6.910564279182581,
+        "median_latency_seconds": 5.781584167008987,
+        "p95_latency_seconds": 14.160093249985948,
+        "cloud_api_cost": 0.6560642,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 189462,
+        "output_tokens": 8180,
+        "total_tokens": 197642,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 80,
+            "latency_seconds": 249.07251386682037,
+            "cloud_api_cost": 0.6098549999999997,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 64,
+            "latency_seconds": 55.4858567500487,
+            "cloud_api_cost": 0.027122000000000007,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 42,
+            "latency_seconds": 39.27873887086753,
+            "cloud_api_cost": 0.019087200000000002,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.4,
+        "contains_gold_answer": 0.52,
+        "contains_partial_gold_answer": 0.58,
+        "answer_token_precision": 0.567076923076923,
+        "answer_token_recall": 0.6133333333333334,
+        "answer_token_f1": 0.5660952380952381,
+        "supporting_title_hit": 0.86,
+        "supporting_title_recall": 0.61
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-040",
+        "description": "Exhaustive valid placement 040",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 196,
+        "invocation_count": 196,
+        "mean_latency_seconds": 3.4258757441968193,
+        "median_latency_seconds": 3.1016247704974376,
+        "p95_latency_seconds": 5.316684833960608,
+        "cloud_api_cost": 0.0854,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 202252,
+        "output_tokens": 2812,
+        "total_tokens": 205064,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 77,
+            "latency_seconds": 79.04683950112667,
+            "cloud_api_cost": 0.031393199999999996,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 69,
+            "latency_seconds": 56.54456608614419,
+            "cloud_api_cost": 0.030742800000000004,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 33.86726566916332,
+            "cloud_api_cost": 0.023263999999999993,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.5,
+        "contains_gold_answer": 0.58,
+        "contains_partial_gold_answer": 0.68,
+        "answer_token_precision": 0.6766666666666667,
+        "answer_token_recall": 0.675,
+        "answer_token_f1": 0.6624761904761906,
+        "supporting_title_hit": 0.88,
+        "supporting_title_recall": 0.76
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-041",
+        "description": "Exhaustive valid placement 041; reused from candidate-2",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {
+          "decide_after_retrieval": "This router requires structured output and branch control, making qwen-local ineligible. Candidate-1 showed gpt-4.1-mini-cloud handled this role with much lower latency and cost than gpt-5.5-cloud while maintaining the same aggregate supporting-title metrics as baseline.",
+          "generate_answer": "Candidate-1 retained gpt-5.5-cloud for answer generation, leaving final-answer cost as the dominant spend. Moving this user-facing generation step to gpt-4.1-mini-cloud directly explores whether the cheaper cloud model can preserve acceptable QA quality while substantially reducing the remaining cost and likely latency.",
+          "generate_query_or_respond": "This initial controller needs tool calling and branch control. Candidate-1 showed replacing gpt-5.5-cloud with gpt-4.1-mini-cloud sharply reduced latency and cost for the highest-invocation unit without capability loss.",
+          "rewrite_question": "This non-user-facing rewrite step has no tool or structured-output requirement. Keeping it on gpt-4.1-mini-cloud is capability-safe and avoids the high per-call cost/latency of gpt-5.5-cloud observed in the baseline."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 190,
+        "invocation_count": 190,
+        "mean_latency_seconds": 3.4169750575197395,
+        "median_latency_seconds": 2.7528628955042223,
+        "p95_latency_seconds": 8.033614000014495,
+        "cloud_api_cost": 0.078404,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 185178,
+        "output_tokens": 2708,
+        "total_tokens": 187886,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 73,
+            "latency_seconds": 69.07127483517979,
+            "cloud_api_cost": 0.026538399999999993,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 67,
+            "latency_seconds": 63.95072583114961,
+            "cloud_api_cost": 0.02952280000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 36.054684957984136,
+            "cloud_api_cost": 0.022342799999999996,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.52,
+        "contains_gold_answer": 0.58,
+        "contains_partial_gold_answer": 0.68,
+        "answer_token_precision": 0.6846666666666666,
+        "answer_token_recall": 0.675,
+        "answer_token_f1": 0.6672380952380952,
+        "supporting_title_hit": 0.9,
+        "supporting_title_recall": 0.76
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-042",
+        "description": "Exhaustive valid placement 042",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 194,
+        "invocation_count": 194,
+        "mean_latency_seconds": 3.496635418361984,
+        "median_latency_seconds": 2.6219474579847883,
+        "p95_latency_seconds": 7.603423000022303,
+        "cloud_api_cost": 0.0844044,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 199539,
+        "output_tokens": 2868,
+        "total_tokens": 202407,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 77,
+            "latency_seconds": 82.1661372918752,
+            "cloud_api_cost": 0.03146679999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 67,
+            "latency_seconds": 56.02704916422954,
+            "cloud_api_cost": 0.029555600000000005,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 34.78353783808416,
+            "cloud_api_cost": 0.023381999999999993,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.56,
+        "contains_gold_answer": 0.62,
+        "contains_partial_gold_answer": 0.7,
+        "answer_token_precision": 0.7066666666666667,
+        "answer_token_recall": 0.7016666666666667,
+        "answer_token_f1": 0.6931428571428572,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.75
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-043",
+        "description": "Exhaustive valid placement 043",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 79,
+        "cloud_call_count": 120,
+        "invocation_count": 199,
+        "mean_latency_seconds": 4.919110069988529,
+        "median_latency_seconds": 3.3317313334846403,
+        "p95_latency_seconds": 10.963463083957322,
+        "cloud_api_cost": 0.053350800000000004,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 213731,
+        "output_tokens": 3698,
+        "total_tokens": 217429,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 79,
+            "latency_seconds": 155.24270225688815,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 70,
+            "latency_seconds": 54.77023279404966,
+            "cloud_api_cost": 0.030428399999999998,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 34.256301832792815,
+            "cloud_api_cost": 0.022922399999999996,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.54,
+        "contains_gold_answer": 0.58,
+        "contains_partial_gold_answer": 0.64,
+        "answer_token_precision": 0.6866666666666668,
+        "answer_token_recall": 0.685,
+        "answer_token_f1": 0.6765714285714286,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.76
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-044",
+        "description": "Exhaustive valid placement 044",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 82,
+        "cloud_call_count": 122,
+        "invocation_count": 204,
+        "mean_latency_seconds": 4.99335398916388,
+        "median_latency_seconds": 3.211796437506564,
+        "p95_latency_seconds": 11.504776375018992,
+        "cloud_api_cost": 0.0549716,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 223814,
+        "output_tokens": 3815,
+        "total_tokens": 227629,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 82,
+            "latency_seconds": 162.03059170622146,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 72,
+            "latency_seconds": 53.721025124774314,
+            "cloud_api_cost": 0.0314688,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 32.17793528892798,
+            "cloud_api_cost": 0.023502799999999997,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.54,
+        "contains_gold_answer": 0.6,
+        "contains_partial_gold_answer": 0.66,
+        "answer_token_precision": 0.6733333333333333,
+        "answer_token_recall": 0.6816666666666668,
+        "answer_token_f1": 0.6665714285714286,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.77
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-045",
+        "description": "Exhaustive valid placement 045",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 82,
+        "cloud_call_count": 122,
+        "invocation_count": 204,
+        "mean_latency_seconds": 5.266766309102532,
+        "median_latency_seconds": 3.4203670205315575,
+        "p95_latency_seconds": 12.760408625006676,
+        "cloud_api_cost": 0.055155600000000006,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 225462,
+        "output_tokens": 3812,
+        "total_tokens": 229274,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 82,
+            "latency_seconds": 162.7982095858315,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 72,
+            "latency_seconds": 55.3173540829448,
+            "cloud_api_cost": 0.03146879999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 43.50116441206774,
+            "cloud_api_cost": 0.023686799999999994,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.56,
+        "contains_gold_answer": 0.6,
+        "contains_partial_gold_answer": 0.66,
+        "answer_token_precision": 0.6933333333333332,
+        "answer_token_recall": 0.6916666666666668,
+        "answer_token_f1": 0.6832380952380953,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.77
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-046",
+        "description": "Exhaustive valid placement 046",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 41,
+        "cloud_call_count": 138,
+        "invocation_count": 179,
+        "mean_latency_seconds": 5.9361373208346775,
+        "median_latency_seconds": 4.936223603988765,
+        "p95_latency_seconds": 10.505338791990653,
+        "cloud_api_cost": 0.510599,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 158208,
+        "output_tokens": 8418,
+        "total_tokens": 166626,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 74,
+            "latency_seconds": 185.29147973988438,
+            "cloud_api_cost": 0.47053999999999985,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 63,
+            "latency_seconds": 48.648923705972265,
+            "cloud_api_cost": 0.026073999999999996,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 41,
+            "latency_seconds": 53.125461789255496,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 1,
+            "latency_seconds": 8.209714791970327,
+            "cloud_api_cost": 0.013985000000000001,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.28,
+        "contains_gold_answer": 0.4,
+        "contains_partial_gold_answer": 0.48,
+        "answer_token_precision": 0.4451904761904762,
+        "answer_token_recall": 0.5186666666666667,
+        "answer_token_f1": 0.4420246354952237,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.69
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-047",
+        "description": "Exhaustive valid placement 047",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 42,
+        "cloud_call_count": 148,
+        "invocation_count": 190,
+        "mean_latency_seconds": 6.670195669921814,
+        "median_latency_seconds": 5.177678166510304,
+        "p95_latency_seconds": 15.085362582991365,
+        "cloud_api_cost": 0.6947788,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 205029,
+        "output_tokens": 9616,
+        "total_tokens": 214645,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 81,
+            "latency_seconds": 214.26284303684952,
+            "cloud_api_cost": 0.6649000000000002,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 67,
+            "latency_seconds": 56.233648123044986,
+            "cloud_api_cost": 0.029878800000000014,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 42,
+            "latency_seconds": 61.32661837525666,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.38,
+        "contains_gold_answer": 0.46,
+        "contains_partial_gold_answer": 0.52,
+        "answer_token_precision": 0.5230793650793651,
+        "answer_token_recall": 0.5553333333333333,
+        "answer_token_f1": 0.5193333333333333,
+        "supporting_title_hit": 0.84,
+        "supporting_title_recall": 0.65
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-048",
+        "description": "Exhaustive valid placement 048",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 39,
+        "cloud_call_count": 139,
+        "invocation_count": 178,
+        "mean_latency_seconds": 6.180176634982927,
+        "median_latency_seconds": 4.324206583987689,
+        "p95_latency_seconds": 17.242495040991344,
+        "cloud_api_cost": 0.5956204,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 178395,
+        "output_tokens": 8623,
+        "total_tokens": 187018,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 77,
+            "latency_seconds": 200.03888403781457,
+            "cloud_api_cost": 0.5687400000000002,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 62,
+            "latency_seconds": 51.85266378975939,
+            "cloud_api_cost": 0.026880400000000006,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 39,
+            "latency_seconds": 55.51838500116719,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.26,
+        "contains_gold_answer": 0.4,
+        "contains_partial_gold_answer": 0.48,
+        "answer_token_precision": 0.4075252525252525,
+        "answer_token_recall": 0.4936666666666667,
+        "answer_token_f1": 0.41528083028083024,
+        "supporting_title_hit": 0.88,
+        "supporting_title_recall": 0.63
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-049",
+        "description": "Exhaustive valid placement 049",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 50,
+        "cloud_call_count": 146,
+        "invocation_count": 196,
+        "mean_latency_seconds": 4.367889914981788,
+        "median_latency_seconds": 3.794759063021047,
+        "p95_latency_seconds": 10.072042874991894,
+        "cloud_api_cost": 0.0612716,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 204390,
+        "output_tokens": 3051,
+        "total_tokens": 207441,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 77,
+            "latency_seconds": 80.41130525211338,
+            "cloud_api_cost": 0.030741199999999993,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 69,
+            "latency_seconds": 59.38429129018914,
+            "cloud_api_cost": 0.030530400000000003,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 76.87074341846164,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.32,
+        "contains_gold_answer": 0.36,
+        "contains_partial_gold_answer": 0.48,
+        "answer_token_precision": 0.5202857142857142,
+        "answer_token_recall": 0.4996666666666667,
+        "answer_token_f1": 0.49512698412698414,
+        "supporting_title_hit": 0.88,
+        "supporting_title_recall": 0.7
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-050",
+        "description": "Exhaustive valid placement 050",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 49,
+        "cloud_call_count": 146,
+        "invocation_count": 195,
+        "mean_latency_seconds": 4.200144565763185,
+        "median_latency_seconds": 3.602233895508107,
+        "p95_latency_seconds": 7.614252166997176,
+        "cloud_api_cost": 0.06298920000000001,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 208838,
+        "output_tokens": 3135,
+        "total_tokens": 211973,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 78,
+            "latency_seconds": 78.07122812618036,
+            "cloud_api_cost": 0.032521199999999986,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 68,
+            "latency_seconds": 53.33489758690121,
+            "cloud_api_cost": 0.030468000000000002,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 49,
+            "latency_seconds": 76.82468692213297,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.28,
+        "contains_gold_answer": 0.32,
+        "contains_partial_gold_answer": 0.44,
+        "answer_token_precision": 0.47425684079601993,
+        "answer_token_recall": 0.46299999999999997,
+        "answer_token_f1": 0.4496609426379247,
+        "supporting_title_hit": 0.9,
+        "supporting_title_recall": 0.73
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-051",
+        "description": "Exhaustive valid placement 051; reused from candidate-4",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {
+          "decide_after_retrieval": "This retrieval sufficiency router requires structured output and branch control, so qwen-local is ineligible. Prior candidates showed gpt-4.1-mini-cloud is the cheapest capable option here and provided much lower cost/latency than gpt-5.5-cloud while maintaining supporting-title recall close to stronger configurations.",
+          "generate_answer": "This unit has no tool-calling or structured-output requirement, and the local model has a sufficient 32k context window for the retrieved QA context. Candidate-2 showed final answer generation on gpt-4.1-mini-cloud greatly reduced cost/latency but with a quality drop versus gpt-5.5-cloud; this new placement tests whether zero-cost local answer generation can provide an even lower cloud-cost frontier point for short extractive QA answers, accepting possible quality trade-off.",
+          "generate_query_or_respond": "This initial controller is user-facing, branch-controlling, and requires tool calling. Candidate-3 moved it to qwen-local and reduced cloud spend but increased latency and slightly reduced quality versus candidate-1, so this proposal keeps it on gpt-4.1-mini-cloud, which is tool-capable and was faster than local for this high-invocation step.",
+          "rewrite_question": "Question rewriting is non-user-facing and requires neither structured output nor tool calling. Moving it to qwen-local is capability-safe and avoids any cloud cost on rare follow-up retrieval attempts; unlike candidate-2, this also pairs local rewrite with local final-answer generation for a distinct low-cloud-cost trade-off."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 50,
+        "cloud_call_count": 148,
+        "invocation_count": 198,
+        "mean_latency_seconds": 4.317737672518706,
+        "median_latency_seconds": 3.644834478982375,
+        "p95_latency_seconds": 8.829890499997418,
+        "cloud_api_cost": 0.0628284,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 210067,
+        "output_tokens": 3127,
+        "total_tokens": 213194,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 78,
+            "latency_seconds": 73.23193254315993,
+            "cloud_api_cost": 0.03150359999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 70,
+            "latency_seconds": 61.169258706009714,
+            "cloud_api_cost": 0.03132480000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 79.67374291393207,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.32,
+        "contains_gold_answer": 0.34,
+        "contains_partial_gold_answer": 0.46,
+        "answer_token_precision": 0.50363184079602,
+        "answer_token_recall": 0.47700000000000004,
+        "answer_token_f1": 0.4787225672877847,
+        "supporting_title_hit": 0.9,
+        "supporting_title_recall": 0.75
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-052",
+        "description": "Exhaustive valid placement 052",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 131,
+        "cloud_call_count": 71,
+        "invocation_count": 202,
+        "mean_latency_seconds": 6.043663359942148,
+        "median_latency_seconds": 4.255922083510086,
+        "p95_latency_seconds": 12.843983875005506,
+        "cloud_api_cost": 0.030836400000000003,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 226718,
+        "output_tokens": 3966,
+        "total_tokens": 230684,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 81,
+            "latency_seconds": 164.92937137460103,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 71,
+            "latency_seconds": 55.156538415292744,
+            "cloud_api_cost": 0.030836400000000007,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 80.49965887703001,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.34,
+        "contains_gold_answer": 0.38,
+        "contains_partial_gold_answer": 0.5,
+        "answer_token_precision": 0.5304166666666666,
+        "answer_token_recall": 0.513,
+        "answer_token_f1": 0.5073714285714286,
+        "supporting_title_hit": 0.9,
+        "supporting_title_recall": 0.74
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-053",
+        "description": "Exhaustive valid placement 053",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 130,
+        "cloud_call_count": 71,
+        "invocation_count": 201,
+        "mean_latency_seconds": 5.694992125820136,
+        "median_latency_seconds": 4.101019458496012,
+        "p95_latency_seconds": 12.417197917005979,
+        "cloud_api_cost": 0.030842400000000002,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 221407,
+        "output_tokens": 3918,
+        "total_tokens": 225325,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 80,
+            "latency_seconds": 153.1981025050627,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 71,
+            "latency_seconds": 54.29354953719303,
+            "cloud_api_cost": 0.030842399999999996,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 75.6836496311007,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.34,
+        "contains_gold_answer": 0.38,
+        "contains_partial_gold_answer": 0.5,
+        "answer_token_precision": 0.5304166666666666,
+        "answer_token_recall": 0.513,
+        "answer_token_f1": 0.5073714285714286,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.77
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-054",
+        "description": "Exhaustive valid placement 054",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 132,
+        "cloud_call_count": 72,
+        "invocation_count": 204,
+        "mean_latency_seconds": 6.213874839070486,
+        "median_latency_seconds": 4.151273353985744,
+        "p95_latency_seconds": 14.49150170799112,
+        "cloud_api_cost": 0.0314832,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 230452,
+        "output_tokens": 4005,
+        "total_tokens": 234457,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 82,
+            "latency_seconds": 160.08548683003755,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 72,
+            "latency_seconds": 71.72714383894345,
+            "cloud_api_cost": 0.031483199999999996,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 77.24431825015927,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.34,
+        "contains_gold_answer": 0.38,
+        "contains_partial_gold_answer": 0.5,
+        "answer_token_precision": 0.5304166666666666,
+        "answer_token_recall": 0.513,
+        "answer_token_f1": 0.5073714285714286,
+        "supporting_title_hit": 0.92,
+        "supporting_title_recall": 0.77
+      }
+    }
+  ]
+}
