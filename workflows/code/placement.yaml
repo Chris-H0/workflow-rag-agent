@@ -4,13 +4,12 @@ placement_units:
     description: Creates a plan for solving the programming task.
   implement_solution:
     semantic_role: solution implementation
-    description: Generates or revises the Python solution.
+    description: Generates or revises the final scored Python solution.
+    user_facing_output: true
   generate_tests:
     semantic_role: test generation
     description: Generates tests for the current solution.
   review_solution:
     semantic_role: solution review and routing
     description: Reviews test results and decides whether to revise or finish.
-    structured_output_required: true
     branch_control: true
-    user_facing_output: true

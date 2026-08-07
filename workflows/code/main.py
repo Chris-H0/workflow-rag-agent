@@ -27,7 +27,7 @@ NODE_MODEL_CONFIG = {
         "temperature": 0,
         "thinking": False,
         "reasoning": False,
-        "num_predict": 256,
+        "num_predict": 768,
     },
     "generate_tests": {
         "provider": "ollama",
@@ -35,7 +35,7 @@ NODE_MODEL_CONFIG = {
         "temperature": 0,
         "thinking": False,
         "reasoning": False,
-        "num_predict": 256,
+        "num_predict": 768,
     },
     "review_solution": {
         "provider": "openai",
@@ -49,7 +49,7 @@ NODE_MODEL_CONFIG = {
         # "temperature": 0,
         # "thinking": False,
         # "reasoning": False,
-        # "num_predict": 256,
+        # "num_predict": 768,
 
 if __name__ == "__main__":
     load_workflow_dotenv(override=True)

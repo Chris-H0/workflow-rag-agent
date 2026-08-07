@@ -5,6 +5,7 @@ import re
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from langchain_core.messages import AIMessage
 from pydantic import create_model
@@ -159,6 +160,13 @@ class FakeDriver:
         )
 
 
+class PartiallyFailingDriver(FakeDriver):
+    def run_example(self, resolver, example, **kwargs):
+        if example["id"] == "failure":
+            raise RuntimeError("workflow failed")
+        return super().run_example(resolver, example, **kwargs)
+
+
 class PlacementProfilerTests(unittest.TestCase):
     def test_strongest_cloud_baseline_is_used_everywhere(self):
         workflow = tiny_workflow()
@@ -235,6 +243,50 @@ class PlacementProfilerTests(unittest.TestCase):
 
         self.assertGreater(result.metrics["cloud_api_cost"], 0)
         self.assertEqual(result.metrics["quality"], 1.0)
+
+    def test_failed_run_scores_zero_for_primary_metric(self):
+        workflow = tiny_workflow()
+        endpoints = [endpoint()]
+        evaluator = PlanEvaluator(
+            workflow=workflow,
+            endpoint_registry=EndpointRegistry(
+                endpoints,
+                model_factory=mock_model_factory,
+            ),
+            driver=PartiallyFailingDriver(
+                [{"id": "success"}, {"id": "failure"}]
+            ),
+            settings=EvaluationSettings(sample_size=2, seed=7),
+        )
+        evaluator.prepare()
+        plan = build_cloud_baseline(workflow, endpoints, "strong")
+        result, runs = evaluator.evaluate(plan)
+
+        self.assertEqual(result.metrics["quality"], 0.5)
+        self.assertEqual(result.metrics["failed_run_count"], 1)
+        failed_run = next(run for run in runs if run.error)
+        self.assertEqual(failed_run.metrics["quality"], 0.0)
+
+    def test_qa_runtime_uses_all_frozen_examples_as_retrieval_corpus(self):
+        from workflows.qa import evaluation as qa_evaluation
+
+        with (
+            patch.object(
+                qa_evaluation,
+                "build_hotpotqa_documents",
+                return_value=[],
+            ) as build_documents,
+            patch.object(
+                qa_evaluation,
+                "build_retriever_tool",
+                side_effect=lambda retriever: retriever,
+            ),
+        ):
+            qa_evaluation.prepare_runtime([{"id": "selected-example"}])
+
+        corpus_examples = build_documents.call_args.args[0]
+        self.assertEqual(len(corpus_examples), 500)
+        self.assertNotEqual(corpus_examples, [{"id": "selected-example"}])
 
     def test_results_writer_does_not_select_or_rank(self):
         with tempfile.TemporaryDirectory() as tmpdir:

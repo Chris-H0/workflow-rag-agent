@@ -12,7 +12,7 @@ model_endpoints:
       temperature: 0
       thinking: false
       reasoning: false
-      num_predict: 128
+      num_predict: 768
   - id: gpt-4.1-mini-cloud
     model: gpt-4.1-mini
     location: cloud

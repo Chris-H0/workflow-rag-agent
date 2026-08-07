@@ -71,7 +71,11 @@ class PlanEvaluator:
             for repeat in range(self.settings.repeats)
             for example in self.examples
         ]
-        return aggregate_plan_result(plan, runs), runs
+        return aggregate_plan_result(
+            plan,
+            runs,
+            primary_metric_name=self.driver.primary_metric.name,
+        ), runs
 
     def _run(
         self,
@@ -104,6 +108,7 @@ class PlanEvaluator:
         except Exception as exc:
             return RunRecord(
                 **identity,
+                metrics={self.driver.primary_metric.name: 0.0},
                 latency_seconds=time.perf_counter() - started,
                 error=repr(exc),
                 trace=RunTrace(invocations=trace_collector.invocations),
@@ -150,6 +155,8 @@ def deterministic_sample(
 def aggregate_plan_result(
     plan: PlacementPlan,
     runs: list[RunRecord],
+    *,
+    primary_metric_name: str | None = None,
 ) -> PlanResult:
     invocations = [
         invocation
@@ -175,7 +182,9 @@ def aggregate_plan_result(
     )
     metrics.update(_token_totals(invocations))
     metrics["per_placement_unit"] = _per_unit_stats(invocations)
-    metrics.update(_quality_metrics(runs))
+    metrics.update(
+        _quality_metrics(runs, primary_metric_name=primary_metric_name)
+    )
     return PlanResult(plan=plan, metrics=metrics)
 
 
@@ -199,7 +208,11 @@ def write_search_artifacts(
     return {"results": results_path, "runs": runs_path}
 
 
-def _quality_metrics(runs: list[RunRecord]) -> dict[str, Any]:
+def _quality_metrics(
+    runs: list[RunRecord],
+    *,
+    primary_metric_name: str | None = None,
+) -> dict[str, Any]:
     values_by_metric: dict[str, list[float]] = {}
     for run in runs:
         if run.error:
@@ -209,11 +222,26 @@ def _quality_metrics(runs: list[RunRecord]) -> dict[str, Any]:
                 values_by_metric.setdefault(key, []).append(float(value))
             elif isinstance(value, int | float):
                 values_by_metric.setdefault(key, []).append(float(value))
-    return {
+    metrics = {
         key: statistics.fmean(values)
         for key, values in values_by_metric.items()
         if values
     }
+    if primary_metric_name is not None:
+        primary_values = [
+            0.0
+            for run in runs
+            if run.error
+        ]
+        primary_values.extend(
+            float(run.metrics[primary_metric_name])
+            for run in runs
+            if not run.error
+            and isinstance(run.metrics.get(primary_metric_name), bool | int | float)
+        )
+        if primary_values:
+            metrics[primary_metric_name] = statistics.fmean(primary_values)
+    return metrics
 
 
 def _latency_summary(values: list[float]) -> dict[str, float | None]:

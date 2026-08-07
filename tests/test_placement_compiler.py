@@ -4,6 +4,7 @@ import json
 import unittest
 
 from placement_compiler.adapters.workflows import load_workflow_driver
+from placement_compiler.core.catalogue import load_model_catalogue
 from placement_compiler.core.metadata import build_workflow_metadata
 from placement_compiler.core.models import (
     ModelEndpoint,
@@ -16,6 +17,7 @@ from placement_compiler.generation.candidates import (
     CandidateGenerator,
 )
 from placement_compiler.pipeline.config import load_pipeline_config
+from workflows.code.main import NODE_MODEL_CONFIG
 
 
 class FakeCompilerLLM:
@@ -84,10 +86,10 @@ def result(assignments, quality=1.0):
 
 class PlacementCompilerTests(unittest.TestCase):
     def test_existing_workflow_metadata_is_manifest_first(self):
-        metadata = load_workflow_driver("qa").metadata()
-        units = {unit.id: unit for unit in metadata.placement_units}
+        qa_metadata = load_workflow_driver("qa").metadata()
+        units = {unit.id: unit for unit in qa_metadata.placement_units}
 
-        self.assertEqual(metadata.workflow_id, "qa-workflow")
+        self.assertEqual(qa_metadata.workflow_id, "qa-workflow")
         self.assertEqual(
             set(units),
             {
@@ -99,6 +101,13 @@ class PlacementCompilerTests(unittest.TestCase):
         )
         self.assertTrue(units["generate_query_or_respond"].tool_use)
         self.assertTrue(units["decide_after_retrieval"].structured_output_required)
+
+        code_metadata = load_workflow_driver("code").metadata()
+        units = {unit.id: unit for unit in code_metadata.placement_units}
+        self.assertTrue(units["implement_solution"].user_facing_output)
+        self.assertFalse(units["review_solution"].user_facing_output)
+        self.assertFalse(units["review_solution"].structured_output_required)
+        self.assertTrue(units["review_solution"].branch_control)
 
     def test_proposal_receives_all_previous_evaluation_results(self):
         history = [
@@ -180,6 +189,21 @@ class PlacementCompilerTests(unittest.TestCase):
                 "max_drop_from_baseline",
                 json.dumps(config.model_dump(mode="json")),
             )
+
+        endpoints = load_model_catalogue(
+            "placement_compiler/examples/model_endpoints.yaml"
+        )
+        qwen = next(endpoint for endpoint in endpoints if endpoint.id == "qwen-local")
+        self.assertEqual(qwen.model_kwargs["num_predict"], 768)
+        qwen_configs = [
+            config
+            for config in NODE_MODEL_CONFIG.values()
+            if config["model"] == "qwen3.5:2b"
+        ]
+        self.assertTrue(qwen_configs)
+        self.assertTrue(
+            all(config["num_predict"] == 768 for config in qwen_configs)
+        )
 
 
 if __name__ == "__main__":

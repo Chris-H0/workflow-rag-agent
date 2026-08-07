@@ -43,8 +43,10 @@ def example_id(example: dict[str, Any]) -> str:
     return str(example["id"])
 
 
-def prepare_runtime(examples: list[dict[str, Any]]) -> dict[str, Any]:
-    documents = build_hotpotqa_documents(examples)
+def prepare_runtime(_examples: list[dict[str, Any]]) -> dict[str, Any]:
+    """Build one fixed retrieval environment for every evaluation sample."""
+    corpus_examples = list(load_hotpotqa_examples())
+    documents = build_hotpotqa_documents(corpus_examples)
     return {"retriever_tool": build_retriever_tool(SimpleRetriever(documents))}
 
 
