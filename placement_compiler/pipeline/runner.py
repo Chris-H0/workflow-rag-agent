@@ -14,6 +14,7 @@ from placement_compiler.pipeline.config import PipelineConfig
 from placement_compiler.profiling.models import (
     PlanResult,
     EvaluationSettings,
+    MetricDefinition,
     RunRecord,
     SearchArtifact,
 )
@@ -52,6 +53,15 @@ def run_pipeline(
     results = [baseline_result]
     runs = list(baseline_runs)
     compiler_history = [_compiler_history_entry(baseline_result, baseline_runs)]
+    paths = _write_checkpoint(
+        config=config,
+        workflow_id=workflow.workflow_id,
+        primary_metric=driver.primary_metric,
+        selected_example_ids=selected_example_ids,
+        results=results,
+        runs=runs,
+    )
+    _print_progress(baseline_result, driver.primary_metric.name)
 
     generator = CandidateGenerator(
         compiler_llm=compiler_llm or build_compiler_llm(config),
@@ -68,12 +78,33 @@ def run_pipeline(
         results.append(result)
         runs.extend(candidate_runs)
         compiler_history.append(_compiler_history_entry(result, candidate_runs))
+        paths = _write_checkpoint(
+            config=config,
+            workflow_id=workflow.workflow_id,
+            primary_metric=driver.primary_metric,
+            selected_example_ids=selected_example_ids,
+            results=results,
+            runs=runs,
+        )
+        _print_progress(result, driver.primary_metric.name)
 
+    return paths
+
+
+def _write_checkpoint(
+    *,
+    config: PipelineConfig,
+    workflow_id: str,
+    primary_metric: MetricDefinition,
+    selected_example_ids: list[str],
+    results: list[PlanResult],
+    runs: list[RunRecord],
+) -> dict[str, Path]:
     artifact = SearchArtifact(
-        workflow_id=workflow.workflow_id,
+        workflow_id=workflow_id,
         workflow=config.workflow,
         search_config=config.model_dump(mode="json", exclude_none=True),
-        primary_metric=driver.primary_metric,
+        primary_metric=primary_metric,
         selected_example_ids=selected_example_ids,
         results=results,
     )
@@ -81,6 +112,18 @@ def run_pipeline(
         artifact=artifact,
         runs=runs,
         output_dir=config.output,
+    )
+
+
+def _print_progress(result: PlanResult, primary_metric_name: str) -> None:
+    metrics = result.metrics
+    print(
+        f"Completed {result.plan.id}: "
+        f"{primary_metric_name}={metrics.get(primary_metric_name)}, "
+        f"failures={metrics.get('failed_run_count')}, "
+        f"cost={metrics.get('cloud_api_cost')}, "
+        f"mean_latency={metrics.get('mean_latency_seconds')}",
+        flush=True,
     )
 
 

@@ -35,7 +35,28 @@ class ExhaustiveExperimentTests(unittest.TestCase):
         for plan in plans:
             validate_plan(plan, workflow, endpoints)
 
+    def test_code_space_contains_81_unique_valid_plans(self):
+        config = load_pipeline_config(
+            "placement_compiler/examples/code_pipeline_initial.yaml"
+        )
+        workflow = load_workflow_driver(config.workflow).metadata()
+        endpoints = load_model_catalogue(config.models)
+
+        plans = enumerate_valid_plans(
+            workflow,
+            endpoints,
+            config.strongest_cloud_endpoint,
+        )
+
+        self.assertEqual(len(plans), 81)
+        self.assertEqual(plans[0].source, "baseline")
+        self.assertEqual(
+            len({tuple(sorted(plan.assignments.items())) for plan in plans}),
+            81,
+        )
+        for plan in plans:
+            validate_plan(plan, workflow, endpoints)
+
 
 if __name__ == "__main__":
     unittest.main()
-

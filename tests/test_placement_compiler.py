@@ -205,6 +205,20 @@ class PlacementCompilerTests(unittest.TestCase):
             all(config["num_predict"] == 768 for config in qwen_configs)
         )
 
+    def test_initial_code_config_matches_initial_qa_search_scale(self):
+        config = load_pipeline_config(
+            "placement_compiler/examples/code_pipeline_initial.yaml"
+        )
+
+        self.assertEqual(config.workflow, "code")
+        self.assertEqual(config.sample_size, 50)
+        self.assertEqual(config.iterations, 12)
+        self.assertEqual(config.seed, 42)
+        self.assertEqual(config.repeats, 1)
+        self.assertEqual(config.strongest_cloud_endpoint, "gpt-5.5-cloud")
+        self.assertEqual(config.compiler.model, "gpt-5.5")
+        self.assertEqual(config.max_attempts, 3)
+
 
 if __name__ == "__main__":
     unittest.main()

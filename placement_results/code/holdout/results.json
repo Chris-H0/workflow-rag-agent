@@ -1,0 +1,414 @@
+{
+  "schema_version": "4.0",
+  "generated_at": "2026-08-10T01:40:19.754003+00:00",
+  "workflow_id": "code-workflow",
+  "workflow": "code",
+  "search_config": {
+    "kind": "post_search_disjoint_holdout",
+    "source_results": "/Users/chris/Documents/GitHub/workflow-rag-agent/placement_results/code/results.json",
+    "development_seed": 42,
+    "holdout_seed": 43,
+    "sample_size": 50,
+    "repeats": 1,
+    "plan_ids": [
+      "baseline",
+      "candidate-1",
+      "candidate-4",
+      "candidate-6",
+      "candidate-8"
+    ]
+  },
+  "primary_metric": {
+    "name": "mbpp_plus_pass",
+    "direction": "maximise"
+  },
+  "selected_example_ids": [
+    "Mbpp/102",
+    "Mbpp/105",
+    "Mbpp/111",
+    "Mbpp/116",
+    "Mbpp/119",
+    "Mbpp/120",
+    "Mbpp/123",
+    "Mbpp/16",
+    "Mbpp/172",
+    "Mbpp/262",
+    "Mbpp/269",
+    "Mbpp/285",
+    "Mbpp/297",
+    "Mbpp/306",
+    "Mbpp/392",
+    "Mbpp/395",
+    "Mbpp/406",
+    "Mbpp/412",
+    "Mbpp/413",
+    "Mbpp/415",
+    "Mbpp/446",
+    "Mbpp/463",
+    "Mbpp/465",
+    "Mbpp/470",
+    "Mbpp/472",
+    "Mbpp/56",
+    "Mbpp/564",
+    "Mbpp/569",
+    "Mbpp/578",
+    "Mbpp/594",
+    "Mbpp/604",
+    "Mbpp/607",
+    "Mbpp/623",
+    "Mbpp/629",
+    "Mbpp/639",
+    "Mbpp/643",
+    "Mbpp/70",
+    "Mbpp/71",
+    "Mbpp/722",
+    "Mbpp/731",
+    "Mbpp/736",
+    "Mbpp/741",
+    "Mbpp/760",
+    "Mbpp/762",
+    "Mbpp/764",
+    "Mbpp/766",
+    "Mbpp/775",
+    "Mbpp/778",
+    "Mbpp/85",
+    "Mbpp/91"
+  ],
+  "results": [
+    {
+      "plan": {
+        "id": "baseline",
+        "description": "Strongest cloud model on every placement unit: gpt-5.5-cloud",
+        "assignments": {
+          "generate_tests": "gpt-5.5-cloud",
+          "implement_solution": "gpt-5.5-cloud",
+          "review_solution": "gpt-5.5-cloud",
+          "understand_and_plan": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "baseline"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 200,
+        "invocation_count": 200,
+        "mean_latency_seconds": 16.87344768670271,
+        "median_latency_seconds": 14.002512187464163,
+        "p95_latency_seconds": 28.818775708030444,
+        "cloud_api_cost": 1.90964,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 83038,
+        "output_tokens": 49815,
+        "total_tokens": 132853,
+        "per_placement_unit": {
+          "understand_and_plan": {
+            "invocation_count": 50,
+            "latency_seconds": 313.16740849765483,
+            "cloud_api_cost": 0.6781250000000002,
+            "cloud_api_cost_unknown": false
+          },
+          "implement_solution": {
+            "invocation_count": 50,
+            "latency_seconds": 145.4439375900547,
+            "cloud_api_cost": 0.309995,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_tests": {
+            "invocation_count": 50,
+            "latency_seconds": 201.3367473340477,
+            "cloud_api_cost": 0.5185350000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "review_solution": {
+            "invocation_count": 50,
+            "latency_seconds": 162.4244096657494,
+            "cloud_api_cost": 0.4029849999999999,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "base_pass": 0.98,
+        "plus_pass": 0.84,
+        "mbpp_plus_pass": 0.84,
+        "accuracy": 0.84,
+        "base_failed_count": 0.06,
+        "plus_failed_count": 8.88,
+        "base_total_count": 3.08,
+        "plus_total_count": 104.66
+      }
+    },
+    {
+      "plan": {
+        "id": "candidate-1",
+        "description": "Keep the strongest model on planning, implementation, and branch-control review, while moving non-user-facing test generation to the cheaper mini cloud model to explore cost/latency savings with limited expected quality risk.",
+        "assignments": {
+          "understand_and_plan": "gpt-5.5-cloud",
+          "implement_solution": "gpt-5.5-cloud",
+          "generate_tests": "gpt-4.1-mini-cloud",
+          "review_solution": "gpt-5.5-cloud"
+        },
+        "rationale": {
+          "understand_and_plan": "Baseline used gpt-5.5-cloud and achieved 0.82 plus accuracy with no base failures; planning is upstream of all later work, so retain the strongest endpoint to preserve task understanding quality.",
+          "implement_solution": "This is the final user-facing code-producing unit and likely the most quality-sensitive placement; keep gpt-5.5-cloud to avoid degrading solution correctness.",
+          "generate_tests": "Test generation is non-user-facing, has no tool/structured-output requirement, and was one of the more expensive baseline units. gpt-4.1-mini-cloud has sufficient context and supports required capabilities while offering much lower token cost, making it a targeted cost-reduction experiment.",
+          "review_solution": "Review controls conditional routing, so retain gpt-5.5-cloud to preserve reliable finish/revise decisions after tests."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 212,
+        "invocation_count": 212,
+        "mean_latency_seconds": 19.711279217340053,
+        "median_latency_seconds": 13.770549333508825,
+        "p95_latency_seconds": 43.97735758399358,
+        "cloud_api_cost": 1.7112724,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 92705,
+        "output_tokens": 53690,
+        "total_tokens": 146395,
+        "per_placement_unit": {
+          "understand_and_plan": {
+            "invocation_count": 50,
+            "latency_seconds": 308.9649279160076,
+            "cloud_api_cost": 0.671315,
+            "cloud_api_cost_unknown": false
+          },
+          "implement_solution": {
+            "invocation_count": 54,
+            "latency_seconds": 201.13004192127846,
+            "cloud_api_cost": 0.42795000000000005,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_tests": {
+            "invocation_count": 54,
+            "latency_seconds": 217.97663491795538,
+            "cloud_api_cost": 0.023892399999999994,
+            "cloud_api_cost_unknown": false
+          },
+          "review_solution": {
+            "invocation_count": 54,
+            "latency_seconds": 236.973297004879,
+            "cloud_api_cost": 0.5881150000000002,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "base_pass": 0.94,
+        "plus_pass": 0.82,
+        "mbpp_plus_pass": 0.82,
+        "accuracy": 0.82,
+        "base_failed_count": 0.12,
+        "plus_failed_count": 10.18,
+        "base_total_count": 3.08,
+        "plus_total_count": 104.66
+      }
+    },
+    {
+      "plan": {
+        "id": "candidate-4",
+        "description": "Evaluate the next major cost-reduction frontier by downgrading the final implementation step to gpt-4.1-mini-cloud while keeping all other non-user-facing stages on the cheaper mini cloud model except restoring planning to gpt-5.5-cloud to protect task understanding after candidate-3 showed base-pass degradation when planning was downgraded.",
+        "assignments": {
+          "understand_and_plan": "gpt-5.5-cloud",
+          "implement_solution": "gpt-4.1-mini-cloud",
+          "generate_tests": "gpt-4.1-mini-cloud",
+          "review_solution": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {
+          "understand_and_plan": "Candidate-3 moved planning to gpt-4.1-mini-cloud and reduced cost, but base_pass dropped from 1.0 to 0.94 with several base failures and latency worsened due to extra revision loops. Restore gpt-5.5-cloud for upstream task understanding to preserve the perfect base-pass behavior seen in baseline, candidate-1, and candidate-2.",
+          "implement_solution": "This user-facing code-producing unit is the largest untested downgrade. Prior candidates kept gpt-5.5-cloud for implementation, so moving only this remaining quality-critical stage to gpt-4.1-mini-cloud explores whether the much cheaper model can maintain acceptable correctness when supported by strong planning plus mini-generated tests and review. gpt-4.1-mini-cloud has ample context and requires no tools or structured output for this unit.",
+          "generate_tests": "Keep gpt-4.1-mini-cloud because candidate-1 and candidate-2 showed this downgrade reduced test-generation cost from roughly 0.48 to about 0.02 while preserving or slightly improving aggregate plus accuracy versus baseline.",
+          "review_solution": "Keep gpt-4.1-mini-cloud because candidate-2 matched candidate-1 plus_pass at 0.84 while cutting review cost from about 0.43 to about 0.017 and lowering mean latency. It supports the needed branch-control context/capabilities, and no structured output is required."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 212,
+        "invocation_count": 212,
+        "mean_latency_seconds": 13.973197457597125,
+        "median_latency_seconds": 12.240411854494596,
+        "p95_latency_seconds": 26.110353207972366,
+        "cloud_api_cost": 0.7289098,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 92050,
+        "output_tokens": 34633,
+        "total_tokens": 126683,
+        "per_placement_unit": {
+          "understand_and_plan": {
+            "invocation_count": 50,
+            "latency_seconds": 309.5627005858696,
+            "cloud_api_cost": 0.673415,
+            "cloud_api_cost_unknown": false
+          },
+          "implement_solution": {
+            "invocation_count": 54,
+            "latency_seconds": 80.60559266753262,
+            "cloud_api_cost": 0.013025600000000003,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_tests": {
+            "invocation_count": 54,
+            "latency_seconds": 191.45099429396214,
+            "cloud_api_cost": 0.023572400000000004,
+            "cloud_api_cost_unknown": false
+          },
+          "review_solution": {
+            "invocation_count": 54,
+            "latency_seconds": 96.62845320411725,
+            "cloud_api_cost": 0.01889680000000001,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "base_pass": 0.96,
+        "plus_pass": 0.86,
+        "mbpp_plus_pass": 0.86,
+        "accuracy": 0.86,
+        "base_failed_count": 0.08,
+        "plus_failed_count": 7.28,
+        "base_total_count": 3.08,
+        "plus_total_count": 104.66
+      }
+    },
+    {
+      "plan": {
+        "id": "candidate-6",
+        "description": "Probe whether the branch-control review step can be moved to the zero-cost local model while reverting test generation to the faster/safer mini cloud setup from candidate-4. This keeps the strongest observed planning choice and the best-performing mini-cloud implementation assignment, aiming to reduce cloud cost beyond candidate-4 without repeating candidate-5's slow local-test bottleneck.",
+        "assignments": {
+          "understand_and_plan": "gpt-5.5-cloud",
+          "implement_solution": "gpt-4.1-mini-cloud",
+          "generate_tests": "gpt-4.1-mini-cloud",
+          "review_solution": "qwen-local"
+        },
+        "rationale": {
+          "understand_and_plan": "Keep gpt-5.5-cloud for upstream task understanding: every evaluated placement with strong planning except candidate-5 maintained or nearly maintained perfect base pass, while candidate-3's mini planning caused base_pass to fall to 0.94 and increased revision loops/latency. Strong planning also underpinned the best observed aggregate quality in candidate-4 (plus_pass 0.86).",
+          "implement_solution": "Use gpt-4.1-mini-cloud for final user-facing implementation because candidate-4 demonstrated the best observed accuracy (plus_pass 0.86, base_pass 1.0) with mini implementation, while sharply reducing implementation cost versus gpt-5.5. The endpoint has ample context and no tool/structured-output requirement applies.",
+          "generate_tests": "Restore gpt-4.1-mini-cloud for test generation rather than qwen-local. Candidate-5's local tests lowered test cloud cost to zero but caused high latency (mean 22.53s, p95 59.76s, 67 local test calls taking ~614s) and slightly worse quality than candidate-4. Mini-cloud tests were still extremely cheap (~0.021 in candidate-4), faster, and paired with the best observed quality.",
+          "review_solution": "Move only review to qwen-local to isolate a local downgrade on the branch-control stage. Mini review is already cheap, but this explores zero-cloud-cost routing while avoiding the much larger latency penalty seen from local test generation. qwen-local supports tool calling, the workflow does not require structured output for review, and its 32k context window should be sufficient for test-result review decisions."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 58,
+        "cloud_call_count": 166,
+        "invocation_count": 224,
+        "mean_latency_seconds": 17.112103245920736,
+        "median_latency_seconds": 12.742949937470257,
+        "p95_latency_seconds": 35.82739270897582,
+        "cloud_api_cost": 0.7305526,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 107536,
+        "output_tokens": 42757,
+        "total_tokens": 150293,
+        "per_placement_unit": {
+          "understand_and_plan": {
+            "invocation_count": 50,
+            "latency_seconds": 319.3343446239596,
+            "cloud_api_cost": 0.6881450000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "implement_solution": {
+            "invocation_count": 58,
+            "latency_seconds": 90.46593462285819,
+            "cloud_api_cost": 0.015862,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_tests": {
+            "invocation_count": 58,
+            "latency_seconds": 214.39743666991126,
+            "cloud_api_cost": 0.026545599999999996,
+            "cloud_api_cost_unknown": false
+          },
+          "review_solution": {
+            "invocation_count": 58,
+            "latency_seconds": 210.35854767105775,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "base_pass": 0.96,
+        "plus_pass": 0.84,
+        "mbpp_plus_pass": 0.84,
+        "accuracy": 0.84,
+        "base_failed_count": 0.08,
+        "plus_failed_count": 9.62,
+        "base_total_count": 3.08,
+        "plus_total_count": 104.66
+      }
+    },
+    {
+      "plan": {
+        "id": "candidate-8",
+        "description": "Evaluate an all-mini-cloud placement to isolate whether the strong gpt-5.5 planner is still necessary now that candidate-4 showed gpt-4.1-mini can successfully handle implementation, tests, and review. This explores a much lower-cost fully cloud-based configuration without using the slower or lower-quality local model.",
+        "assignments": {
+          "understand_and_plan": "gpt-4.1-mini-cloud",
+          "implement_solution": "gpt-4.1-mini-cloud",
+          "generate_tests": "gpt-4.1-mini-cloud",
+          "review_solution": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {
+          "understand_and_plan": "Prior mini planning in candidate-3 caused base_pass to drop to 0.94 when paired with gpt-5.5 implementation and extra loops, but that configuration differed from candidate-4's surprisingly strong all-mini downstream stack. Testing mini planning with mini implementation/tests/review completes the cloud-mini frontier and targets the dominant remaining cost in candidate-4 (~0.68 from gpt-5.5 planning) while preserving large context and endpoint capability.",
+          "implement_solution": "Use gpt-4.1-mini-cloud because candidate-4 demonstrated the best observed aggregate quality (plus_pass 0.86, base_pass 1.0) with mini implementation when supported by strong planning, while local implementation in candidate-7 degraded quality to 0.78 plus_pass and 0.92 base_pass. Mini is the safer inexpensive implementation choice.",
+          "generate_tests": "Keep gpt-4.1-mini-cloud for test generation: candidates 1, 2, and 4 showed mini tests are extremely cheap (~0.02 cloud cost), faster than local tests, and compatible with the best observed quality, whereas local tests in candidate-5 greatly increased latency and reduced base/plus performance.",
+          "review_solution": "Keep gpt-4.1-mini-cloud for branch-control review because candidate-2 preserved quality while cutting review cost sharply, candidate-4 achieved the best observed quality with mini review, and candidate-6 showed local review reduced plus_pass to 0.82. gpt-4.1-mini supports the required context/capabilities and no structured output is required."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 224,
+        "invocation_count": 224,
+        "mean_latency_seconds": 14.51020877588191,
+        "median_latency_seconds": 10.445075666997582,
+        "p95_latency_seconds": 41.03357533400413,
+        "cloud_api_cost": 0.08461880000000001,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 103295,
+        "output_tokens": 27063,
+        "total_tokens": 130358,
+        "per_placement_unit": {
+          "understand_and_plan": {
+            "invocation_count": 50,
+            "latency_seconds": 249.365505499125,
+            "cloud_api_cost": 0.022412400000000006,
+            "cloud_api_cost_unknown": false
+          },
+          "implement_solution": {
+            "invocation_count": 58,
+            "latency_seconds": 133.2784843732952,
+            "cloud_api_cost": 0.015720400000000006,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_tests": {
+            "invocation_count": 58,
+            "latency_seconds": 228.15487854427192,
+            "cloud_api_cost": 0.02541560000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "review_solution": {
+            "invocation_count": 58,
+            "latency_seconds": 94.11814629007131,
+            "cloud_api_cost": 0.021070399999999996,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "base_pass": 0.96,
+        "plus_pass": 0.88,
+        "mbpp_plus_pass": 0.88,
+        "accuracy": 0.88,
+        "base_failed_count": 0.08,
+        "plus_failed_count": 7.42,
+        "base_total_count": 3.08,
+        "plus_total_count": 104.66
+      }
+    }
+  ]
+}
