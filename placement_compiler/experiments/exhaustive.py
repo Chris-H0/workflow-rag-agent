@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from itertools import product
 from pathlib import Path
 
@@ -136,8 +137,10 @@ def run_exhaustive(
         )
         metrics = result.metrics
         print(
-            f"Completed {plan.id}: exact_match={metrics.get('exact_match')}, "
-            f"answer_token_f1={metrics.get('answer_token_f1')}, "
+            f"Completed {plan.id}: "
+            f"{driver.primary_metric.name}="
+            f"{metrics.get(driver.primary_metric.name)}, "
+            f"failures={metrics.get('failed_run_count')}, "
             f"cost={metrics.get('cloud_api_cost')}, "
             f"mean_latency={metrics.get('mean_latency_seconds')}",
             flush=True,
@@ -301,6 +304,9 @@ def _load_dotenvs(workflow: str) -> None:
 
     load_dotenv(REPO_ROOT / ".env", override=True)
     load_dotenv(load_workflow_driver(workflow).root / ".env", override=True)
+    # Experiment artifacts already retain the traces needed for analysis.
+    os.environ["LANGSMITH_TRACING"] = "false"
+    os.environ["LANGCHAIN_TRACING_V2"] = "false"
 
 
 def main(argv: list[str] | None = None) -> int:
