@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import time
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any, Protocol
@@ -10,6 +11,7 @@ from typing import Any, Protocol
 from pydantic import BaseModel, ValidationError
 
 from placement_compiler.core.models import (
+    CompilerAttempt,
     ModelEndpoint,
     PlacementPlan,
     PlacementProposal,
@@ -19,7 +21,36 @@ from placement_compiler.core.validation import PlanValidationError, validate_pla
 
 
 class CandidateGenerationError(RuntimeError):
-    pass
+    def __init__(
+        self,
+        message: str,
+        *,
+        attempts: Sequence[CompilerAttempt] = (),
+    ) -> None:
+        super().__init__(message)
+        self.attempts = list(attempts)
+
+
+CompilerOutput = PlacementProposal | Mapping[str, Any] | str
+
+
+@dataclass(frozen=True)
+class CompilerGeneration:
+    """A compiler response with provider usage metadata when available."""
+
+    output: CompilerOutput | None
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
+    total_tokens: int | None = None
+    api_cost: float | None = None
+    cost_known: bool = False
+    error: str | None = None
+
+
+@dataclass(frozen=True)
+class CandidateGenerationResult:
+    plan: PlacementPlan
+    attempts: list[CompilerAttempt]
 
 
 class CompilerLLM(Protocol):
@@ -27,7 +58,7 @@ class CompilerLLM(Protocol):
         self,
         messages: Sequence[Mapping[str, str]],
         output_schema: type[PlacementProposal],
-    ) -> PlacementProposal | Mapping[str, Any] | str:
+    ) -> CompilerOutput | CompilerGeneration:
         """Return one complete placement proposal."""
 
 
@@ -44,27 +75,83 @@ class CandidateGenerator:
         iteration: int,
         evaluated_results: Sequence[Mapping[str, Any]],
     ) -> PlacementPlan:
+        return self.propose_with_metrics(
+            workflow=workflow,
+            model_endpoints=model_endpoints,
+            iteration=iteration,
+            evaluated_results=evaluated_results,
+        ).plan
+
+    def propose_with_metrics(
+        self,
+        *,
+        workflow: WorkflowMetadata,
+        model_endpoints: list[ModelEndpoint],
+        iteration: int,
+        evaluated_results: Sequence[Mapping[str, Any]],
+    ) -> CandidateGenerationResult:
         if not workflow.placement_units:
             raise ValueError("workflow has no declared LLM placement units")
         if not model_endpoints:
             raise ValueError("model endpoint catalogue must not be empty")
 
         previous_errors: list[str] = []
-        for _ in range(self.max_attempts):
-            raw = self.compiler_llm.generate(
-                self._build_messages(
-                    workflow=workflow,
-                    model_endpoints=model_endpoints,
-                    iteration=iteration,
-                    evaluated_results=evaluated_results,
-                    previous_errors=previous_errors,
-                ),
-                PlacementProposal,
-            )
+        attempts: list[CompilerAttempt] = []
+        for attempt_number in range(1, self.max_attempts + 1):
+            started = time.perf_counter()
             try:
-                proposal = _coerce_proposal(raw)
+                raw = self.compiler_llm.generate(
+                    self._build_messages(
+                        workflow=workflow,
+                        model_endpoints=model_endpoints,
+                        iteration=iteration,
+                        evaluated_results=evaluated_results,
+                        previous_errors=previous_errors,
+                    ),
+                    PlacementProposal,
+                )
+                generation = _normalise_generation(raw)
+            except Exception as exc:
+                attempts.append(
+                    CompilerAttempt(
+                        iteration=iteration,
+                        attempt=attempt_number,
+                        accepted=False,
+                        proposal_latency_seconds=time.perf_counter() - started,
+                        generation_error=repr(exc),
+                    )
+                )
+                raise CandidateGenerationError(
+                    f"compiler LLM call failed: {exc}", attempts=attempts
+                ) from exc
+
+            latency = time.perf_counter() - started
+            if generation.error is not None:
+                previous_errors = [generation.error]
+                attempts.append(
+                    _attempt_record(
+                        generation,
+                        iteration=iteration,
+                        attempt=attempt_number,
+                        latency=latency,
+                        generation_error=generation.error,
+                    )
+                )
+                continue
+
+            try:
+                proposal = _coerce_proposal(generation.output)
             except CandidateGenerationError as exc:
                 previous_errors = [str(exc)]
+                attempts.append(
+                    _attempt_record(
+                        generation,
+                        iteration=iteration,
+                        attempt=attempt_number,
+                        latency=latency,
+                        generation_error=str(exc),
+                    )
+                )
                 continue
 
             candidate = PlacementPlan(
@@ -79,13 +166,26 @@ class CandidateGenerator:
                 model_endpoints=model_endpoints,
                 evaluated_results=evaluated_results,
             )
+            duplicate = "duplicates an evaluated placement" in errors
+            attempts.append(
+                _attempt_record(
+                    generation,
+                    iteration=iteration,
+                    attempt=attempt_number,
+                    latency=latency,
+                    accepted=not errors,
+                    validation_errors=errors,
+                    duplicate_proposal=duplicate,
+                )
+            )
             if not errors:
-                return candidate
+                return CandidateGenerationResult(plan=candidate, attempts=attempts)
             previous_errors = errors
 
         raise CandidateGenerationError(
             "compiler LLM did not produce a valid new placement: "
-            + "; ".join(previous_errors)
+            + "; ".join(previous_errors),
+            attempts=attempts,
         )
 
     def _build_messages(
@@ -155,7 +255,7 @@ def _candidate_errors(
 
 
 def _coerce_proposal(
-    raw: PlacementProposal | Mapping[str, Any] | str,
+    raw: CompilerOutput | None,
 ) -> PlacementProposal:
     if isinstance(raw, PlacementProposal):
         return raw
@@ -172,3 +272,38 @@ def _coerce_proposal(
         return PlacementProposal.model_validate(raw)
     except (ValidationError, TypeError) as exc:
         raise CandidateGenerationError(f"invalid structured LLM output: {exc}") from exc
+
+
+def _normalise_generation(
+    raw: CompilerOutput | CompilerGeneration,
+) -> CompilerGeneration:
+    if isinstance(raw, CompilerGeneration):
+        return raw
+    return CompilerGeneration(output=raw)
+
+
+def _attempt_record(
+    generation: CompilerGeneration,
+    *,
+    iteration: int,
+    attempt: int,
+    latency: float,
+    accepted: bool = False,
+    validation_errors: Sequence[str] = (),
+    duplicate_proposal: bool = False,
+    generation_error: str | None = None,
+) -> CompilerAttempt:
+    return CompilerAttempt(
+        iteration=iteration,
+        attempt=attempt,
+        accepted=accepted,
+        proposal_latency_seconds=latency,
+        prompt_tokens=generation.prompt_tokens,
+        completion_tokens=generation.completion_tokens,
+        total_tokens=generation.total_tokens,
+        api_cost=generation.api_cost,
+        cost_known=generation.cost_known,
+        validation_errors=list(validation_errors),
+        duplicate_proposal=duplicate_proposal,
+        generation_error=generation_error,
+    )

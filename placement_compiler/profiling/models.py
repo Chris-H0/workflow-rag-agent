@@ -7,7 +7,7 @@ from typing import Any, Literal
 
 from pydantic import Field, model_validator
 
-from placement_compiler.core.models import PlacementPlan, StrictModel
+from placement_compiler.core.models import CompilerAttempt, PlacementPlan, StrictModel
 
 
 MetricDirection = Literal["maximise", "minimise"]
@@ -81,8 +81,29 @@ class PlanResult(StrictModel):
     metrics: dict[str, Any] = Field(default_factory=dict)
 
 
+class CompilationMetrics(StrictModel):
+    """Aggregate overhead of proposal generation and workflow profiling."""
+
+    attempt_count: int = 0
+    validation_error_count: int = 0
+    duplicate_proposal_count: int = 0
+    compiler_prompt_tokens: int | None = 0
+    compiler_completion_tokens: int | None = 0
+    compiler_total_tokens: int | None = 0
+    compiler_token_usage_unknown: bool = False
+    direct_compiler_api_cost: float | None = 0.0
+    direct_compiler_api_cost_unknown: bool = False
+    compiler_proposal_latency_seconds: float = 0.0
+    workflow_profiling_api_cost: float | None = 0.0
+    workflow_profiling_api_cost_unknown: bool = False
+    workflow_profiling_elapsed_seconds: float = 0.0
+    total_compilation_api_cost: float | None = 0.0
+    total_compilation_api_cost_unknown: bool = False
+    total_compilation_elapsed_seconds: float = 0.0
+
+
 class SearchArtifact(StrictModel):
-    schema_version: str = "4.0"
+    schema_version: str = "5.0"
     generated_at: str = Field(default_factory=lambda: datetime.now(UTC).isoformat())
     workflow_id: str
     workflow: str
@@ -90,3 +111,5 @@ class SearchArtifact(StrictModel):
     primary_metric: MetricDefinition
     selected_example_ids: list[str]
     results: list[PlanResult]
+    compiler_attempts: list[CompilerAttempt] = Field(default_factory=list)
+    compilation_metrics: CompilationMetrics | None = None

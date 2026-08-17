@@ -7,6 +7,7 @@ from collections.abc import Mapping
 from typing import Any, Callable
 
 from placement_compiler.core.models import ModelEndpoint, PlacementPlan, WorkflowMetadata
+from placement_compiler.core.usage import calculate_api_cost, extract_token_usage
 from placement_compiler.core.validation import PlanValidationError, validate_plan
 from placement_compiler.profiling.models import ModelInvocation
 
@@ -159,7 +160,7 @@ class InstrumentedModel:
                 if self._usage_source is not None and result is not None
                 else result
             )
-            usage = _extract_usage(usage_result)
+            usage = extract_token_usage(usage_result)
             cloud_cost, cost_known = _cloud_api_cost(self._endpoint, usage)
             self._trace_collector.add(
                 ModelInvocation(
@@ -201,46 +202,11 @@ def _cloud_api_cost(
 ) -> tuple[float | None, bool]:
     if endpoint.location == "local":
         return 0.0, True
-    input_tokens = usage.get("input_tokens")
-    output_tokens = usage.get("output_tokens")
-    if input_tokens is None or output_tokens is None:
-        return None, False
-    if (
-        endpoint.input_cost_per_million_tokens is None
-        or endpoint.output_cost_per_million_tokens is None
-    ):
-        return None, False
-    return (
-        input_tokens / 1_000_000 * endpoint.input_cost_per_million_tokens
-        + output_tokens / 1_000_000 * endpoint.output_cost_per_million_tokens,
-        True,
+    return calculate_api_cost(
+        usage,
+        input_cost_per_million_tokens=endpoint.input_cost_per_million_tokens,
+        output_cost_per_million_tokens=endpoint.output_cost_per_million_tokens,
     )
-
-
-def _extract_usage(result: Any) -> dict[str, int | None]:
-    usage = getattr(result, "usage_metadata", None) or {}
-    response_metadata = getattr(result, "response_metadata", None) or {}
-    token_usage = response_metadata.get("token_usage") or {}
-
-    input_tokens = (
-        usage.get("input_tokens")
-        or usage.get("prompt_tokens")
-        or token_usage.get("prompt_tokens")
-    )
-    output_tokens = (
-        usage.get("output_tokens")
-        or usage.get("completion_tokens")
-        or token_usage.get("completion_tokens")
-    )
-    total_tokens = usage.get("total_tokens") or token_usage.get("total_tokens")
-    if total_tokens is None and input_tokens is not None and output_tokens is not None:
-        total_tokens = input_tokens + output_tokens
-
-    return {
-        "input_tokens": _int_or_none(input_tokens),
-        "output_tokens": _int_or_none(output_tokens),
-        "total_tokens": _int_or_none(total_tokens),
-    }
 
 
 def _structured_parsed_result(result: Any) -> Any:
@@ -256,12 +222,6 @@ def _structured_raw_result(result: Any) -> Any:
     if isinstance(result, Mapping):
         return result.get("raw") or result
     return result
-
-
-def _int_or_none(value: Any) -> int | None:
-    if value is None:
-        return None
-    return int(value)
 
 
 def _build_langchain_model(endpoint: ModelEndpoint) -> Any:

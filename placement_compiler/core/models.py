@@ -91,3 +91,20 @@ class PlacementProposal(StrictModel):
     description: str | None = None
     assignments: dict[str, str]
     rationale: dict[str, str] = Field(default_factory=dict)
+
+
+class CompilerAttempt(StrictModel):
+    """Observed cost and outcome of one compiler-LLM proposal attempt."""
+
+    iteration: int
+    attempt: int
+    accepted: bool
+    proposal_latency_seconds: float
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
+    total_tokens: int | None = None
+    api_cost: float | None = None
+    cost_known: bool = False
+    validation_errors: list[str] = Field(default_factory=list)
+    duplicate_proposal: bool = False
+    generation_error: str | None = None

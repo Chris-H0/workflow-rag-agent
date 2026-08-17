@@ -19,8 +19,10 @@ from placement_compiler.core.models import (
     PlacementUnitSpec,
     WorkflowEdge,
 )
+from placement_compiler.generation.candidates import CompilerGeneration
+from placement_compiler.generation.llm import LangChainCompilerLLM
 from placement_compiler.pipeline.config import CompilerConfig, PipelineConfig
-from placement_compiler.pipeline.runner import run_pipeline
+from placement_compiler.pipeline.runner import _compiler_prices, run_pipeline
 from placement_compiler.profiling.models import (
     MetricDefinition,
     EvaluationSettings,
@@ -77,7 +79,11 @@ class MockPlacementModel:
         }
         usage["total_tokens"] = usage["input_tokens"] + usage["output_tokens"]
         if self.structured_schema is not None:
-            data = {"decision": "answer"}
+            data = (
+                {"assignments": {"plan": "strong", "act": "strong"}}
+                if self.structured_schema is PlacementProposal
+                else {"decision": "answer"}
+            )
             parsed = self.structured_schema.model_validate(data)
             if self.include_raw:
                 return {
@@ -168,6 +174,53 @@ class PartiallyFailingDriver(FakeDriver):
 
 
 class PlacementProfilerTests(unittest.TestCase):
+    def test_compiler_adapter_records_usage_cost_and_structured_output(self):
+        compiler = object.__new__(LangChainCompilerLLM)
+        compiler._model = MockPlacementModel()
+        compiler._structured_output_method = "function_calling"
+        compiler._input_cost_per_million_tokens = 2.0
+        compiler._output_cost_per_million_tokens = 4.0
+
+        generation = compiler.generate(
+            [{"role": "user", "content": "propose a placement"}],
+            PlacementProposal,
+        )
+
+        self.assertIsInstance(generation.output, PlacementProposal)
+        self.assertGreater(generation.prompt_tokens, 0)
+        self.assertGreater(generation.completion_tokens, 0)
+        self.assertEqual(
+            generation.total_tokens,
+            generation.prompt_tokens + generation.completion_tokens,
+        )
+        self.assertTrue(generation.cost_known)
+        expected_cost = (
+            generation.prompt_tokens / 1_000_000 * 2.0
+            + generation.completion_tokens / 1_000_000 * 4.0
+        )
+        self.assertAlmostEqual(generation.api_cost, expected_cost)
+
+    def test_compiler_price_is_reused_from_matching_endpoint(self):
+        config = PipelineConfig(
+            workflow="qa",
+            models=Path("placement_compiler/examples/model_endpoints.yaml"),
+            strongest_cloud_endpoint="gpt-5.5-cloud",
+            compiler=CompilerConfig(provider="openai", model="gpt-5.5"),
+            output=Path("unused"),
+        )
+        endpoints = [
+            ModelEndpoint(
+                id="gpt-5.5-cloud",
+                model="gpt-5.5",
+                provider="openai",
+                location="cloud",
+                input_cost_per_million_tokens=5.0,
+                output_cost_per_million_tokens=30.0,
+            )
+        ]
+
+        self.assertEqual(_compiler_prices(config, endpoints), (5.0, 30.0))
+
     def test_strongest_cloud_baseline_is_used_everywhere(self):
         workflow = tiny_workflow()
         endpoints = [endpoint("strong"), endpoint("local", location="local")]
@@ -322,8 +375,35 @@ class PlacementProfilerTests(unittest.TestCase):
             qa_candidate_2 = dict(qa_candidate_1)
             qa_candidate_2["rewrite_question"] = "qwen-local"
             qa_llm = FakeCompilerLLM(
-                PlacementProposal(assignments=qa_candidate_1),
-                PlacementProposal(assignments=qa_candidate_2),
+                CompilerGeneration(
+                    output=PlacementProposal(
+                        assignments={
+                            unit.id: "gpt-5.5-cloud"
+                            for unit in qa_workflow.placement_units
+                        }
+                    ),
+                    prompt_tokens=100,
+                    completion_tokens=10,
+                    total_tokens=110,
+                    api_cost=0.0008,
+                    cost_known=True,
+                ),
+                CompilerGeneration(
+                    output=PlacementProposal(assignments=qa_candidate_1),
+                    prompt_tokens=200,
+                    completion_tokens=20,
+                    total_tokens=220,
+                    api_cost=0.0016,
+                    cost_known=True,
+                ),
+                CompilerGeneration(
+                    output=PlacementProposal(assignments=qa_candidate_2),
+                    prompt_tokens=300,
+                    completion_tokens=30,
+                    total_tokens=330,
+                    api_cost=0.0024,
+                    cost_known=True,
+                ),
             )
             qa_config = PipelineConfig(
                 workflow="qa",
@@ -359,10 +439,31 @@ class PlacementProfilerTests(unittest.TestCase):
                 set(qa_results["results"][0]["plan"]["assignments"].values()),
                 {"gpt-5.5-cloud"},
             )
-            second_prompt = qa_llm.messages[1][1]["content"]
+            second_prompt = qa_llm.messages[2][1]["content"]
             self.assertIn("candidate-1", second_prompt)
             self.assertIn("exact_match", second_prompt)
             self.assertIn("qa-smoke", second_prompt)
+            compilation = qa_results["compilation_metrics"]
+            self.assertEqual(compilation["attempt_count"], 3)
+            self.assertEqual(compilation["validation_error_count"], 1)
+            self.assertEqual(compilation["duplicate_proposal_count"], 1)
+            self.assertEqual(compilation["compiler_prompt_tokens"], 600)
+            self.assertEqual(compilation["compiler_completion_tokens"], 60)
+            self.assertEqual(compilation["compiler_total_tokens"], 660)
+            self.assertAlmostEqual(
+                compilation["direct_compiler_api_cost"], 0.0048
+            )
+            self.assertFalse(compilation["total_compilation_api_cost_unknown"])
+            self.assertAlmostEqual(
+                compilation["total_compilation_api_cost"],
+                compilation["direct_compiler_api_cost"]
+                + compilation["workflow_profiling_api_cost"],
+            )
+            self.assertGreater(
+                compilation["workflow_profiling_elapsed_seconds"], 0
+            )
+            self.assertEqual(len(qa_results["compiler_attempts"]), 3)
+            self.assertTrue(qa_results["compiler_attempts"][0]["duplicate_proposal"])
 
             code_workflow = load_workflow_driver("code").metadata()
             code_candidate = {
