@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 from pathlib import Path
 
 from placement_compiler.generation.candidates import CompilerLLM
@@ -66,3 +67,6 @@ def _load_dotenvs(workflow: str) -> None:
 
     load_dotenv(REPO_ROOT / ".env", override=True)
     load_dotenv(load_workflow_driver(workflow).root / ".env", override=True)
+    # Search artifacts already retain the experiment traces used for analysis.
+    os.environ["LANGSMITH_TRACING"] = "false"
+    os.environ["LANGCHAIN_TRACING_V2"] = "false"

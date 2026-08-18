@@ -1,0 +1,15 @@
+workflow: qa
+models: model_endpoints.yaml
+strongest_cloud_endpoint: gpt-5.5-cloud
+iterations: 12
+sample_size: 50
+seed: 42
+repeats: 1
+warmup_runs: 0
+compiler:
+  provider: openai
+  model: gpt-5.5
+  temperature: 0
+  structured_output_method: function_calling
+max_attempts: 3
+output: ../../placement_results/qa/instrumented-sequence-02

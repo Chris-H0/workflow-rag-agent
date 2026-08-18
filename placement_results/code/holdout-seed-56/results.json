@@ -1,0 +1,277 @@
+{
+  "schema_version": "5.0",
+  "generated_at": "2026-08-18T02:02:37.586552+00:00",
+  "workflow_id": "code-workflow",
+  "workflow": "code",
+  "search_config": {
+    "kind": "post_search_disjoint_holdout",
+    "source_results": "/Users/chris/Documents/GitHub/workflow-rag-agent/placement_results/code/exhaustive/results.json",
+    "development_seed": 42,
+    "holdout_seed": 56,
+    "sample_size": 50,
+    "repeats": 1,
+    "plan_ids": [
+      "placement-001",
+      "placement-040",
+      "placement-043"
+    ]
+  },
+  "primary_metric": {
+    "name": "mbpp_plus_pass",
+    "direction": "maximise"
+  },
+  "selected_example_ids": [
+    "Mbpp/101",
+    "Mbpp/109",
+    "Mbpp/118",
+    "Mbpp/120",
+    "Mbpp/124",
+    "Mbpp/130",
+    "Mbpp/16",
+    "Mbpp/161",
+    "Mbpp/17",
+    "Mbpp/170",
+    "Mbpp/172",
+    "Mbpp/223",
+    "Mbpp/232",
+    "Mbpp/250",
+    "Mbpp/264",
+    "Mbpp/274",
+    "Mbpp/282",
+    "Mbpp/284",
+    "Mbpp/286",
+    "Mbpp/292",
+    "Mbpp/299",
+    "Mbpp/310",
+    "Mbpp/4",
+    "Mbpp/418",
+    "Mbpp/421",
+    "Mbpp/424",
+    "Mbpp/425",
+    "Mbpp/429",
+    "Mbpp/457",
+    "Mbpp/475",
+    "Mbpp/555",
+    "Mbpp/580",
+    "Mbpp/583",
+    "Mbpp/587",
+    "Mbpp/593",
+    "Mbpp/597",
+    "Mbpp/598",
+    "Mbpp/61",
+    "Mbpp/616",
+    "Mbpp/735",
+    "Mbpp/750",
+    "Mbpp/759",
+    "Mbpp/767",
+    "Mbpp/771",
+    "Mbpp/773",
+    "Mbpp/797",
+    "Mbpp/801",
+    "Mbpp/803",
+    "Mbpp/809",
+    "Mbpp/84"
+  ],
+  "results": [
+    {
+      "plan": {
+        "id": "placement-001",
+        "description": "Exhaustive valid placement 001; reused from baseline",
+        "assignments": {
+          "generate_tests": "gpt-5.5-cloud",
+          "implement_solution": "gpt-5.5-cloud",
+          "review_solution": "gpt-5.5-cloud",
+          "understand_and_plan": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "baseline"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 1,
+        "local_call_count": 0,
+        "cloud_call_count": 206,
+        "invocation_count": 206,
+        "mean_latency_seconds": 17.48468451168388,
+        "median_latency_seconds": 13.688764916441869,
+        "p95_latency_seconds": 32.94560104201082,
+        "cloud_api_cost": 2.030565,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 81165,
+        "output_tokens": 54158,
+        "total_tokens": 135323,
+        "per_placement_unit": {
+          "understand_and_plan": {
+            "invocation_count": 50,
+            "latency_seconds": 283.5585541690234,
+            "cloud_api_cost": 0.635025,
+            "cloud_api_cost_unknown": false
+          },
+          "implement_solution": {
+            "invocation_count": 52,
+            "latency_seconds": 158.24032258219086,
+            "cloud_api_cost": 0.36362499999999986,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_tests": {
+            "invocation_count": 52,
+            "latency_seconds": 218.54166170908138,
+            "cloud_api_cost": 0.53859,
+            "cloud_api_cost_unknown": false
+          },
+          "review_solution": {
+            "invocation_count": 52,
+            "latency_seconds": 194.75427828822285,
+            "cloud_api_cost": 0.4933250000000001,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "base_pass": 1.0,
+        "plus_pass": 0.8163265306122449,
+        "mbpp_plus_pass": 0.8,
+        "accuracy": 0.8163265306122449,
+        "base_failed_count": 0.0,
+        "plus_failed_count": 6.183673469387755,
+        "base_total_count": 3.2244897959183674,
+        "plus_total_count": 105.14285714285714
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-040",
+        "description": "Exhaustive valid placement 040; reused from candidate-4",
+        "assignments": {
+          "generate_tests": "gpt-4.1-mini-cloud",
+          "implement_solution": "gpt-4.1-mini-cloud",
+          "review_solution": "gpt-4.1-mini-cloud",
+          "understand_and_plan": "gpt-5.5-cloud"
+        },
+        "rationale": {
+          "understand_and_plan": "Candidate-3 moved planning to gpt-4.1-mini-cloud and reduced cost, but base_pass dropped from 1.0 to 0.94 with several base failures and latency worsened due to extra revision loops. Restore gpt-5.5-cloud for upstream task understanding to preserve the perfect base-pass behavior seen in baseline, candidate-1, and candidate-2.",
+          "implement_solution": "This user-facing code-producing unit is the largest untested downgrade. Prior candidates kept gpt-5.5-cloud for implementation, so moving only this remaining quality-critical stage to gpt-4.1-mini-cloud explores whether the much cheaper model can maintain acceptable correctness when supported by strong planning plus mini-generated tests and review. gpt-4.1-mini-cloud has ample context and requires no tools or structured output for this unit.",
+          "generate_tests": "Keep gpt-4.1-mini-cloud because candidate-1 and candidate-2 showed this downgrade reduced test-generation cost from roughly 0.48 to about 0.02 while preserving or slightly improving aggregate plus accuracy versus baseline.",
+          "review_solution": "Keep gpt-4.1-mini-cloud because candidate-2 matched candidate-1 plus_pass at 0.84 while cutting review cost from about 0.43 to about 0.017 and lowering mean latency. It supports the needed branch-control context/capabilities, and no structured output is required."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 1,
+        "local_call_count": 0,
+        "cloud_call_count": 203,
+        "invocation_count": 203,
+        "mean_latency_seconds": 10.229407679128926,
+        "median_latency_seconds": 9.242389666556846,
+        "p95_latency_seconds": 15.982302792021073,
+        "cloud_api_cost": 0.7217222,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 81872,
+        "output_tokens": 32761,
+        "total_tokens": 114633,
+        "per_placement_unit": {
+          "understand_and_plan": {
+            "invocation_count": 50,
+            "latency_seconds": 299.1386587105226,
+            "cloud_api_cost": 0.6732449999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "implement_solution": {
+            "invocation_count": 51,
+            "latency_seconds": 48.84326162491925,
+            "cloud_api_cost": 0.011330800000000005,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_tests": {
+            "invocation_count": 51,
+            "latency_seconds": 102.03473342198413,
+            "cloud_api_cost": 0.0204684,
+            "cloud_api_cost_unknown": false
+          },
+          "review_solution": {
+            "invocation_count": 51,
+            "latency_seconds": 43.48827603913378,
+            "cloud_api_cost": 0.016678000000000002,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "base_pass": 1.0,
+        "plus_pass": 0.8163265306122449,
+        "mbpp_plus_pass": 0.8,
+        "accuracy": 0.8163265306122449,
+        "base_failed_count": 0.0,
+        "plus_failed_count": 6.673469387755102,
+        "base_total_count": 3.2244897959183674,
+        "plus_total_count": 105.14285714285714
+      }
+    },
+    {
+      "plan": {
+        "id": "placement-043",
+        "description": "Exhaustive valid placement 043; reused from candidate-6",
+        "assignments": {
+          "generate_tests": "gpt-4.1-mini-cloud",
+          "implement_solution": "gpt-4.1-mini-cloud",
+          "review_solution": "qwen-local",
+          "understand_and_plan": "gpt-5.5-cloud"
+        },
+        "rationale": {
+          "understand_and_plan": "Keep gpt-5.5-cloud for upstream task understanding: every evaluated placement with strong planning except candidate-5 maintained or nearly maintained perfect base pass, while candidate-3's mini planning caused base_pass to fall to 0.94 and increased revision loops/latency. Strong planning also underpinned the best observed aggregate quality in candidate-4 (plus_pass 0.86).",
+          "implement_solution": "Use gpt-4.1-mini-cloud for final user-facing implementation because candidate-4 demonstrated the best observed accuracy (plus_pass 0.86, base_pass 1.0) with mini implementation, while sharply reducing implementation cost versus gpt-5.5. The endpoint has ample context and no tool/structured-output requirement applies.",
+          "generate_tests": "Restore gpt-4.1-mini-cloud for test generation rather than qwen-local. Candidate-5's local tests lowered test cloud cost to zero but caused high latency (mean 22.53s, p95 59.76s, 67 local test calls taking ~614s) and slightly worse quality than candidate-4. Mini-cloud tests were still extremely cheap (~0.021 in candidate-4), faster, and paired with the best observed quality.",
+          "review_solution": "Move only review to qwen-local to isolate a local downgrade on the branch-control stage. Mini review is already cheap, but this explores zero-cloud-cost routing while avoiding the much larger latency penalty seen from local test generation. qwen-local supports tool calling, the workflow does not require structured output for review, and its 32k context window should be sufficient for test-result review decisions."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 1,
+        "local_call_count": 57,
+        "cloud_call_count": 164,
+        "invocation_count": 221,
+        "mean_latency_seconds": 13.925635965815745,
+        "median_latency_seconds": 10.800813853973523,
+        "p95_latency_seconds": 36.60774720902555,
+        "cloud_api_cost": 0.7107782,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 100075,
+        "output_tokens": 39532,
+        "total_tokens": 139607,
+        "per_placement_unit": {
+          "understand_and_plan": {
+            "invocation_count": 50,
+            "latency_seconds": 308.98022278852295,
+            "cloud_api_cost": 0.672045,
+            "cloud_api_cost_unknown": false
+          },
+          "implement_solution": {
+            "invocation_count": 57,
+            "latency_seconds": 60.39100195991341,
+            "cloud_api_cost": 0.014210000000000002,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_tests": {
+            "invocation_count": 57,
+            "latency_seconds": 130.5994362111669,
+            "cloud_api_cost": 0.024523200000000002,
+            "cloud_api_cost_unknown": false
+          },
+          "review_solution": {
+            "invocation_count": 57,
+            "latency_seconds": 177.71310670499224,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "base_pass": 0.9795918367346939,
+        "plus_pass": 0.8367346938775511,
+        "mbpp_plus_pass": 0.82,
+        "accuracy": 0.8367346938775511,
+        "base_failed_count": 0.10204081632653061,
+        "plus_failed_count": 8.306122448979592,
+        "base_total_count": 3.2244897959183674,
+        "plus_total_count": 105.14285714285714
+      }
+    }
+  ],
+  "compiler_attempts": []
+}
