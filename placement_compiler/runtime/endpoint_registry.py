@@ -48,8 +48,9 @@ class EndpointRegistry:
         endpoint: ModelEndpoint,
         placement_unit_id: str,
         trace_collector: TraceCollector,
+        cache_key: str | None = None,
     ) -> "InstrumentedModel":
-        base_model = self._base_model(endpoint)
+        base_model = self._base_model(endpoint, cache_key=cache_key)
         return InstrumentedModel(
             base_model=base_model,
             endpoint=endpoint,
@@ -57,12 +58,13 @@ class EndpointRegistry:
             trace_collector=trace_collector,
         )
 
-    def _base_model(self, endpoint: ModelEndpoint) -> Any:
-        if endpoint.id in self._client_cache:
-            return self._client_cache[endpoint.id]
+    def _base_model(self, endpoint: ModelEndpoint, *, cache_key: str | None = None) -> Any:
+        key = cache_key or endpoint.id
+        if key in self._client_cache:
+            return self._client_cache[key]
 
         model = self._model_factory(endpoint)
-        self._client_cache[endpoint.id] = model
+        self._client_cache[key] = model
         return model
 
 

@@ -1,0 +1,11 @@
+workflow: qa
+models: model_endpoints.yaml
+source_results: ../../placement_results/qa/results.json
+router_endpoint: gpt-4.1-mini-cloud
+fallback_endpoint: gpt-5.5-cloud
+sample_size: 50
+development_seed: 42
+holdout_seed: 43
+repeats: 2
+warmup_runs: 0
+output: ../../placement_results/qa/runtime-routing
