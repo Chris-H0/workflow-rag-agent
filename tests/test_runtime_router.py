@@ -10,6 +10,7 @@ from placement_compiler.core.models import (
     ModelEndpoint,
     PlacementPlan,
     PlacementUnit,
+    WorkflowEdge,
     WorkflowMetadata,
 )
 from placement_compiler.experiments.runtime_router import (
@@ -126,16 +127,25 @@ def endpoint(
 
 
 def workflow() -> WorkflowMetadata:
+    edge = WorkflowEdge(
+        source="tool_node",
+        target="structured_node",
+        conditional=True,
+    )
     return WorkflowMetadata(
         workflow_id="runtime-test",
         placement_units=[
             PlacementUnit(id="tool_node", tool_use=True),
             PlacementUnit(id="structured_node", structured_output_required=True),
         ],
+        edges=[edge],
+        entry_nodes=["tool_node"],
+        terminal_nodes=["structured_node"],
+        conditional_edges=[edge],
     )
 
 
-def resolver(*choices: str):
+def resolver(*choices: str, include_full_workflow_metadata: bool = False):
     state = FakeState(*choices)
     endpoints = [
         endpoint("qwen-local", location="local", structured_output=False),
@@ -156,6 +166,7 @@ def resolver(*choices: str):
             router_temperature=0.0,
             hardware_context="Apple M4 Pro with 24 GB unified memory",
             trace_collector=collector,
+            include_full_workflow_metadata=include_full_workflow_metadata,
         ),
         state,
         collector,
@@ -179,6 +190,7 @@ class RuntimeRouterTests(unittest.TestCase):
         self.assertEqual(collector.invocations[1].endpoint_id, "qwen-local")
         self.assertTrue(state.calls[-1]["tools_bound"])
         self.assertIn("Apple M4 Pro", state.calls[0]["text"])
+        self.assertNotIn('"workflow":', state.calls[0]["text"])
 
         run = RunRecord(
             plan_id="runtime-router",
@@ -238,6 +250,25 @@ class RuntimeRouterTests(unittest.TestCase):
         self.assertEqual(decision["selected_endpoint_id"], "strong-cloud")
         self.assertIn("not-an-endpoint", decision["router_error"])
 
+    def test_full_workflow_context_uses_compiler_metadata_object(self):
+        runtime_resolver, state, _ = resolver(
+            "mini-cloud", include_full_workflow_metadata=True
+        )
+
+        runtime_resolver.get_model("tool_node").invoke(
+            [{"role": "user", "content": "route this invocation"}]
+        )
+
+        prompt = state.calls[0]["text"]
+        self.assertIn('"workflow":', prompt)
+        self.assertIn('"workflow_id": "runtime-test"', prompt)
+        self.assertIn('"structured_node"', prompt)
+        self.assertIn('"conditional_edges"', prompt)
+        self.assertIn("downstream importance", prompt)
+        self.assertTrue(
+            runtime_resolver.decisions[0]["full_workflow_metadata_included"]
+        )
+
     def test_full_configs_request_two_fifty_example_generations(self):
         for workflow_name in ("qa", "code"):
             config = load_runtime_routing_config(
@@ -248,6 +279,17 @@ class RuntimeRouterTests(unittest.TestCase):
             self.assertEqual(config.repeats, 2)
             self.assertEqual(config.router_endpoint, "gpt-4.1-mini-cloud")
             self.assertIn("Apple M4 Pro", config.hardware_context)
+            self.assertFalse(config.include_full_workflow_metadata)
+
+            graph_config = load_runtime_routing_config(
+                "placement_compiler/examples/"
+                f"{workflow_name}_runtime_router_workflow_context.yaml"
+            )
+            self.assertEqual(graph_config.workflow, workflow_name)
+            self.assertEqual(graph_config.sample_size, 50)
+            self.assertEqual(graph_config.repeats, 2)
+            self.assertTrue(graph_config.include_full_workflow_metadata)
+            self.assertIn("runtime-routing-workflow-context", str(graph_config.output))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,198 @@
+{
+  "schema_version": "5.0",
+  "generated_at": "2026-08-21T16:17:45.578235+00:00",
+  "workflow_id": "code-workflow",
+  "workflow": "code",
+  "search_config": {
+    "workflow": "code",
+    "models": "/Users/chris/Documents/GitHub/workflow-rag-agent/placement_compiler/examples/model_endpoints.yaml",
+    "source_results": "/Users/chris/Documents/GitHub/workflow-rag-agent/placement_results/code/results.json",
+    "router_endpoint": "gpt-4.1-mini-cloud",
+    "router_temperature": 0.0,
+    "fallback_endpoint": "gpt-5.5-cloud",
+    "sample_size": 50,
+    "development_seed": 42,
+    "holdout_seed": 56,
+    "repeats": 2,
+    "warmup_runs": 0,
+    "hardware_context": "Apple M4 Pro with a 16-core integrated GPU and 24 GB unified memory. The local qwen3.5:2b endpoint runs through Ollama 0.23.0 with reasoning disabled and a maximum output of 768 tokens. Local calls have no recorded cloud API cost, but may be slower and less capable than cloud models.",
+    "include_full_workflow_metadata": true,
+    "output": "/Users/chris/Documents/GitHub/workflow-rag-agent/placement_results/code/runtime-routing-workflow-context",
+    "kind": "llm_guided_runtime_routing_holdout"
+  },
+  "primary_metric": {
+    "name": "mbpp_plus_pass",
+    "direction": "maximise"
+  },
+  "selected_example_ids": [
+    "Mbpp/101",
+    "Mbpp/109",
+    "Mbpp/118",
+    "Mbpp/120",
+    "Mbpp/124",
+    "Mbpp/130",
+    "Mbpp/16",
+    "Mbpp/161",
+    "Mbpp/17",
+    "Mbpp/170",
+    "Mbpp/172",
+    "Mbpp/223",
+    "Mbpp/232",
+    "Mbpp/250",
+    "Mbpp/264",
+    "Mbpp/274",
+    "Mbpp/282",
+    "Mbpp/284",
+    "Mbpp/286",
+    "Mbpp/292",
+    "Mbpp/299",
+    "Mbpp/310",
+    "Mbpp/4",
+    "Mbpp/418",
+    "Mbpp/421",
+    "Mbpp/424",
+    "Mbpp/425",
+    "Mbpp/429",
+    "Mbpp/457",
+    "Mbpp/475",
+    "Mbpp/555",
+    "Mbpp/580",
+    "Mbpp/583",
+    "Mbpp/587",
+    "Mbpp/593",
+    "Mbpp/597",
+    "Mbpp/598",
+    "Mbpp/61",
+    "Mbpp/616",
+    "Mbpp/735",
+    "Mbpp/750",
+    "Mbpp/759",
+    "Mbpp/767",
+    "Mbpp/771",
+    "Mbpp/773",
+    "Mbpp/797",
+    "Mbpp/801",
+    "Mbpp/803",
+    "Mbpp/809",
+    "Mbpp/84"
+  ],
+  "results": [
+    {
+      "plan": {
+        "id": "runtime-router-workflow-context",
+        "description": "GPT-4.1 mini selects a compatible endpoint per invocation using the complete workflow metadata.",
+        "assignments": {
+          "generate_tests": "runtime-selected",
+          "implement_solution": "runtime-selected",
+          "review_solution": "runtime-selected",
+          "understand_and_plan": "runtime-selected"
+        },
+        "rationale": {},
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 100,
+        "failed_run_count": 2,
+        "local_call_count": 533,
+        "cloud_call_count": 957,
+        "invocation_count": 1490,
+        "mean_latency_seconds": 59.68108735543326,
+        "median_latency_seconds": 54.1439891254995,
+        "p95_latency_seconds": 108.74286937492434,
+        "cloud_api_cost": 0.8136776,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "per_placement_unit": {
+          "__runtime_router__:understand_and_plan": {
+            "invocation_count": 100,
+            "latency_seconds": 148.06790683488362,
+            "cloud_api_cost": 0.05707760000000002,
+            "cloud_api_cost_unknown": false
+          },
+          "understand_and_plan": {
+            "invocation_count": 100,
+            "latency_seconds": 968.868853950873,
+            "cloud_api_cost": 0.001872,
+            "cloud_api_cost_unknown": false
+          },
+          "__runtime_router__:implement_solution": {
+            "invocation_count": 215,
+            "latency_seconds": 298.2629125416279,
+            "cloud_api_cost": 0.1772227999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "implement_solution": {
+            "invocation_count": 215,
+            "latency_seconds": 895.4460829991149,
+            "cloud_api_cost": 0.0030368,
+            "cloud_api_cost_unknown": false
+          },
+          "__runtime_router__:generate_tests": {
+            "invocation_count": 215,
+            "latency_seconds": 302.88643275399227,
+            "cloud_api_cost": 0.18217959999999997,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_tests": {
+            "invocation_count": 215,
+            "latency_seconds": 2374.3192192493007,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "__runtime_router__:review_solution": {
+            "invocation_count": 215,
+            "latency_seconds": 368.0030657442985,
+            "cloud_api_cost": 0.25275560000000014,
+            "cloud_api_cost_unknown": false
+          },
+          "review_solution": {
+            "invocation_count": 215,
+            "latency_seconds": 352.1555397908669,
+            "cloud_api_cost": 0.13953319999999994,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "base_pass": 0.6428571428571429,
+        "plus_pass": 0.5306122448979592,
+        "mbpp_plus_pass": 0.52,
+        "accuracy": 0.5306122448979592,
+        "base_failed_count": 0.6938775510204082,
+        "plus_failed_count": 27.622448979591837,
+        "base_total_count": 2.9693877551020407,
+        "plus_total_count": 97.65306122448979,
+        "router_call_count": 745,
+        "router_fallback_count": 0,
+        "router_latency_seconds": 1117.2203178748023,
+        "router_cloud_api_cost": 0.6692356,
+        "router_cloud_api_cost_unknown": false,
+        "router_input_tokens": 1530081,
+        "router_output_tokens": 35752,
+        "router_total_tokens": 1565833,
+        "selected_endpoint_counts": {
+          "gpt-4.1-mini-cloud": 212,
+          "qwen-local": 533
+        },
+        "selected_endpoints_by_unit": {
+          "generate_tests": {
+            "qwen-local": 215
+          },
+          "implement_solution": {
+            "gpt-4.1-mini-cloud": 4,
+            "qwen-local": 211
+          },
+          "review_solution": {
+            "gpt-4.1-mini-cloud": 206,
+            "qwen-local": 9
+          },
+          "understand_and_plan": {
+            "gpt-4.1-mini-cloud": 2,
+            "qwen-local": 98
+          }
+        }
+      }
+    }
+  ],
+  "compiler_attempts": []
+}
