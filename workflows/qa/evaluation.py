@@ -11,7 +11,7 @@ from workflows.qa.evals.metrics import get_retrieved_titles, get_supporting_titl
 from workflows.qa.rag.sources import build_hotpotqa_documents, load_hotpotqa_examples
 
 
-PRIMARY_METRIC = {"name": "exact_match", "direction": "maximise"}
+PRIMARY_METRIC = {"name": "answer_token_f1", "direction": "maximise"}
 
 
 class SimpleRetriever:
