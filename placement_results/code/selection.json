@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-25T13:49:47Z",
+  "workflow": "code",
+  "result_root": "/Users/chris/Documents/GitHub/workflow-rag-agent/placement_results/code",
+  "selection_protocol": {
+    "primary_quality_metric": "mbpp_plus_pass",
+    "secondary_quality_metric": null,
+    "seed_43": "Existing five-placement Code holdout shortlist; canonical exhaustive IDs resolved by exact assignment signature.",
+    "seed_56": "Existing three-placement Code replication and repeat shortlist; canonical exhaustive IDs resolved by exact assignment signature.",
+    "provenance_note": "This manifest documents the assignments already measured by the Code evidence. It does not change or reinterpret the historical selection."
+  },
+  "holdout_seed_43": [
+    {
+      "label": "strongest-cloud reference",
+      "exhaustive_plan_id": "placement-001",
+      "original_plan_id": "baseline",
+      "assignments": {
+        "generate_tests": "gpt-5.5-cloud",
+        "implement_solution": "gpt-5.5-cloud",
+        "review_solution": "gpt-5.5-cloud",
+        "understand_and_plan": "gpt-5.5-cloud"
+      }
+    },
+    {
+      "label": "existing Code holdout selection",
+      "exhaustive_plan_id": "placement-028",
+      "original_plan_id": "candidate-1",
+      "assignments": {
+        "generate_tests": "gpt-4.1-mini-cloud",
+        "implement_solution": "gpt-5.5-cloud",
+        "review_solution": "gpt-5.5-cloud",
+        "understand_and_plan": "gpt-5.5-cloud"
+      }
+    },
+    {
+      "label": "existing Code holdout selection",
+      "exhaustive_plan_id": "placement-040",
+      "original_plan_id": "candidate-4",
+      "assignments": {
+        "generate_tests": "gpt-4.1-mini-cloud",
+        "implement_solution": "gpt-4.1-mini-cloud",
+        "review_solution": "gpt-4.1-mini-cloud",
+        "understand_and_plan": "gpt-5.5-cloud"
+      }
+    },
+    {
+      "label": "existing Code holdout selection",
+      "exhaustive_plan_id": "placement-043",
+      "original_plan_id": "candidate-6",
+      "assignments": {
+        "generate_tests": "gpt-4.1-mini-cloud",
+        "implement_solution": "gpt-4.1-mini-cloud",
+        "review_solution": "qwen-local",
+        "understand_and_plan": "gpt-5.5-cloud"
+      }
+    },
+    {
+      "label": "existing Code holdout selection",
+      "exhaustive_plan_id": "placement-041",
+      "original_plan_id": "candidate-8",
+      "assignments": {
+        "generate_tests": "gpt-4.1-mini-cloud",
+        "implement_solution": "gpt-4.1-mini-cloud",
+        "review_solution": "gpt-4.1-mini-cloud",
+        "understand_and_plan": "gpt-4.1-mini-cloud"
+      }
+    }
+  ],
+  "holdout_seed_56_and_repeats": [
+    {
+      "label": "strongest-cloud reference",
+      "exhaustive_plan_id": "placement-001",
+      "original_plan_id": "baseline",
+      "assignments": {
+        "generate_tests": "gpt-5.5-cloud",
+        "implement_solution": "gpt-5.5-cloud",
+        "review_solution": "gpt-5.5-cloud",
+        "understand_and_plan": "gpt-5.5-cloud"
+      }
+    },
+    {
+      "label": "existing Code non-Qwen hybrid",
+      "exhaustive_plan_id": "placement-040",
+      "original_plan_id": "candidate-4",
+      "assignments": {
+        "generate_tests": "gpt-4.1-mini-cloud",
+        "implement_solution": "gpt-4.1-mini-cloud",
+        "review_solution": "gpt-4.1-mini-cloud",
+        "understand_and_plan": "gpt-5.5-cloud"
+      }
+    },
+    {
+      "label": "existing Code Qwen-inclusive hybrid",
+      "exhaustive_plan_id": "placement-043",
+      "original_plan_id": "candidate-6",
+      "assignments": {
+        "generate_tests": "gpt-4.1-mini-cloud",
+        "implement_solution": "gpt-4.1-mini-cloud",
+        "review_solution": "qwen-local",
+        "understand_and_plan": "gpt-5.5-cloud"
+      }
+    }
+  ]
+}

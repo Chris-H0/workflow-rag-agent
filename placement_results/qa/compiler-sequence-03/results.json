@@ -1,0 +1,1094 @@
+{
+  "schema_version": "5.0",
+  "generated_at": "2026-08-25T02:00:01.248107+00:00",
+  "workflow_id": "qa-workflow",
+  "workflow": "qa",
+  "search_config": {
+    "split": "validation",
+    "sample_size": 50,
+    "seed": 42,
+    "repeats": 1,
+    "warmup_runs": 0,
+    "workflow": "qa",
+    "models": "/Users/chris/Documents/GitHub/workflow-rag-agent/placement_compiler/examples/model_endpoints.yaml",
+    "strongest_cloud_endpoint": "gpt-5.5-cloud",
+    "iterations": 12,
+    "compiler": {
+      "provider": "openai",
+      "model": "gpt-5.5",
+      "temperature": 0.0,
+      "structured_output_method": "function_calling",
+      "model_kwargs": {}
+    },
+    "max_attempts": 3,
+    "output": "/Users/chris/Documents/GitHub/workflow-rag-agent/placement_results/qa/structured-decision-v2/compiler-sequence-03"
+  },
+  "primary_metric": {
+    "name": "answer_token_f1",
+    "direction": "maximise"
+  },
+  "selected_example_ids": [
+    "5a722b8655429971e9dc9329",
+    "5a74c85055429916b0164218",
+    "5a774e9c55429972597f14f3",
+    "5a77a65b5542992a6e59df57",
+    "5a78db8055429970f5fffdb2",
+    "5a79b7f6554299029c4b5f6f",
+    "5a7a276d5542996c55b2dd27",
+    "5a7a5b3a5542996c55b2dd71",
+    "5a7b12a355429927d897bf2a",
+    "5a7cbf8c554299452d57b9f4",
+    "5a834ed95542990548d0b1ca",
+    "5a8488f45542992a431d1a47",
+    "5a8574945542997b5ce3fffb",
+    "5a867089554299211dda2b30",
+    "5a8704f8554299211dda2ba4",
+    "5a874ce15542996432c57256",
+    "5a87ab9b5542996e4f3088c2",
+    "5a87bada5542994846c1cddc",
+    "5a87c13f5542996e4f30890c",
+    "5a88d745554299206df2b378",
+    "5a89706055429951533612f9",
+    "5a89f5815542993b751ca9c5",
+    "5a8e3dc05542995085b37401",
+    "5a8e3ea95542995a26add48d",
+    "5a8eb4d65542990e94052b82",
+    "5a8ef2a75542995a26add583",
+    "5a8f45ca5542997ba9cb320e",
+    "5a9068a95542990a98493621",
+    "5a90b43455429916514e7523",
+    "5ab1d7ac554299449642c7e6",
+    "5ab3e45655429976abd1bcd4",
+    "5ab47cd75542991751b4d78d",
+    "5ab48c325542996a3a969f93",
+    "5ab7bbbf55429928e1fe38bf",
+    "5ab85a1155429934fafe6d7c",
+    "5abcc96c5542996583600492",
+    "5abd259d55429924427fcf1a",
+    "5abe689a55429976d4830b16",
+    "5ac01bca5542992a796dec8d",
+    "5adbda2755429944faac2385",
+    "5adbe1a7554299438c868cc3",
+    "5add564a5542990dbb2f7e38",
+    "5adddccd5542997dc7907069",
+    "5ade7a435542997c77adee3a",
+    "5adf043b5542993a75d263d4",
+    "5adfeb0555429942ec259b88",
+    "5ae1f596554299234fd04372",
+    "5ae2dfd155429928c423951b",
+    "5ae4d3c95542990ba0bbb165",
+    "5ae68fcb5542992ae0d1635b"
+  ],
+  "results": [
+    {
+      "plan": {
+        "id": "baseline",
+        "description": "Strongest cloud model on every placement unit: gpt-5.5-cloud",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "gpt-5.5-cloud"
+        },
+        "rationale": {},
+        "source": "baseline"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 222,
+        "invocation_count": 222,
+        "mean_latency_seconds": 11.780326448387932,
+        "median_latency_seconds": 8.352706541540101,
+        "p95_latency_seconds": 28.98656774999108,
+        "cloud_api_cost": 2.177325,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 271479,
+        "output_tokens": 27331,
+        "total_tokens": 298810,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 99,
+            "latency_seconds": 236.43434074928518,
+            "cloud_api_cost": 0.9272900000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 74,
+            "latency_seconds": 172.19883666594978,
+            "cloud_api_cost": 0.7176649999999998,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 32,
+            "latency_seconds": 75.05999333411455,
+            "cloud_api_cost": 0.35377500000000006,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 17,
+            "latency_seconds": 98.61184624908492,
+            "cloud_api_cost": 0.178595,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.48,
+        "contains_gold_answer": 0.6,
+        "contains_partial_gold_answer": 0.62,
+        "answer_token_precision": 0.5452825692825694,
+        "answer_token_recall": 0.6586666666666666,
+        "answer_token_f1": 0.5583679002989348,
+        "supporting_title_hit": 0.82,
+        "supporting_title_recall": 0.6
+      }
+    },
+    {
+      "plan": {
+        "id": "candidate-1",
+        "description": "Cost/latency-reduced hybrid: use gpt-4.1-mini for high-frequency routing and initial tool-capable query control, keep gpt-5.5 for user-facing final answer quality, and move low-frequency question rewriting to local.",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {
+          "decide_after_retrieval": "Requires structured output and branch control but is not user-facing. gpt-4.1-mini supports structured output and should substantially reduce cloud cost and latency versus gpt-5.5 on the 74 baseline invocations while preserving enough routing quality for a first hybrid test.",
+          "generate_answer": "Final answer generation is user-facing and directly drives exact match/F1, so retain the strongest model to protect answer quality on the 32 answer-generation invocations.",
+          "generate_query_or_respond": "This is the highest-frequency unit and requires tool calling plus branch control. gpt-4.1-mini supports tool calling with a much larger context window and much lower cost than gpt-5.5, making it the main cost/latency trade-off to evaluate.",
+          "rewrite_question": "Rewrite is non-user-facing, no tool or structured output required, and relatively low frequency in the baseline. qwen-local has sufficient context and zero cloud cost, so this probes whether local rewriting can reduce the baseline's costly/slow rewrite path without risking endpoint capability violations."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 217,
+        "invocation_count": 217,
+        "mean_latency_seconds": 7.640507123277057,
+        "median_latency_seconds": 4.65605443745153,
+        "p95_latency_seconds": 12.863208250026219,
+        "cloud_api_cost": 0.9142144,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 332765,
+        "output_tokens": 16174,
+        "total_tokens": 348939,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 90,
+            "latency_seconds": 82.6157169592334,
+            "cloud_api_cost": 0.05817240000000002,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 77,
+            "latency_seconds": 47.765155584784225,
+            "cloud_api_cost": 0.04657199999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 244.48974033037666,
+            "cloud_api_cost": 0.8094700000000001,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.64,
+        "contains_gold_answer": 0.66,
+        "contains_partial_gold_answer": 0.78,
+        "answer_token_precision": 0.7966666666666667,
+        "answer_token_recall": 0.757,
+        "answer_token_f1": 0.7674761904761905,
+        "supporting_title_hit": 0.8,
+        "supporting_title_recall": 0.62
+      }
+    },
+    {
+      "plan": {
+        "id": "candidate-2",
+        "description": "Probe a lower-cost all-mini cloud configuration, keeping capable cloud endpoints for tool calling and structured routing while replacing expensive final-answer generation with gpt-4.1-mini to test whether candidate-1's quality gains came mainly from improved routing/retrieval rather than gpt-5.5 answer synthesis.",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {
+          "decide_after_retrieval": "Candidate-1 improved exact match and F1 while using gpt-4.1-mini for this structured branch-control unit, so keep mini here to preserve the faster, cheaper retrieval sufficiency routing that appears adequate.",
+          "generate_answer": "Candidate-1's largest remaining cloud cost was gpt-5.5 on generate_answer ($0.809 of $0.914). Switching this user-facing step to gpt-4.1-mini tests a major cost reduction while still using a cloud model with large context; answer quality may drop, but per-example results suggest routing/retrieval changes contributed strongly to candidate-1's gains.",
+          "generate_query_or_respond": "This is the highest-frequency tool-calling branch-control unit. Candidate-1 showed gpt-4.1-mini met the required tool capability and substantially reduced latency/cost versus the baseline, so retain it.",
+          "rewrite_question": "Candidate-1 produced no rewrite_question invocations but assigning qwen-local remains capability-safe for this non-user-facing, non-structured, no-tool rewrite path and keeps any rare rewrite attempts at zero cloud cost."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 218,
+        "invocation_count": 218,
+        "mean_latency_seconds": 3.4106962808058596,
+        "median_latency_seconds": 3.44190645852359,
+        "p95_latency_seconds": 5.326848750002682,
+        "cloud_api_cost": 0.13882160000000002,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 333930,
+        "output_tokens": 3281,
+        "total_tokens": 337211,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 92,
+            "latency_seconds": 85.13734996295534,
+            "cloud_api_cost": 0.062002000000000015,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 76,
+            "latency_seconds": 46.82151879533194,
+            "cloud_api_cost": 0.04347920000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 31.324253791943192,
+            "cloud_api_cost": 0.0333404,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.5,
+        "contains_gold_answer": 0.54,
+        "contains_partial_gold_answer": 0.6,
+        "answer_token_precision": 0.6266666666666666,
+        "answer_token_recall": 0.6283333333333334,
+        "answer_token_f1": 0.6212380952380953,
+        "supporting_title_hit": 0.78,
+        "supporting_title_recall": 0.59
+      }
+    },
+    {
+      "plan": {
+        "id": "candidate-3",
+        "description": "Quality-recovery hybrid: keep the empirically strong and cheap gpt-4.1-mini routing/query-control setup from candidates 1-2, restore gpt-5.5 only for final answer generation, and switch rewrite_question from local to gpt-4.1-mini to directly test whether a capable low-cost cloud rewriter improves any rare rewrite path without returning to the expensive all-gpt-5.5 baseline.",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {
+          "decide_after_retrieval": "Previously evaluated candidates using gpt-4.1-mini for this structured branch-control router were capability-safe and much cheaper/faster than the baseline gpt-5.5 routing; candidate-1 also achieved the best aggregate quality, so retain mini here.",
+          "generate_answer": "Candidate-2 showed that moving final answer generation from gpt-5.5 to gpt-4.1-mini cut cost/latency but reduced exact match/F1 versus candidate-1. Restore gpt-5.5 for this user-facing quality-critical unit to probe quality recovery while keeping other units inexpensive.",
+          "generate_query_or_respond": "This unit requires tool calling and branch control and is the highest-frequency call site. gpt-4.1-mini supports tool calling, was validated in candidates 1-2, and delivered large cost/latency savings over baseline gpt-5.5.",
+          "rewrite_question": "Prior candidates assigned rewrite to qwen-local, but observed no rewrite invocations, leaving its impact untested. Assigning gpt-4.1-mini is still low cost, supports the needed context, and may be more reliable than the 2B local model if the rewrite branch is exercised, without paying gpt-5.5 rewrite costs."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 216,
+        "invocation_count": 216,
+        "mean_latency_seconds": 6.174467597489711,
+        "median_latency_seconds": 4.813763750484213,
+        "p95_latency_seconds": 13.109094000072218,
+        "cloud_api_cost": 0.7495814000000001,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 318784,
+        "output_tokens": 11181,
+        "total_tokens": 329965,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 91,
+            "latency_seconds": 85.14533429394942,
+            "cloud_api_cost": 0.05806759999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 75,
+            "latency_seconds": 46.35429370892234,
+            "cloud_api_cost": 0.041868800000000005,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 170.11300412507262,
+            "cloud_api_cost": 0.649645,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.64,
+        "contains_gold_answer": 0.66,
+        "contains_partial_gold_answer": 0.78,
+        "answer_token_precision": 0.8066666666666668,
+        "answer_token_recall": 0.7563333333333334,
+        "answer_token_f1": 0.7679047619047619,
+        "supporting_title_hit": 0.88,
+        "supporting_title_recall": 0.65
+      }
+    },
+    {
+      "plan": {
+        "id": "candidate-4",
+        "description": "Local-router cost probe: retain the empirically best quality-critical gpt-5.5 final answer generation, keep gpt-4.1-mini for the high-frequency tool-calling initial retrieval controller, and move the structured retrieval sufficiency router plus rewrite path to qwen-local to test whether local branch control can reduce remaining routing cloud cost while preserving candidate-1/3 answer quality characteristics.",
+        "assignments": {
+          "decide_after_retrieval": "qwen-local",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {
+          "decide_after_retrieval": "This non-user-facing router requires structured output and branch control; qwen-local explicitly supports structured output and has sufficient context. Candidates 1-3 showed gpt-4.1-mini routing was cheap and effective, but this unit still accounted for roughly $0.04-$0.047 and ~46-48s aggregate latency. Moving it local is a capability-safe way to explore further cloud-cost reduction and possible latency trade-offs, while accepting some routing-quality risk.",
+          "generate_answer": "Keep gpt-5.5-cloud for final answer generation because candidate-2's all-mini answer step cut cost but reduced exact match/F1, while candidates 1 and 3 recovered the best observed aggregate quality with gpt-5.5 here. This isolates the effect of local retrieval sufficiency routing without also weakening answer synthesis.",
+          "generate_query_or_respond": "Use gpt-4.1-mini-cloud because this highest-frequency structural unit requires tool calling and branch control. Candidates 1-3 validated that gpt-4.1-mini supports the endpoint capabilities and greatly reduces cost/latency versus baseline gpt-5.5 while maintaining strong retrieval behavior.",
+          "rewrite_question": "Use qwen-local for this non-user-facing, no-tool, unstructured rewrite step. Prior runs saw no rewrite invocations, so local assignment is unlikely to affect common paths, and if exercised it avoids gpt-5.5 rewrite cost while remaining within context/capability constraints."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 78,
+        "cloud_call_count": 141,
+        "invocation_count": 219,
+        "mean_latency_seconds": 7.9275638817274015,
+        "median_latency_seconds": 7.037315562542062,
+        "p95_latency_seconds": 15.839776457985863,
+        "cloud_api_cost": 0.6836922,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 301446,
+        "output_tokens": 11208,
+        "total_tokens": 312654,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 91,
+            "latency_seconds": 93.02645784197375,
+            "cloud_api_cost": 0.050907200000000014,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 78,
+            "latency_seconds": 119.6918848779751,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 176.53575170668773,
+            "cloud_api_cost": 0.632785,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.66,
+        "contains_gold_answer": 0.68,
+        "contains_partial_gold_answer": 0.78,
+        "answer_token_precision": 0.8016666666666667,
+        "answer_token_recall": 0.7763333333333334,
+        "answer_token_f1": 0.7805714285714287,
+        "supporting_title_hit": 0.8,
+        "supporting_title_recall": 0.65
+      }
+    },
+    {
+      "plan": {
+        "id": "candidate-5",
+        "description": "Tool-controller locality probe: keep the best-observed quality-critical gpt-5.5 final answer generation and the validated low-cost gpt-4.1-mini structured retrieval router, but move the high-frequency initial retrieval controller to qwen-local to test whether local tool-calling can reduce remaining cloud cost despite possible branch/tool-routing latency and quality risk; keep rewrite local because it is non-user-facing and has not been exercised in prior runs.",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {
+          "decide_after_retrieval": "Use gpt-4.1-mini-cloud for this structured branch-control router. Candidates 1-3 validated mini as capability-safe and fast/cheap for structured routing, with better latency than the local-router candidate-4 where qwen-local increased aggregate router latency substantially. This isolates the new experiment to the initial tool controller rather than also changing sufficiency routing.",
+          "generate_answer": "Retain gpt-5.5-cloud for final answer generation because candidates 1, 3, and 4 all showed stronger exact match/F1 when gpt-5.5 handled the user-facing final answer, while candidate-2's all-mini final answer reduced cost but degraded quality. Keeping gpt-5.5 here protects answer synthesis while testing a different cost lever.",
+          "generate_query_or_respond": "Move this highest-frequency tool-calling branch-control unit to qwen-local. qwen-local explicitly supports tool calling and has sufficient context, and prior runs show this unit contributes recurring cloud cost under gpt-4.1-mini (~$0.05-$0.06). This previously unevaluated assignment probes maximum cloud-cost reduction on the controller path, accepting risk that the 2B local model may produce poorer tool/answer routing or higher latency.",
+          "rewrite_question": "Assign qwen-local for the non-user-facing rewrite step. It requires no tool calling or structured output, has sufficient context locally, and prior candidates with local/cloud rewrite saw no rewrite invocations, so local placement remains the lowest-cost safe default if the branch is rarely or never used."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 81,
+        "cloud_call_count": 120,
+        "invocation_count": 201,
+        "mean_latency_seconds": 8.022278170881327,
+        "median_latency_seconds": 6.051048437540885,
+        "p95_latency_seconds": 18.530197833897546,
+        "cloud_api_cost": 0.5656146,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 243435,
+        "output_tokens": 12009,
+        "total_tokens": 255444,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 80,
+            "latency_seconds": 172.58025787584484,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 72,
+            "latency_seconds": 46.88569979381282,
+            "cloud_api_cost": 0.0379596,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 48,
+            "latency_seconds": 167.0964365801774,
+            "cloud_api_cost": 0.527655,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 1,
+            "latency_seconds": 8.419957124977373,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.58,
+        "contains_gold_answer": 0.6,
+        "contains_partial_gold_answer": 0.72,
+        "answer_token_precision": 0.7422222222222223,
+        "answer_token_recall": 0.7170000000000001,
+        "answer_token_f1": 0.7082715572715572,
+        "supporting_title_hit": 0.84,
+        "supporting_title_recall": 0.66
+      }
+    },
+    {
+      "plan": {
+        "id": "candidate-6",
+        "description": "Latency/cost-focused all-mini cloud with stronger cloud rewrite coverage: use gpt-4.1-mini for all non-rewrite and rewrite units, including the high-frequency tool controller and structured sufficiency router, to revisit the very low-latency/cost profile of candidate-2 while removing the local rewrite assignment so the rare rewrite path (which appeared once in candidate-5) is handled by a more capable low-cost cloud model.",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud is capability-safe for structured output and branch control, and prior candidates using it for this router had low aggregate latency (~46-48s) and minimal cost (~$0.04-$0.047), outperforming the local-router latency seen in candidate-4.",
+          "generate_answer": "Switching answer generation to gpt-4.1-mini repeats the low-cost answer-synthesis lever from candidate-2, which achieved the best latency and lowest cost among evaluated plans, while accepting potential quality loss versus gpt-5.5; this is useful to map the cost/latency frontier.",
+          "generate_query_or_respond": "This unit requires tool calling and branch control. gpt-4.1-mini has been validated across candidates 1-4 as reliable, cheap, and fast for this high-frequency controller; qwen-local in candidate-5 reduced cloud cost but increased latency and reduced quality, so this proposal returns the controller to mini.",
+          "rewrite_question": "Prior all-mini-like candidate-2 left rewrite on qwen-local and saw no rewrite calls, while candidate-5 showed the rewrite branch can be exercised once and local rewrite was slow. gpt-4.1-mini is low-cost, has ample context, and should provide safer rewrite behavior than qwen-local without using expensive gpt-5.5."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 213,
+        "invocation_count": 213,
+        "mean_latency_seconds": 3.4178581666667016,
+        "median_latency_seconds": 2.877476542023942,
+        "p95_latency_seconds": 5.263542207889259,
+        "cloud_api_cost": 0.1375144,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 330602,
+        "output_tokens": 3296,
+        "total_tokens": 333898,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 89,
+            "latency_seconds": 85.2956617907621,
+            "cloud_api_cost": 0.058829200000000026,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 74,
+            "latency_seconds": 47.64382341597229,
+            "cloud_api_cost": 0.044083199999999996,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 50,
+            "latency_seconds": 30.790049748145975,
+            "cloud_api_cost": 0.034602,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.52,
+        "contains_gold_answer": 0.56,
+        "contains_partial_gold_answer": 0.64,
+        "answer_token_precision": 0.6566666666666667,
+        "answer_token_recall": 0.6416666666666667,
+        "answer_token_f1": 0.6398095238095238,
+        "supporting_title_hit": 0.84,
+        "supporting_title_recall": 0.63
+      }
+    },
+    {
+      "plan": {
+        "id": "candidate-7",
+        "description": "Expensive-router quality probe: keep gpt-4.1-mini for the high-frequency tool-calling initial controller to preserve the validated low-cost retrieval entry path, keep gpt-5.5 for final answer generation because it consistently improves answer quality, and move only the structured retrieval sufficiency router to gpt-5.5 while leaving rewrite local. This tests whether stronger post-retrieval branch decisions recover/support candidate-4-level quality or improve title recall without paying baseline cost on every unit.",
+        "assignments": {
+          "decide_after_retrieval": "gpt-5.5-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {
+          "decide_after_retrieval": "Prior best-quality hybrids used either gpt-4.1-mini or qwen-local here. Candidate-4 with qwen-local slightly improved exact match/F1 but increased latency; candidates 1/3 with mini were cheaper/faster and strong. This previously unevaluated placement assigns gpt-5.5 to the structured post-retrieval router to test whether stronger sufficiency/branch decisions improve routing quality and supporting-title behavior while avoiding baseline's expensive gpt-5.5 initial controller and rewrite usage. gpt-5.5 supports the required structured output and branch control.",
+          "generate_answer": "Retain gpt-5.5-cloud for the user-facing final answer because candidate-2/6 all-mini answer generation was much cheaper/faster but reduced exact match and F1, whereas candidates 1, 3, 4, and 5 recovered better quality with gpt-5.5 at this unit.",
+          "generate_query_or_respond": "Use gpt-4.1-mini-cloud for this high-frequency structural unit requiring tool calling. It has been validated in candidates 1-4 and 6 as capability-safe, fast, and very low cost compared with baseline gpt-5.5; qwen-local in candidate-5 reduced cloud cost but hurt latency and quality, so mini is the better controller trade-off for this probe.",
+          "rewrite_question": "Assign qwen-local because this non-user-facing rewrite requires no tool calling or structured output and has rarely or never been invoked in most runs. Candidate-5 showed local rewrite can be slow if used, but keeping it local avoids extra gpt-5.5 cost on a low-frequency path and makes this experiment isolate the value of the stronger retrieval sufficiency router."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 7,
+        "cloud_call_count": 212,
+        "invocation_count": 219,
+        "mean_latency_seconds": 10.213704228291753,
+        "median_latency_seconds": 7.219464583497029,
+        "p95_latency_seconds": 25.959550124942325,
+        "cloud_api_cost": 1.2756394,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 307365,
+        "output_tokens": 17276,
+        "total_tokens": 324641,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 95,
+            "latency_seconds": 174.21947004180402,
+            "cloud_api_cost": 0.05867439999999998,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 74,
+            "latency_seconds": 159.25222320237663,
+            "cloud_api_cost": 0.7044050000000003,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 43,
+            "latency_seconds": 118.60932616540231,
+            "cloud_api_cost": 0.5125599999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "rewrite_question": {
+            "invocation_count": 7,
+            "latency_seconds": 51.62028608319815,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.58,
+        "contains_gold_answer": 0.62,
+        "contains_partial_gold_answer": 0.74,
+        "answer_token_precision": 0.7344824604540611,
+        "answer_token_recall": 0.7353333333333333,
+        "answer_token_f1": 0.7123124522536287,
+        "supporting_title_hit": 0.78,
+        "supporting_title_recall": 0.62
+      }
+    },
+    {
+      "plan": {
+        "id": "candidate-8",
+        "description": "Full-local capability probe: assign qwen-local to every placement unit to measure the zero-cloud-cost endpoint across tool calling, structured post-retrieval routing, answer generation, and rewriting. This is a previously unevaluated extreme point on the cost frontier, contrasting with prior local-router and local-controller partial probes while respecting all declared endpoint capabilities.",
+        "assignments": {
+          "decide_after_retrieval": "qwen-local",
+          "generate_answer": "qwen-local",
+          "generate_query_or_respond": "qwen-local",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {
+          "decide_after_retrieval": "This unit requires structured output and branch control; qwen-local explicitly supports structured output and was capability-safe when used for this router in candidate-4. Candidate-4 achieved the best exact_match/F1 among evaluated plans despite higher local-router latency, so an all-local run can test whether routing remains acceptable when paired with local controller and answer generation, while eliminating router cloud cost entirely.",
+          "generate_answer": "This is the highest quality-risk change because prior mini answer generation reduced quality versus gpt-5.5, and qwen-local is smaller than mini. However, no evaluated plan has tested local final answer generation. Assigning qwen-local here maps the zero-cloud-cost extreme and determines whether retrieved-context extractive answers can be produced adequately by the local model, accepting likely quality loss for cost exploration.",
+          "generate_query_or_respond": "This structural entry unit requires tool calling and branch control; qwen-local declares tool_calling support and was capability-safe in candidate-5. Candidate-5 showed local controller increased latency and reduced quality relative to mini, but it also reduced cloud cost. Keeping it local here completes the zero-cloud-cost experiment and tests interactions with local routing/answering rather than isolating only the controller.",
+          "rewrite_question": "The rewrite step is non-user-facing and requires neither tools nor structured output. qwen-local has been used for rewrite in multiple prior candidates, including one observed invocation in candidate-5, with no validation failures. Local rewrite maintains zero cloud spend on the rare retry path."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 218,
+        "cloud_call_count": 0,
+        "invocation_count": 218,
+        "mean_latency_seconds": 9.2696395633067,
+        "median_latency_seconds": 7.620208500011358,
+        "p95_latency_seconds": 27.183126583928242,
+        "cloud_api_cost": 0,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 302164,
+        "output_tokens": 6249,
+        "total_tokens": 308413,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 93,
+            "latency_seconds": 237.7609637051355,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 78,
+            "latency_seconds": 122.44822949951049,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 47,
+            "latency_seconds": 96.4259021646576,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.3,
+        "contains_gold_answer": 0.42,
+        "contains_partial_gold_answer": 0.56,
+        "answer_token_precision": 0.5007799811142587,
+        "answer_token_recall": 0.5336666666666666,
+        "answer_token_f1": 0.49303487592219986,
+        "supporting_title_hit": 0.84,
+        "supporting_title_recall": 0.67
+      }
+    },
+    {
+      "plan": {
+        "id": "candidate-9",
+        "description": "Cloud-strong controller with local router: keep gpt-5.5 only for final answer generation, move the high-frequency initial tool-calling controller back to gpt-5.5 to test whether stronger first-hop retrieval/query decisions recover quality lost in local-controller and expensive-router probes, and use qwen-local for the structured post-retrieval sufficiency router plus rewrite to reduce cloud spend relative to baseline while exploring a previously unevaluated quality/cost/latency point.",
+        "assignments": {
+          "decide_after_retrieval": "qwen-local",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {
+          "decide_after_retrieval": "qwen-local supports structured output and has sufficient context for this non-user-facing branch-control router. Candidate-4 showed local post-retrieval routing was capability-safe and yielded the best observed aggregate exact match/F1, though with higher router latency; keeping it local reduces cloud cost versus gpt-4.1-mini/gpt-5.5 routing and distinguishes this proposal from prior mini-router and expensive-router configurations.",
+          "generate_answer": "Use gpt-5.5-cloud for the user-facing final answer. Runs with gpt-5.5 answer generation (candidates 1, 3, 4) consistently outperformed all-mini and all-local answer generation on exact match/F1, while candidate-4 in particular paired gpt-5.5 answering with local routing for the current best aggregate quality.",
+          "generate_query_or_respond": "Assign gpt-5.5-cloud to this structural tool-calling entry controller. Prior runs validated gpt-4.1-mini as cheap/fast and qwen-local as cost-saving but lower quality/higher latency; this previously unevaluated setting tests whether the strongest model's initial retrieval/tool decisions improve retrieval sufficiency and downstream answer quality enough to justify higher controller cost, while still avoiding baseline's gpt-5.5 post-retrieval router and rewrite cost.",
+          "rewrite_question": "Use qwen-local for this rare, non-user-facing rewrite path that requires neither tool calling nor structured output. It has been capability-safe in earlier candidates and keeps retry/rewrite cloud cost at zero; any quality risk is isolated to a low-frequency branch."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 66,
+        "cloud_call_count": 126,
+        "invocation_count": 192,
+        "mean_latency_seconds": 10.719363349117339,
+        "median_latency_seconds": 7.4409698540112,
+        "p95_latency_seconds": 26.610617415979505,
+        "cloud_api_cost": 1.44424,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 240761,
+        "output_tokens": 21980,
+        "total_tokens": 262741,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 93,
+            "latency_seconds": 239.51576629618648,
+            "cloud_api_cost": 0.8716549999999996,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 66,
+            "latency_seconds": 92.30729036813136,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 33,
+            "latency_seconds": 198.20250628876965,
+            "cloud_api_cost": 0.5725849999999999,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.34,
+        "contains_gold_answer": 0.56,
+        "contains_partial_gold_answer": 0.64,
+        "answer_token_precision": 0.5138628593628594,
+        "answer_token_recall": 0.657,
+        "answer_token_f1": 0.5268715874768506,
+        "supporting_title_hit": 0.72,
+        "supporting_title_recall": 0.5
+      }
+    },
+    {
+      "plan": {
+        "id": "candidate-10",
+        "description": "Mini answer with strongest cloud entry controller and local post-retrieval router: test whether gpt-5.5 initial tool/query decisions can improve retrieval while keeping final synthesis inexpensive, and use qwen-local for structured sufficiency routing plus rare rewrite to reduce cloud cost versus baseline and candidate-9. This is a previously unevaluated placement distinct from all prior assignment maps.",
+        "assignments": {
+          "decide_after_retrieval": "qwen-local",
+          "generate_answer": "gpt-4.1-mini-cloud",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "qwen-local"
+        },
+        "rationale": {
+          "decide_after_retrieval": "qwen-local supports structured output and has sufficient context for this non-user-facing branch-control router. Candidate-4 showed local sufficiency routing can be capability-safe and even competitive on aggregate answer quality when paired with strong answering, although it increases latency; retaining it here avoids the expensive gpt-5.5 router cost seen in baseline/candidate-7 and isolates the effect of a stronger initial controller with cheaper final answering.",
+          "generate_answer": "Use gpt-4.1-mini-cloud for final answer generation to explore a lower-cost/lower-latency synthesis trade-off. Candidate-2/6 showed mini answer generation gives very low cost and latency but lower quality than gpt-5.5; pairing it with gpt-5.5 initial retrieval control and local post-retrieval routing is unevaluated and tests whether improved first-hop retrieval can offset some answer-synthesis weakness while keeping cost below gpt-5.5-answer hybrids.",
+          "generate_query_or_respond": "Assign gpt-5.5-cloud to the high-frequency structural entry controller requiring tool calling and branch control. Candidate-9 tried this stronger controller with gpt-5.5 answering and local routing but quality/cost were poor; this proposal changes the answer unit to mini to map whether the expensive controller has any retrieval benefit under a much cheaper final-answer regime. gpt-5.5 satisfies tool-calling and context requirements.",
+          "rewrite_question": "Use qwen-local for the rare non-user-facing rewrite path, which requires no tool calling or structured output. It has been capability-safe in earlier candidates and keeps retry/rewrite cloud cost at zero; any latency/quality risk is confined to a low-frequency branch."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 70,
+        "cloud_call_count": 130,
+        "invocation_count": 200,
+        "mean_latency_seconds": 7.417610016614199,
+        "median_latency_seconds": 5.7610858749831095,
+        "p95_latency_seconds": 15.23781850002706,
+        "cloud_api_cost": 0.9266778,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 251831,
+        "output_tokens": 12273,
+        "total_tokens": 264104,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 94,
+            "latency_seconds": 246.99532225134317,
+            "cloud_api_cost": 0.9037449999999999,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 70,
+            "latency_seconds": 94.19927004200872,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 36,
+            "latency_seconds": 23.31941829121206,
+            "cloud_api_cost": 0.022932799999999996,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.38,
+        "contains_gold_answer": 0.56,
+        "contains_partial_gold_answer": 0.58,
+        "answer_token_precision": 0.5094466089466089,
+        "answer_token_recall": 0.6403333333333333,
+        "answer_token_f1": 0.5321874791874791,
+        "supporting_title_hit": 0.78,
+        "supporting_title_recall": 0.57
+      }
+    },
+    {
+      "plan": {
+        "id": "candidate-11",
+        "description": "Strong-cloud entry with validated mini post-retrieval support: use gpt-5.5 for the quality-critical initial tool/query controller and final answer generation, while keeping the structured sufficiency router and rare rewrite path on gpt-4.1-mini to avoid the local-router latency/quality instability and reduce cost versus the all-gpt-5.5 baseline. This previously unevaluated map probes whether stronger first-hop retrieval decisions can help when paired with the best answer generator, without also paying for gpt-5.5 routing/rewrite.",
+        "assignments": {
+          "decide_after_retrieval": "gpt-4.1-mini-cloud",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-5.5-cloud",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {
+          "decide_after_retrieval": "Assign gpt-4.1-mini-cloud because it supports structured output and branch-control requirements and was consistently capability-safe in candidates 1, 2, 3, 5, and 6. The expensive gpt-5.5 router in candidate-7 increased cost/latency without quality gains, while qwen-local routing in candidate-4 was sometimes strong but slower and unstable in later strong-controller variants; mini is the more balanced post-retrieval router for this probe.",
+          "generate_answer": "Use gpt-5.5-cloud for final answer generation because evaluated runs with gpt-5.5 answering generally dominated mini/local answering on exact match and F1, with candidate-4 reaching the best observed aggregate quality and candidates 1/3 also strong. This preserves the quality-critical user-facing synthesis step while other placements test routing trade-offs.",
+          "generate_query_or_respond": "Assign gpt-5.5-cloud to the initial retrieval controller to explore whether the strongest tool-capable model can improve first-hop query/tool decisions when not paired with the slower local post-retrieval router used in candidates 9 and 10. This unit requires tool calling and branch control, both supported by gpt-5.5; the placement is deliberately a quality-oriented cost/latency trade-off compared with mini-controller candidates.",
+          "rewrite_question": "Use gpt-4.1-mini-cloud for rewrite_question. The branch is rare but has been observed, and candidate-5 showed local rewrite can be slow. Mini has ample context, low cost, and should be more reliable than qwen-local for query reformulation, while avoiding the high gpt-5.5 rewrite costs from the baseline."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 0,
+        "cloud_call_count": 197,
+        "invocation_count": 197,
+        "mean_latency_seconds": 9.031777487478685,
+        "median_latency_seconds": 6.240187374467496,
+        "p95_latency_seconds": 26.968457916053012,
+        "cloud_api_cost": 1.4030124,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 242647,
+        "output_tokens": 19870,
+        "total_tokens": 262517,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 86,
+            "latency_seconds": 219.4261521671433,
+            "cloud_api_cost": 0.7841400000000001,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 69,
+            "latency_seconds": 45.45210362796206,
+            "cloud_api_cost": 0.034972400000000015,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 42,
+            "latency_seconds": 180.81339083286002,
+            "cloud_api_cost": 0.5839000000000002,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.5,
+        "contains_gold_answer": 0.6,
+        "contains_partial_gold_answer": 0.68,
+        "answer_token_precision": 0.657469696969697,
+        "answer_token_recall": 0.687,
+        "answer_token_f1": 0.643051282051282,
+        "supporting_title_hit": 0.84,
+        "supporting_title_recall": 0.6
+      }
+    },
+    {
+      "plan": {
+        "id": "candidate-12",
+        "description": "Best-quality hybrid with cloud rewrite safety: keep the candidate-4 pattern that produced the strongest observed aggregate exact match/F1 by using qwen-local for structured post-retrieval sufficiency routing, gpt-5.5 for final answer generation, and gpt-4.1-mini for the high-frequency initial tool controller; change only the rare rewrite path from local to gpt-4.1-mini to reduce rewrite latency/quality risk if that branch is exercised while remaining far cheaper than all-gpt-5.5.",
+        "assignments": {
+          "decide_after_retrieval": "qwen-local",
+          "generate_answer": "gpt-5.5-cloud",
+          "generate_query_or_respond": "gpt-4.1-mini-cloud",
+          "rewrite_question": "gpt-4.1-mini-cloud"
+        },
+        "rationale": {
+          "decide_after_retrieval": "qwen-local supports the required structured output and has already been capability-safe for this branch-control router. Candidate-4, which used local post-retrieval routing with gpt-5.5 answering and mini initial control, achieved the best observed exact_match (0.66) and answer F1 (~0.781), suggesting the local router is worth re-testing despite higher router latency.",
+          "generate_answer": "Retain gpt-5.5-cloud for the user-facing final answer because runs with gpt-5.5 answer generation consistently outperformed mini/local answer generation on aggregate quality; candidate-2/6 all-mini answers were much cheaper and faster but had lower exact match/F1, and all-local answering degraded substantially.",
+          "generate_query_or_respond": "Use gpt-4.1-mini-cloud for the high-frequency structural entry controller requiring tool calling. It has been validated across multiple runs as capability-safe, low-cost, and faster than gpt-5.5, while qwen-local in candidate-5 increased latency and reduced quality. This preserves the proven controller trade-off from candidates 1, 3, and 4.",
+          "rewrite_question": "Switch rewrite_question to gpt-4.1-mini-cloud rather than qwen-local. The branch is rare, but candidate-5 and candidate-7 show rewrite can be invoked and local rewrite can be slow; mini is low-cost, has ample context, and should be more reliable for reformulation without paying gpt-5.5 rewrite cost. This assignment map has not been evaluated previously."
+        },
+        "source": "candidate"
+      },
+      "metrics": {
+        "run_count": 50,
+        "failed_run_count": 0,
+        "local_call_count": 78,
+        "cloud_call_count": 143,
+        "invocation_count": 221,
+        "mean_latency_seconds": 8.598326285120566,
+        "median_latency_seconds": 6.656463999999687,
+        "p95_latency_seconds": 15.461349582998082,
+        "cloud_api_cost": 0.8023506,
+        "cloud_api_cost_unknown": false,
+        "input_tokens": 328713,
+        "output_tokens": 14643,
+        "total_tokens": 343356,
+        "per_placement_unit": {
+          "generate_query_or_respond": {
+            "invocation_count": 94,
+            "latency_seconds": 98.16487354179844,
+            "cloud_api_cost": 0.06022560000000002,
+            "cloud_api_cost_unknown": false
+          },
+          "decide_after_retrieval": {
+            "invocation_count": 78,
+            "latency_seconds": 120.21774966921657,
+            "cloud_api_cost": 0.0,
+            "cloud_api_cost_unknown": false
+          },
+          "generate_answer": {
+            "invocation_count": 49,
+            "latency_seconds": 204.33890987478662,
+            "cloud_api_cost": 0.7421249999999999,
+            "cloud_api_cost_unknown": false
+          }
+        },
+        "exact_match": 0.64,
+        "contains_gold_answer": 0.68,
+        "contains_partial_gold_answer": 0.78,
+        "answer_token_precision": 0.7741496598639457,
+        "answer_token_recall": 0.7603333333333333,
+        "answer_token_f1": 0.7497114845938375,
+        "supporting_title_hit": 0.78,
+        "supporting_title_recall": 0.6
+      }
+    }
+  ],
+  "compiler_attempts": [
+    {
+      "iteration": 1,
+      "attempt": 1,
+      "accepted": true,
+      "proposal_latency_seconds": 4.808126708026975,
+      "prompt_tokens": 8753,
+      "completion_tokens": 339,
+      "total_tokens": 9092,
+      "api_cost": 0.053935,
+      "cost_known": true,
+      "validation_errors": [],
+      "duplicate_proposal": false
+    },
+    {
+      "iteration": 2,
+      "attempt": 1,
+      "accepted": true,
+      "proposal_latency_seconds": 5.645919875008985,
+      "prompt_tokens": 16370,
+      "completion_tokens": 361,
+      "total_tokens": 16731,
+      "api_cost": 0.09267999999999998,
+      "cost_known": true,
+      "validation_errors": [],
+      "duplicate_proposal": false
+    },
+    {
+      "iteration": 3,
+      "attempt": 1,
+      "accepted": true,
+      "proposal_latency_seconds": 5.913108957931399,
+      "prompt_tokens": 24023,
+      "completion_tokens": 423,
+      "total_tokens": 24446,
+      "api_cost": 0.132805,
+      "cost_known": true,
+      "validation_errors": [],
+      "duplicate_proposal": false
+    },
+    {
+      "iteration": 4,
+      "attempt": 1,
+      "accepted": false,
+      "proposal_latency_seconds": 7.077232333016582,
+      "prompt_tokens": 31722,
+      "completion_tokens": 435,
+      "total_tokens": 32157,
+      "api_cost": 0.17166,
+      "cost_known": true,
+      "validation_errors": [
+        "duplicates an evaluated placement"
+      ],
+      "duplicate_proposal": true
+    },
+    {
+      "iteration": 4,
+      "attempt": 2,
+      "accepted": true,
+      "proposal_latency_seconds": 6.602966208010912,
+      "prompt_tokens": 31731,
+      "completion_tokens": 447,
+      "total_tokens": 32178,
+      "api_cost": 0.17206500000000002,
+      "cost_known": true,
+      "validation_errors": [],
+      "duplicate_proposal": false
+    },
+    {
+      "iteration": 5,
+      "attempt": 1,
+      "accepted": true,
+      "proposal_latency_seconds": 7.650211208034307,
+      "prompt_tokens": 39445,
+      "completion_tokens": 474,
+      "total_tokens": 39919,
+      "api_cost": 0.21144500000000002,
+      "cost_known": true,
+      "validation_errors": [],
+      "duplicate_proposal": false
+    },
+    {
+      "iteration": 6,
+      "attempt": 1,
+      "accepted": true,
+      "proposal_latency_seconds": 7.257580625009723,
+      "prompt_tokens": 47264,
+      "completion_tokens": 445,
+      "total_tokens": 47709,
+      "api_cost": 0.24967,
+      "cost_known": true,
+      "validation_errors": [],
+      "duplicate_proposal": false
+    },
+    {
+      "iteration": 7,
+      "attempt": 1,
+      "accepted": true,
+      "proposal_latency_seconds": 8.173836958012544,
+      "prompt_tokens": 54991,
+      "completion_tokens": 530,
+      "total_tokens": 55521,
+      "api_cost": 0.29085500000000003,
+      "cost_known": true,
+      "validation_errors": [],
+      "duplicate_proposal": false
+    },
+    {
+      "iteration": 8,
+      "attempt": 1,
+      "accepted": true,
+      "proposal_latency_seconds": 8.15996883297339,
+      "prompt_tokens": 62863,
+      "completion_tokens": 433,
+      "total_tokens": 63296,
+      "api_cost": 0.327305,
+      "cost_known": true,
+      "validation_errors": [],
+      "duplicate_proposal": false
+    },
+    {
+      "iteration": 9,
+      "attempt": 1,
+      "accepted": true,
+      "proposal_latency_seconds": 7.517948166001588,
+      "prompt_tokens": 70615,
+      "completion_tokens": 490,
+      "total_tokens": 71105,
+      "api_cost": 0.36777499999999996,
+      "cost_known": true,
+      "validation_errors": [],
+      "duplicate_proposal": false
+    },
+    {
+      "iteration": 10,
+      "attempt": 1,
+      "accepted": true,
+      "proposal_latency_seconds": 7.766159542021342,
+      "prompt_tokens": 78457,
+      "completion_tokens": 489,
+      "total_tokens": 78946,
+      "api_cost": 0.406955,
+      "cost_known": true,
+      "validation_errors": [],
+      "duplicate_proposal": false
+    },
+    {
+      "iteration": 11,
+      "attempt": 1,
+      "accepted": true,
+      "proposal_latency_seconds": 8.262938041938469,
+      "prompt_tokens": 86272,
+      "completion_tokens": 536,
+      "total_tokens": 86808,
+      "api_cost": 0.44744,
+      "cost_known": true,
+      "validation_errors": [],
+      "duplicate_proposal": false
+    },
+    {
+      "iteration": 12,
+      "attempt": 1,
+      "accepted": true,
+      "proposal_latency_seconds": 11.393998500076123,
+      "prompt_tokens": 94117,
+      "completion_tokens": 848,
+      "total_tokens": 94965,
+      "api_cost": 0.49602500000000005,
+      "cost_known": true,
+      "validation_errors": [],
+      "duplicate_proposal": false
+    }
+  ],
+  "compilation_metrics": {
+    "attempt_count": 13,
+    "validation_error_count": 1,
+    "duplicate_proposal_count": 1,
+    "compiler_prompt_tokens": 646623,
+    "compiler_completion_tokens": 6250,
+    "compiler_total_tokens": 652873,
+    "compiler_token_usage_unknown": false,
+    "direct_compiler_api_cost": 3.420615,
+    "direct_compiler_api_cost_unknown": false,
+    "compiler_proposal_latency_seconds": 96.22999595606234,
+    "workflow_profiling_api_cost": 11.2186838,
+    "workflow_profiling_api_cost_unknown": false,
+    "workflow_profiling_elapsed_seconds": 5181.352506375988,
+    "total_compilation_api_cost": 14.6392988,
+    "total_compilation_api_cost_unknown": false,
+    "total_compilation_elapsed_seconds": 5277.58250233205
+  }
+}

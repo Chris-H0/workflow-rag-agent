@@ -5,7 +5,7 @@ model_endpoints:
     provider: ollama
     context_window: 32768
     tool_calling: true
-    structured_output: false
+    structured_output: true
     input_cost_per_million_tokens: 0
     output_cost_per_million_tokens: 0
     model_kwargs:

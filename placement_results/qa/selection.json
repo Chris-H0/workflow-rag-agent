@@ -1,0 +1,171 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-25T10:19:40.925998+00:00",
+  "workflow": "qa",
+  "result_root": "/Users/chris/Documents/GitHub/workflow-rag-agent/placement_results/qa",
+  "selection_protocol": {
+    "quality_retention": 0.95,
+    "primary_quality_metric": "answer_token_f1",
+    "secondary_quality_metric": "exact_match",
+    "exhaustive_baseline_answer_token_f1": 0.6363374403374403,
+    "quality_threshold": 0.6045205683205683,
+    "seed_43": "GGGG plus four representative sequence-1 proposals",
+    "seed_56": "GGGG plus the best compiled non-Qwen and Qwen-inclusive hybrids across all three sequences, scored in the exhaustive table"
+  },
+  "holdout_seed_43": [
+    {
+      "label": "strongest-cloud reference",
+      "exhaustive_plan_id": "placement-001",
+      "compiler_sequence": null,
+      "compiler_plan_id": null,
+      "assignments": {
+        "decide_after_retrieval": "gpt-5.5-cloud",
+        "generate_answer": "gpt-5.5-cloud",
+        "generate_query_or_respond": "gpt-5.5-cloud",
+        "rewrite_question": "gpt-5.5-cloud"
+      },
+      "quality_feasible": true,
+      "exhaustive_metrics": {
+        "answer_token_f1": 0.6363374403374403,
+        "exact_match": 0.5,
+        "cloud_api_cost": 2.20145,
+        "mean_latency_seconds": 14.173876862518956
+      }
+    },
+    {
+      "label": "best quality-feasible non-Qwen proposal",
+      "exhaustive_plan_id": "placement-032",
+      "compiler_sequence": 1,
+      "compiler_plan_id": "candidate-6",
+      "assignments": {
+        "decide_after_retrieval": "gpt-4.1-mini-cloud",
+        "generate_answer": "gpt-5.5-cloud",
+        "generate_query_or_respond": "gpt-4.1-mini-cloud",
+        "rewrite_question": "gpt-4.1-mini-cloud"
+      },
+      "quality_feasible": true,
+      "exhaustive_metrics": {
+        "answer_token_f1": 0.8348095238095238,
+        "exact_match": 0.7,
+        "cloud_api_cost": 0.7226796,
+        "mean_latency_seconds": 6.277259429176338
+      }
+    },
+    {
+      "label": "cheapest remaining non-Qwen proposal",
+      "exhaustive_plan_id": "placement-041",
+      "compiler_sequence": 1,
+      "compiler_plan_id": "candidate-2",
+      "assignments": {
+        "decide_after_retrieval": "gpt-4.1-mini-cloud",
+        "generate_answer": "gpt-4.1-mini-cloud",
+        "generate_query_or_respond": "gpt-4.1-mini-cloud",
+        "rewrite_question": "gpt-4.1-mini-cloud"
+      },
+      "quality_feasible": true,
+      "exhaustive_metrics": {
+        "answer_token_f1": 0.6996240601503758,
+        "exact_match": 0.58,
+        "cloud_api_cost": 0.126948,
+        "mean_latency_seconds": 3.341717985875439
+      }
+    },
+    {
+      "label": "best quality-feasible Qwen-inclusive proposal",
+      "exhaustive_plan_id": "placement-033",
+      "compiler_sequence": 1,
+      "compiler_plan_id": "candidate-1",
+      "assignments": {
+        "decide_after_retrieval": "gpt-4.1-mini-cloud",
+        "generate_answer": "gpt-5.5-cloud",
+        "generate_query_or_respond": "gpt-4.1-mini-cloud",
+        "rewrite_question": "qwen-local"
+      },
+      "quality_feasible": true,
+      "exhaustive_metrics": {
+        "answer_token_f1": 0.7754761904761905,
+        "exact_match": 0.64,
+        "cloud_api_cost": 0.7293398,
+        "mean_latency_seconds": 6.798954556689132
+      }
+    },
+    {
+      "label": "cheapest remaining Qwen-inclusive proposal",
+      "exhaustive_plan_id": "placement-068",
+      "compiler_sequence": 1,
+      "compiler_plan_id": "candidate-12",
+      "assignments": {
+        "decide_after_retrieval": "qwen-local",
+        "generate_answer": "gpt-4.1-mini-cloud",
+        "generate_query_or_respond": "gpt-4.1-mini-cloud",
+        "rewrite_question": "gpt-4.1-mini-cloud"
+      },
+      "quality_feasible": true,
+      "exhaustive_metrics": {
+        "answer_token_f1": 0.6264761904761904,
+        "exact_match": 0.52,
+        "cloud_api_cost": 0.08824560000000001,
+        "mean_latency_seconds": 4.624018474167679
+      }
+    }
+  ],
+  "holdout_seed_56_and_repeats": [
+    {
+      "label": "strongest-cloud reference",
+      "exhaustive_plan_id": "placement-001",
+      "compiler_sequence": null,
+      "compiler_plan_id": null,
+      "assignments": {
+        "decide_after_retrieval": "gpt-5.5-cloud",
+        "generate_answer": "gpt-5.5-cloud",
+        "generate_query_or_respond": "gpt-5.5-cloud",
+        "rewrite_question": "gpt-5.5-cloud"
+      },
+      "quality_feasible": true,
+      "exhaustive_metrics": {
+        "answer_token_f1": 0.6363374403374403,
+        "exact_match": 0.5,
+        "cloud_api_cost": 2.20145,
+        "mean_latency_seconds": 14.173876862518956
+      }
+    },
+    {
+      "label": "best compiled non-Qwen hybrid",
+      "exhaustive_plan_id": "placement-032",
+      "compiler_sequence": 1,
+      "compiler_plan_id": "candidate-6",
+      "assignments": {
+        "decide_after_retrieval": "gpt-4.1-mini-cloud",
+        "generate_answer": "gpt-5.5-cloud",
+        "generate_query_or_respond": "gpt-4.1-mini-cloud",
+        "rewrite_question": "gpt-4.1-mini-cloud"
+      },
+      "quality_feasible": true,
+      "exhaustive_metrics": {
+        "answer_token_f1": 0.8348095238095238,
+        "exact_match": 0.7,
+        "cloud_api_cost": 0.7226796,
+        "mean_latency_seconds": 6.277259429176338
+      }
+    },
+    {
+      "label": "best compiled Qwen-inclusive hybrid",
+      "exhaustive_plan_id": "placement-033",
+      "compiler_sequence": 1,
+      "compiler_plan_id": "candidate-1",
+      "assignments": {
+        "decide_after_retrieval": "gpt-4.1-mini-cloud",
+        "generate_answer": "gpt-5.5-cloud",
+        "generate_query_or_respond": "gpt-4.1-mini-cloud",
+        "rewrite_question": "qwen-local"
+      },
+      "quality_feasible": true,
+      "exhaustive_metrics": {
+        "answer_token_f1": 0.7754761904761905,
+        "exact_match": 0.64,
+        "cloud_api_cost": 0.7293398,
+        "mean_latency_seconds": 6.798954556689132
+      }
+    }
+  ]
+}

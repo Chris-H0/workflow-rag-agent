@@ -73,7 +73,7 @@ def enumerate_valid_plans(
 def run_exhaustive(
     *,
     config: PipelineConfig,
-    source_results_path: Path,
+    source_results_path: Path | None,
     output_dir: Path,
 ) -> dict[str, Path]:
     _load_dotenvs(config.workflow)
@@ -93,7 +93,7 @@ def run_exhaustive(
         config.strongest_cloud_endpoint,
     )
 
-    results, runs = _load_or_seed_results(
+    results, runs, reused_placement_count = _load_or_seed_results(
         output_dir=output_dir,
         source_results_path=source_results_path,
         selected_example_ids=selected_example_ids,
@@ -109,6 +109,7 @@ def run_exhaustive(
         runs=runs,
         output_dir=output_dir,
         source_results_path=source_results_path,
+        reused_placement_count=reused_placement_count,
     )
 
     completed = {_signature(result.plan, workflow) for result in results}
@@ -134,6 +135,7 @@ def run_exhaustive(
             runs=runs,
             output_dir=output_dir,
             source_results_path=source_results_path,
+            reused_placement_count=reused_placement_count,
         )
         metrics = result.metrics
         print(
@@ -158,14 +160,27 @@ def run_exhaustive(
 def _load_or_seed_results(
     *,
     output_dir: Path,
-    source_results_path: Path,
+    source_results_path: Path | None,
     selected_example_ids: list[str],
     plans: list[PlacementPlan],
     expected_runs_per_plan: int,
-) -> tuple[list[PlanResult], list[RunRecord]]:
+) -> tuple[list[PlanResult], list[RunRecord], int]:
     checkpoint_path = output_dir / "results.json"
     if checkpoint_path.exists():
-        return _load_artifact(checkpoint_path, selected_example_ids, expected_runs_per_plan)
+        artifact = SearchArtifact.model_validate_json(checkpoint_path.read_text())
+        results, runs = _load_artifact(
+            checkpoint_path,
+            selected_example_ids,
+            expected_runs_per_plan,
+        )
+        return (
+            results,
+            runs,
+            int(artifact.search_config.get("reused_placement_count", 0)),
+        )
+
+    if source_results_path is None:
+        return [], [], 0
 
     source_artifact, source_runs = _load_artifact(
         source_results_path,
@@ -213,7 +228,7 @@ def _load_or_seed_results(
             )
             for run in source_runs_by_id[source_id]
         )
-    return results, runs
+    return results, runs, len(results)
 
 
 def _load_artifact(
@@ -255,7 +270,8 @@ def _write_checkpoint(
     results: list[PlanResult],
     runs: list[RunRecord],
     output_dir: Path,
-    source_results_path: Path,
+    source_results_path: Path | None,
+    reused_placement_count: int,
 ) -> dict[str, Path]:
     plan_order = {
         _signature(plan, driver.metadata()): index
@@ -270,20 +286,27 @@ def _write_checkpoint(
         runs,
         key=lambda run: (run_order[run.plan_id], run.repeat, run.example_id),
     )
+    search_config = {
+        "kind": "exhaustive_valid_placement_evaluation",
+        "models": str(config.models),
+        "strongest_cloud_endpoint": config.strongest_cloud_endpoint,
+        "sample_size": config.sample_size,
+        "seed": config.seed,
+        "repeats": config.repeats,
+        "warmup_runs": config.warmup_runs,
+        "valid_placement_count": len(plans),
+        "reused_placement_count": reused_placement_count,
+        "newly_evaluated_placement_count": (
+            len(ordered_results) - reused_placement_count
+        ),
+    }
+    if source_results_path is not None:
+        search_config["source_results"] = str(source_results_path)
+
     artifact = SearchArtifact(
         workflow_id=driver.metadata().workflow_id,
         workflow=config.workflow,
-        search_config={
-            "kind": "exhaustive_valid_placement_evaluation",
-            "models": str(config.models),
-            "strongest_cloud_endpoint": config.strongest_cloud_endpoint,
-            "sample_size": config.sample_size,
-            "seed": config.seed,
-            "repeats": config.repeats,
-            "warmup_runs": config.warmup_runs,
-            "valid_placement_count": len(plans),
-            "source_results": str(source_results_path),
-        },
+        search_config=search_config,
         primary_metric=driver.primary_metric,
         selected_example_ids=selected_example_ids,
         results=ordered_results,
@@ -312,12 +335,14 @@ def _load_dotenvs(workflow: str) -> None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", required=True)
-    parser.add_argument("--source-results", required=True, type=Path)
+    parser.add_argument("--source-results", type=Path)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
     paths = run_exhaustive(
         config=load_pipeline_config(args.config),
-        source_results_path=args.source_results.resolve(),
+        source_results_path=(
+            args.source_results.resolve() if args.source_results is not None else None
+        ),
         output_dir=args.output.resolve(),
     )
     print(f"Wrote exhaustive results to {paths['results']}")
