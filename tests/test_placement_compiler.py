@@ -101,6 +101,10 @@ class PlacementCompilerTests(unittest.TestCase):
         )
         self.assertTrue(units["generate_query_or_respond"].tool_use)
         self.assertTrue(units["decide_after_retrieval"].structured_output_required)
+        self.assertEqual(
+            load_workflow_driver("qa").primary_metric.name,
+            "answer_token_f1",
+        )
 
         code_metadata = load_workflow_driver("code").metadata()
         units = {unit.id: unit for unit in code_metadata.placement_units}
@@ -194,6 +198,7 @@ class PlacementCompilerTests(unittest.TestCase):
             "placement_compiler/examples/model_endpoints.yaml"
         )
         qwen = next(endpoint for endpoint in endpoints if endpoint.id == "qwen-local")
+        self.assertTrue(qwen.structured_output)
         self.assertEqual(qwen.model_kwargs["num_predict"], 768)
         qwen_configs = [
             config
@@ -218,6 +223,27 @@ class PlacementCompilerTests(unittest.TestCase):
         self.assertEqual(config.strongest_cloud_endpoint, "gpt-5.5-cloud")
         self.assertEqual(config.compiler.model, "gpt-5.5")
         self.assertEqual(config.max_attempts, 3)
+
+    def test_structured_qa_configs_are_three_independent_full_searches(self):
+        outputs = set()
+        for sequence in range(1, 4):
+            config = load_pipeline_config(
+                "placement_compiler/examples/"
+                f"qa_pipeline_structured_v2_{sequence:02d}.yaml"
+            )
+            self.assertEqual(config.workflow, "qa")
+            self.assertEqual(config.sample_size, 50)
+            self.assertEqual(config.iterations, 12)
+            self.assertEqual(config.seed, 42)
+            self.assertEqual(config.repeats, 1)
+            outputs.add(config.output)
+
+        self.assertEqual(len(outputs), 3)
+        self.assertEqual(
+            {output.name for output in outputs},
+            {"compiler-sequence-01", "compiler-sequence-02", "compiler-sequence-03"},
+        )
+        self.assertTrue(all(output.parent.name == "qa" for output in outputs))
 
 
 if __name__ == "__main__":

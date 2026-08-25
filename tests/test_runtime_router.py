@@ -145,10 +145,18 @@ def workflow() -> WorkflowMetadata:
     )
 
 
-def resolver(*choices: str, include_full_workflow_metadata: bool = False):
+def resolver(
+    *choices: str,
+    include_full_workflow_metadata: bool = False,
+    local_structured_output: bool = False,
+):
     state = FakeState(*choices)
     endpoints = [
-        endpoint("qwen-local", location="local", structured_output=False),
+        endpoint(
+            "qwen-local",
+            location="local",
+            structured_output=local_structured_output,
+        ),
         endpoint("mini-cloud", location="cloud", structured_output=True),
         endpoint("strong-cloud", location="cloud", structured_output=True),
     ]
@@ -236,6 +244,24 @@ class RuntimeRouterTests(unittest.TestCase):
         self.assertEqual(collector.invocations[-1].endpoint_id, "mini-cloud")
         self.assertNotIn('"id": "qwen-local"', state.calls[0]["text"])
 
+    def test_structured_node_can_route_to_capable_local_endpoint(self):
+        runtime_resolver, state, collector = resolver(
+            "qwen-local",
+            local_structured_output=True,
+        )
+
+        response = runtime_resolver.get_model("structured_node").with_structured_output(
+            StructuredAnswer
+        ).invoke([{"role": "user", "content": "choose an action"}])
+
+        self.assertEqual(response.decision, "answer")
+        self.assertEqual(
+            runtime_resolver.decisions[0]["compatible_endpoint_ids"],
+            ["qwen-local", "mini-cloud", "strong-cloud"],
+        )
+        self.assertEqual(collector.invocations[-1].endpoint_id, "qwen-local")
+        self.assertIn('"id": "qwen-local"', state.calls[0]["text"])
+
     def test_invalid_judge_choice_falls_back_once_to_strong_model(self):
         runtime_resolver, _, collector = resolver("not-an-endpoint")
 
@@ -290,6 +316,25 @@ class RuntimeRouterTests(unittest.TestCase):
             self.assertEqual(graph_config.repeats, 2)
             self.assertTrue(graph_config.include_full_workflow_metadata)
             self.assertIn("runtime-routing-workflow-context", str(graph_config.output))
+
+    def test_structured_qa_runtime_configs_use_seed_56_final_outputs(self):
+        current = load_runtime_routing_config(
+            "placement_compiler/examples/qa_runtime_router_structured_v2.yaml"
+        )
+        graph = load_runtime_routing_config(
+            "placement_compiler/examples/"
+            "qa_runtime_router_workflow_context_structured_v2.yaml"
+        )
+
+        for config in (current, graph):
+            self.assertEqual(config.workflow, "qa")
+            self.assertEqual(config.sample_size, 50)
+            self.assertEqual(config.repeats, 2)
+            self.assertEqual(config.holdout_seed, 56)
+            self.assertEqual(config.output.parent.name, "qa")
+            self.assertEqual(config.source_results.parent.parent.name, "qa")
+        self.assertFalse(current.include_full_workflow_metadata)
+        self.assertTrue(graph.include_full_workflow_metadata)
 
 
 if __name__ == "__main__":

@@ -441,6 +441,7 @@ class PlacementProfilerTests(unittest.TestCase):
             )
             second_prompt = qa_llm.messages[2][1]["content"]
             self.assertIn("candidate-1", second_prompt)
+            self.assertIn("answer_token_f1", second_prompt)
             self.assertIn("exact_match", second_prompt)
             self.assertIn("qa-smoke", second_prompt)
             compilation = qa_results["compilation_metrics"]
