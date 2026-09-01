@@ -1,0 +1,1335 @@
+{
+  "schema_version": "1.0",
+  "kind": "unprofiled_compiler_proposals",
+  "workflow": "code",
+  "metadata_mode": "full",
+  "sequence_count": 3,
+  "proposal_count": 12,
+  "compiler": {
+    "provider": "openai",
+    "model": "gpt-5.5",
+    "temperature": 0.0,
+    "structured_output_method": "function_calling",
+    "model_kwargs": {}
+  },
+  "prompt_context": {
+    "workflow": {
+      "workflow_id": "code-workflow",
+      "placement_units": [
+        {
+          "semantic_role": "test generation",
+          "description": "Generates tests for the current solution.",
+          "user_facing_output": false,
+          "tool_use": false,
+          "structured_output_required": false,
+          "branch_control": false,
+          "id": "generate_tests",
+          "structural": true
+        },
+        {
+          "semantic_role": "solution implementation",
+          "description": "Generates or revises the final scored Python solution.",
+          "user_facing_output": true,
+          "tool_use": false,
+          "structured_output_required": false,
+          "branch_control": false,
+          "id": "implement_solution",
+          "structural": true
+        },
+        {
+          "semantic_role": "solution review and routing",
+          "description": "Reviews test results and decides whether to revise or finish.",
+          "user_facing_output": false,
+          "tool_use": false,
+          "structured_output_required": false,
+          "branch_control": true,
+          "id": "review_solution",
+          "structural": true
+        },
+        {
+          "semantic_role": "task understanding and planning",
+          "description": "Creates a plan for solving the programming task.",
+          "user_facing_output": false,
+          "tool_use": false,
+          "structured_output_required": false,
+          "branch_control": false,
+          "id": "understand_and_plan",
+          "structural": true
+        }
+      ],
+      "edges": [
+        {
+          "source": "generate_tests",
+          "target": "run_tests",
+          "conditional": false
+        },
+        {
+          "source": "implement_solution",
+          "target": "generate_tests",
+          "conditional": false
+        },
+        {
+          "source": "review_solution",
+          "target": "implement_solution",
+          "conditional": true
+        },
+        {
+          "source": "run_tests",
+          "target": "review_solution",
+          "conditional": false
+        },
+        {
+          "source": "understand_and_plan",
+          "target": "implement_solution",
+          "conditional": false
+        }
+      ],
+      "entry_nodes": [
+        "understand_and_plan"
+      ],
+      "terminal_nodes": [
+        "review_solution"
+      ],
+      "conditional_edges": [
+        {
+          "source": "review_solution",
+          "target": "implement_solution",
+          "conditional": true
+        }
+      ]
+    },
+    "model_endpoints": [
+      {
+        "id": "qwen-local",
+        "model": "qwen3.5:2b",
+        "location": "local",
+        "provider": "ollama",
+        "context_window": 32768,
+        "tool_calling": true,
+        "structured_output": true,
+        "input_cost_per_million_tokens": 0.0,
+        "output_cost_per_million_tokens": 0.0,
+        "model_kwargs": {
+          "temperature": 0,
+          "thinking": false,
+          "reasoning": false,
+          "num_predict": 768
+        }
+      },
+      {
+        "id": "gpt-4.1-mini-cloud",
+        "model": "gpt-4.1-mini",
+        "location": "cloud",
+        "provider": "openai",
+        "context_window": 1047576,
+        "tool_calling": true,
+        "structured_output": true,
+        "input_cost_per_million_tokens": 0.4,
+        "output_cost_per_million_tokens": 1.6,
+        "model_kwargs": {}
+      },
+      {
+        "id": "gpt-5.5-cloud",
+        "model": "gpt-5.5",
+        "location": "cloud",
+        "provider": "openai",
+        "context_window": 400000,
+        "tool_calling": true,
+        "structured_output": true,
+        "input_cost_per_million_tokens": 5.0,
+        "output_cost_per_million_tokens": 30.0,
+        "model_kwargs": {}
+      }
+    ],
+    "unit_identifier_map": {
+      "generate_tests": "generate_tests",
+      "implement_solution": "implement_solution",
+      "review_solution": "review_solution",
+      "understand_and_plan": "understand_and_plan"
+    },
+    "endpoint_identifier_map": {
+      "qwen-local": "qwen-local",
+      "gpt-4.1-mini-cloud": "gpt-4.1-mini-cloud",
+      "gpt-5.5-cloud": "gpt-5.5-cloud"
+    }
+  },
+  "baseline_supplied": false,
+  "evaluated_results_supplied": false,
+  "prompt_builder": "placement_compiler.generation.candidates.CandidateGenerator._build_messages",
+  "sequences": [
+    {
+      "sequence": 1,
+      "proposals": [
+        {
+          "id": "sequence-01-proposal-01",
+          "description": "Initial unexplored placement prioritizing solution quality by assigning implementation to gpt-5.5-cloud, while using gpt-4.1-mini-cloud for planning, test generation, and review to control cloud cost relative to an all-premium setup.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Use the low-cost cloud model for planning: it has ample context and should provide stronger task decomposition than the small local model without incurring premium-model cost.",
+            "implement_solution": "Place the user-facing scored implementation on the strongest available model to maximize correctness in the absence of prior evaluations.",
+            "generate_tests": "Use gpt-4.1-mini for test generation to balance quality and cost; tests benefit from broad capability but do not require the premium model initially.",
+            "review_solution": "Use gpt-4.1-mini for branch-control review because it supports the needed capabilities and offers a cost/latency trade-off while reserving gpt-5.5 for implementation."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-02",
+          "description": "Quality-focused implementation with cheaper/free local test generation and mid-tier cloud planning/review routing.",
+          "assignments": {
+            "understand_and_plan": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-5.5-cloud",
+            "generate_tests": "qwen-local",
+            "review_solution": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Use gpt-4.1-mini-cloud for strong task comprehension and planning at modest cost; no need for the most expensive model before code generation.",
+            "implement_solution": "Use gpt-5.5-cloud for the user-facing final Python solution, where code correctness is likely most sensitive to model quality.",
+            "generate_tests": "Use qwen-local for non-user-facing test generation to reduce cloud cost and latency/cost pressure; structured output and tool calling are not required.",
+            "review_solution": "Use gpt-4.1-mini-cloud for branch-control review/routing because it supports required capabilities and should be more reliable than the small local model while cheaper than gpt-5.5."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-03",
+          "description": "Hybrid placement that reserves the strongest cloud model for final solution implementation, uses the cheaper cloud model for test generation and branch-control review, and keeps initial planning local to reduce cost/latency.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "qwen-local"
+          },
+          "rationale": {
+            "understand_and_plan": "Planning is non-user-facing, does not require structured output or tool use, and can often be handled by the free local model while limiting cloud spend.",
+            "implement_solution": "The scored, user-facing code generation step is the highest-impact quality bottleneck, so assigning the strongest model maximizes correctness potential.",
+            "generate_tests": "Test generation benefits from stronger reasoning than the local 2B model, but does not require the most expensive endpoint; mini balances quality with cost.",
+            "review_solution": "This branch-control decision benefits from reliable instruction following; gpt-4.1-mini supports required capabilities and is cheaper/faster than gpt-5.5."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-04",
+          "description": "Cost-conscious hybrid with premium implementation and review, mini planning, and local test generation; previously unevaluated relative to the listed assignment maps.",
+          "assignments": {
+            "generate_tests": "qwen-local",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-5.5-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Use the inexpensive capable cloud model for planning to preserve task comprehension without paying premium rates upfront; this differs from prior maps only in pairing with premium review.",
+            "implement_solution": "Keep the strongest model on the user-facing code implementation role, where solution correctness is most sensitive and prior excluded maps also favored it.",
+            "generate_tests": "Move non-user-facing test generation to the zero-cost local model to reduce cloud cost and latency pressure; no structured output or tool use is required and the context window is sufficient.",
+            "review_solution": "Upgrade branch-control review/routing to the strongest model to improve decisions about whether to revise or terminate, potentially offsetting weaker/local generated tests and reducing bad finishes."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-05",
+          "description": "Cost- and latency-oriented cloud-mini placement that has not appeared in the excluded maps; uses a capable structured/tool-capable endpoint for all workflow units while avoiding the high-cost gpt-5.5 implementation choice evaluated in prior unprofiled proposals.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-4.1-mini-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "gpt-4.1-mini-cloud provides strong task comprehension with ample context at much lower cost than gpt-5.5 and avoids relying on the smaller local model for initial problem framing.",
+            "implement_solution": "Switches implementation from gpt-5.5-cloud to gpt-4.1-mini-cloud to explore a lower cloud-cost/lower-latency solution path while retaining adequate coding ability and full context capacity.",
+            "generate_tests": "Keeps test generation on gpt-4.1-mini-cloud for reliable test design without the high marginal cost of gpt-5.5; no structured output or tool use constraints beyond endpoint compatibility.",
+            "review_solution": "Uses gpt-4.1-mini-cloud for branch-control review because it supports required capabilities and should be more reliable than the local 2B model for deciding revise-versus-finish, at substantially lower cost than gpt-5.5."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-06",
+          "description": "Cost- and latency-conscious placement that keeps branch-control review on a capable cloud model while moving planning and test generation to the free local endpoint; implementation uses gpt-4.1-mini rather than gpt-5.5 to explore a lower-cost quality frontier. This assignment map has not appeared in the listed prior unprofiled maps.",
+          "assignments": {
+            "generate_tests": "qwen-local",
+            "implement_solution": "gpt-4.1-mini-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "qwen-local"
+          },
+          "rationale": {
+            "understand_and_plan": "Planning is non-user-facing, no tool or structured output requirement, and qwen-local has sufficient 32k context; using local reduces cloud cost and likely latency for this lightweight stage.",
+            "implement_solution": "User-facing code generation needs stronger capability than the 2B local model, but gpt-4.1-mini is much cheaper and faster than gpt-5.5, enabling exploration of the mid-tier implementation quality/cost trade-off.",
+            "generate_tests": "Test generation is non-user-facing and does not require tools or structured output; qwen-local can generate basic tests at zero cloud cost, reducing repeated-loop expense.",
+            "review_solution": "Review controls branching, so retain gpt-4.1-mini-cloud for more reliable test-result interpretation and routing decisions while avoiding the high cost of gpt-5.5."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-07",
+          "description": "Explore reducing cloud spend and review-loop latency by moving the branch-control review step to the free local model while keeping high-capability cloud models for planning, implementation, and test generation.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "qwen-local",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Use gpt-4.1-mini-cloud for reliable task decomposition at modest cost; this matches its strong context and general coding-planning capability without paying for the premium model before implementation.",
+            "implement_solution": "Keep gpt-5.5-cloud on the final user-facing code generation/revision step, where capability is most likely to affect correctness and scored quality.",
+            "generate_tests": "Use gpt-4.1-mini-cloud for test generation to maintain reasonably good coverage and avoid the limitations of the small local model on adversarial cases, while staying cheaper than gpt-5.5.",
+            "review_solution": "Assign qwen-local to the non-user-facing branch-control review to test whether free local evaluation is sufficient for deciding revise-vs-finish; it supports the required capabilities and may reduce repeated-loop cloud cost."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-08",
+          "description": "Cost/latency-saving variant retaining the strongest model for final solution implementation while offloading non-user-facing test generation and branch review to local, with cloud mini used for planning.",
+          "assignments": {
+            "generate_tests": "qwen-local",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "qwen-local",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Use gpt-4.1-mini-cloud for robust task comprehension and planning at relatively low cloud cost; this was strong in most prior candidate structures and avoids using the weaker local model at the entry planning stage.",
+            "implement_solution": "Keep gpt-5.5-cloud on the user-facing final solution implementation, the highest-leverage role for correctness and code quality.",
+            "generate_tests": "Use qwen-local for test generation to reduce cloud cost; test generation is non-user-facing, has no structured-output/tool requirement, and local endpoint supports the required context.",
+            "review_solution": "Use qwen-local for review/routing to explore additional cost and latency reduction. It supports branch-control needs sufficiently via normal text routing, with tool/structured capabilities available if needed, while this exact assignment has not been previously evaluated."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-09",
+          "description": "Cost-conscious implementation with local test generation and premium branch-control review to test whether a strong reviewer/router can compensate for using the cheaper cloud model for planning and coding.",
+          "assignments": {
+            "understand_and_plan": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-4.1-mini-cloud",
+            "generate_tests": "qwen-local",
+            "review_solution": "gpt-5.5-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "gpt-4.1-mini-cloud offers strong planning at low cloud cost and ample context, avoiding unnecessary premium spend before any code exists.",
+            "implement_solution": "gpt-4.1-mini-cloud is used for user-facing solution generation to explore a lower-cost alternative to the previously common gpt-5.5 implementation placements.",
+            "generate_tests": "qwen-local has no cloud cost and sufficient context/capabilities for non-structured, non-tool test generation, reducing spend on an auxiliary non-user-facing step.",
+            "review_solution": "gpt-5.5-cloud is assigned to the conditional review/routing role because this branch-control decision is quality-sensitive; the premium model may better identify failures and decide whether revision is needed."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-10",
+          "description": "Explore a high-quality implementation/review loop with local planning to reduce cost, while retaining cloud-based test generation. This complete assignment is not among the listed previously unprofiled maps.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-5.5-cloud",
+            "understand_and_plan": "qwen-local"
+          },
+          "rationale": {
+            "understand_and_plan": "Use qwen-local for non-user-facing planning to eliminate cloud cost on a lower-risk step; it has sufficient context and no special capability constraints are unmet.",
+            "implement_solution": "Use gpt-5.5-cloud for the user-facing final code generation/revision, where solution quality is likely most sensitive to model strength.",
+            "generate_tests": "Use gpt-4.1-mini-cloud for test generation as a moderate-cost cloud model likely better than the small local model for creating useful tests, without paying premium-model cost on this auxiliary step.",
+            "review_solution": "Use gpt-5.5-cloud for branch-control review/routing so the expensive implementer receives higher-quality feedback and termination decisions, exploring whether stronger review improves pass rate despite added cost."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-11",
+          "description": "Explore a cost/latency-saving variant that keeps the strongest model on final solution implementation, uses mini for test generation quality, and moves both planning plus branch review/routing to local. This complete map is not among the listed previously evaluated or unprofiled assignments.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "qwen-local",
+            "understand_and_plan": "qwen-local"
+          },
+          "rationale": {
+            "understand_and_plan": "Use qwen-local to eliminate cloud cost for planning; planning has no tool/structured-output requirement and the 32k context is adequate for typical programming-task prompts.",
+            "implement_solution": "Keep gpt-5.5-cloud for the user-facing scored Python solution, prioritizing solution correctness where model quality is most impactful.",
+            "generate_tests": "Use gpt-4.1-mini-cloud for stronger and more diverse tests than the small local model while avoiding gpt-5.5 cost on a non-user-facing unit.",
+            "review_solution": "Use qwen-local for branch-control review to reduce repeated-loop cloud spend and latency/cost; it supports tool calling/structured output if needed and no structured output is required here."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-12",
+          "description": "Previously unevaluated placement that keeps lower-cost gpt-4.1-mini on planning, implementation, and test generation while assigning the stronger gpt-5.5 model to the branch-control review/routing step.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-4.1-mini-cloud",
+            "review_solution": "gpt-5.5-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Planning is non-user-facing and does not require tool calling or structured output; gpt-4.1-mini provides strong enough task understanding at much lower cloud cost than gpt-5.5, with a large context window.",
+            "implement_solution": "Using gpt-4.1-mini for the user-facing solution explores a lower-cost/latency alternative to gpt-5.5-heavy placements already tried or excluded; it also matches endpoint capability requirements since no tools or structured output are needed.",
+            "generate_tests": "Test generation is non-structural-output and non-tool-use; gpt-4.1-mini should generate more reliable tests than the small local model while remaining far cheaper than gpt-5.5.",
+            "review_solution": "Review controls the revise/finish branch, so assigning gpt-5.5 here tests whether stronger judgment and debugging guidance can recover quality even when implementation is done by the cheaper mini model."
+          },
+          "source": "candidate"
+        }
+      ],
+      "compiler_attempts": [
+        {
+          "iteration": 1,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 8.795233791999635,
+          "prompt_tokens": 1163,
+          "completion_tokens": 260,
+          "total_tokens": 1423,
+          "api_cost": 0.013614999999999999,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 2,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 3.978104459005408,
+          "prompt_tokens": 1163,
+          "completion_tokens": 226,
+          "total_tokens": 1389,
+          "api_cost": 0.012594999999999999,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 3,
+          "attempt": 1,
+          "accepted": false,
+          "proposal_latency_seconds": 4.38959537500341,
+          "prompt_tokens": 1163,
+          "completion_tokens": 249,
+          "total_tokens": 1412,
+          "api_cost": 0.013284999999999998,
+          "cost_known": true,
+          "validation_errors": [
+            "duplicates an earlier unprofiled proposal"
+          ],
+          "duplicate_proposal": true
+        },
+        {
+          "iteration": 3,
+          "attempt": 2,
+          "accepted": true,
+          "proposal_latency_seconds": 3.5987969579873607,
+          "prompt_tokens": 1175,
+          "completion_tokens": 238,
+          "total_tokens": 1413,
+          "api_cost": 0.013015,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 4,
+          "attempt": 1,
+          "accepted": false,
+          "proposal_latency_seconds": 3.6930498339934275,
+          "prompt_tokens": 1163,
+          "completion_tokens": 246,
+          "total_tokens": 1409,
+          "api_cost": 0.013195,
+          "cost_known": true,
+          "validation_errors": [
+            "duplicates an earlier unprofiled proposal"
+          ],
+          "duplicate_proposal": true
+        },
+        {
+          "iteration": 4,
+          "attempt": 2,
+          "accepted": false,
+          "proposal_latency_seconds": 3.7306888330058428,
+          "prompt_tokens": 1175,
+          "completion_tokens": 230,
+          "total_tokens": 1405,
+          "api_cost": 0.012775,
+          "cost_known": true,
+          "validation_errors": [
+            "duplicates an earlier unprofiled proposal"
+          ],
+          "duplicate_proposal": true
+        },
+        {
+          "iteration": 4,
+          "attempt": 3,
+          "accepted": false,
+          "proposal_latency_seconds": 3.6371140830015065,
+          "prompt_tokens": 1175,
+          "completion_tokens": 213,
+          "total_tokens": 1388,
+          "api_cost": 0.012265,
+          "cost_known": true,
+          "validation_errors": [
+            "duplicates an earlier unprofiled proposal"
+          ],
+          "duplicate_proposal": true
+        },
+        {
+          "iteration": 4,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.953221583011327,
+          "prompt_tokens": 1346,
+          "completion_tokens": 233,
+          "total_tokens": 1579,
+          "api_cost": 0.01372,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 5,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.678614624994225,
+          "prompt_tokens": 1399,
+          "completion_tokens": 311,
+          "total_tokens": 1710,
+          "api_cost": 0.016325000000000003,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 6,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.3348687079997035,
+          "prompt_tokens": 1459,
+          "completion_tokens": 300,
+          "total_tokens": 1759,
+          "api_cost": 0.016295,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 7,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.2390474999992875,
+          "prompt_tokens": 1509,
+          "completion_tokens": 269,
+          "total_tokens": 1778,
+          "api_cost": 0.015614999999999999,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 8,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.646047125002951,
+          "prompt_tokens": 1563,
+          "completion_tokens": 261,
+          "total_tokens": 1824,
+          "api_cost": 0.015645,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 9,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 6.738555374991847,
+          "prompt_tokens": 1612,
+          "completion_tokens": 469,
+          "total_tokens": 2081,
+          "api_cost": 0.02213,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 10,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.3943277500075055,
+          "prompt_tokens": 1666,
+          "completion_tokens": 255,
+          "total_tokens": 1921,
+          "api_cost": 0.01598,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 11,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 3.7980634170089616,
+          "prompt_tokens": 1719,
+          "completion_tokens": 262,
+          "total_tokens": 1981,
+          "api_cost": 0.016455,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 12,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.831072708999272,
+          "prompt_tokens": 1768,
+          "completion_tokens": 307,
+          "total_tokens": 2075,
+          "api_cost": 0.01805,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        }
+      ]
+    },
+    {
+      "sequence": 2,
+      "proposals": [
+        {
+          "id": "sequence-02-proposal-01",
+          "description": "Cloud-balanced starting placement: reserve the strongest model for user-facing solution implementation, while using the cheaper cloud model for planning, test generation, and branch-control review.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Planning benefits from robust task comprehension, but this non-user-facing step should be cost-controlled; gpt-4.1-mini-cloud has ample context and good reasoning at lower cost than gpt-5.5-cloud.",
+            "implement_solution": "The final scored Python solution is user-facing and quality-critical, so assign the strongest available model here to maximize correctness.",
+            "generate_tests": "Test generation needs reliable edge-case coverage but not necessarily the most expensive model; gpt-4.1-mini-cloud balances quality and cost.",
+            "review_solution": "This branch-control role decides whether to revise or finish, so avoid the small local model; gpt-4.1-mini-cloud provides reliable routing at much lower cost than gpt-5.5-cloud."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-02",
+          "description": "Previously unevaluated placement emphasizing quality on implementation, moderate cloud capability for planning/review, and zero-cost local test generation.",
+          "assignments": {
+            "generate_tests": "qwen-local",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "generate_tests": "Moves non-user-facing test generation to the zero-cost local model to explore cloud-cost and latency savings while preserving stronger cloud models for planning, implementation, and routing. This unit does not require tool use or structured output, and qwen-local has sufficient context.",
+            "implement_solution": "Keeps the strongest model on the user-facing final solution implementation, the highest quality-sensitive role in the workflow.",
+            "review_solution": "Uses gpt-4.1-mini for branch-control review/routing because it supports tool calling/structured output capabilities and is cheaper/faster than gpt-5.5 while likely adequate for deciding revise vs finish.",
+            "understand_and_plan": "Uses gpt-4.1-mini for planning to provide robust task understanding at moderate cost, matching the prior unprofiled baseline for this non-output planning role."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-03",
+          "description": "Cost- and latency-conscious all-mini cloud placement to profile whether gpt-4.1-mini can handle the full coding loop without the expensive gpt-5.5 implementation step.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-4.1-mini-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Planning benefits from strong instruction following and large context; gpt-4.1-mini-cloud is much cheaper and likely adequate for non-user-facing planning.",
+            "implement_solution": "Use gpt-4.1-mini-cloud to test a low-cost full-cloud alternative for solution generation, distinct from prior runs that used gpt-5.5 for implementation.",
+            "generate_tests": "gpt-4.1-mini-cloud provides reliable test generation with structured/task comprehension at modest cloud cost, avoiding local quality risk for this profiling run.",
+            "review_solution": "Branch-control review needs dependable judgment; gpt-4.1-mini-cloud supports required capabilities and keeps review cost lower than gpt-5.5."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-04",
+          "description": "Cost-reduced variant that keeps the strongest model on final solution implementation while using inexpensive/local review and test generation, with mini-cloud retained for initial planning quality.",
+          "assignments": {
+            "understand_and_plan": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-5.5-cloud",
+            "generate_tests": "qwen-local",
+            "review_solution": "qwen-local"
+          },
+          "rationale": {
+            "understand_and_plan": "Planning benefits from a capable cloud model for task decomposition while remaining much cheaper than gpt-5.5; this matches prior unevaluated-space exploration without repeating earlier maps.",
+            "implement_solution": "The final user-facing scored code is the highest-impact unit, so assign the strongest model to preserve solution quality.",
+            "generate_tests": "Test generation is non-user-facing and does not require tool calling or structured output; local zero-cost execution explores lower cloud cost versus prior cloud-test variants.",
+            "review_solution": "Review controls branching, but requires no explicit structured output or tool calling in this workflow; using local tests whether routing/revision decisions can be handled at zero cloud cost, lowering cost and likely latency."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-05",
+          "description": "Shift the branch-control review step to the strongest cloud model while keeping planning and test generation on the cheaper mini model and implementation on gpt-5.5. This explores whether higher-quality revision/finish decisions improve score despite added cost/latency, without repeating prior maps.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-5.5-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Use gpt-4.1-mini-cloud for inexpensive, capable task understanding with ample context; prior excluded maps already used this for planning, but the full assignment is new.",
+            "implement_solution": "Use gpt-5.5-cloud for the user-facing final code where quality most directly affects pass rate.",
+            "generate_tests": "Use gpt-4.1-mini-cloud for solid test generation at much lower cost than gpt-5.5, avoiding the weaker local model for correctness-critical hidden edge discovery.",
+            "review_solution": "Use gpt-5.5-cloud for branch-control review/routing to improve judgment about whether failures require revision and to diagnose fixes; this is the main new trade-off being explored."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-06",
+          "description": "Cost-conscious quality probe: use gpt-4.1-mini for planning and implementation, strong gpt-5.5 review/routing to catch defects and request revisions, and local free test generation to minimize repeated-loop cost.",
+          "assignments": {
+            "generate_tests": "qwen-local",
+            "implement_solution": "gpt-4.1-mini-cloud",
+            "review_solution": "gpt-5.5-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "gpt-4.1-mini-cloud offers adequate reasoning and large context for task planning at low cloud cost; previously common as planner but this full map is unevaluated.",
+            "implement_solution": "gpt-4.1-mini-cloud reduces cost and latency versus gpt-5.5 for the user-facing solution while still providing capable code generation; pairing with stronger review may recover quality through revision loops.",
+            "generate_tests": "qwen-local has no token cost and sufficient context; test generation is non-user-facing and does not require structured output/tool use, making it a good place to save recurring workflow cost.",
+            "review_solution": "gpt-5.5-cloud is assigned to branch-control review to improve defect detection and revision decisions, focusing expensive model usage on the critical routing gate rather than generation."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-07",
+          "description": "Shift planning to the strongest cloud model while keeping implementation on gpt-5.5 and using gpt-4.1-mini for test generation and review, exploring whether higher-quality upfront task understanding improves solution quality without paying premium cost on every non-implementation step.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "gpt-5.5-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Task understanding and planning can strongly affect downstream implementation quality; using gpt-5.5 here explores a quality-focused variant not yet evaluated, especially for harder programming tasks.",
+            "implement_solution": "The final user-facing scored Python solution remains on gpt-5.5-cloud to maximize correctness in the most critical generation step.",
+            "generate_tests": "gpt-4.1-mini-cloud is a cost-conscious but capable choice for generating tests; it avoids local-model weakness while keeping this repeated non-final step cheaper than gpt-5.5.",
+            "review_solution": "gpt-4.1-mini-cloud supports branch-control needs and provides lower cost/latency than gpt-5.5 for deciding whether to revise or finish."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-08",
+          "description": "Previously unevaluated placement that keeps the strongest model on final solution implementation while probing whether local planning is sufficient to reduce cloud cost/latency without changing the already cloud-backed test generation and routing stages.",
+          "assignments": {
+            "understand_and_plan": "qwen-local",
+            "implement_solution": "gpt-5.5-cloud",
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "review_solution": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Planning has no tool/structured-output/branch-control requirement and qwen-local supports the needed context; moving it local explores cost reduction on a non-user-facing preparatory step.",
+            "implement_solution": "Final user-facing code generation is the highest-impact quality stage, so gpt-5.5-cloud is retained for solution quality.",
+            "generate_tests": "gpt-4.1-mini-cloud provides reliable test generation at lower cost than gpt-5.5 while meeting capability requirements.",
+            "review_solution": "Branch-control routing benefits from a capable structured/tool-capable cloud model; gpt-4.1-mini-cloud is a lower-cost choice that supports the endpoint capabilities."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-09",
+          "description": "Previously unevaluated placement emphasizing solution quality by keeping implementation on the strongest model and upgrading planning to the strongest model, while reducing test-generation cost with the local model and using the cheaper cloud model for branch-control review.",
+          "assignments": {
+            "generate_tests": "qwen-local",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "gpt-5.5-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Use gpt-5.5-cloud for higher-quality task decomposition and algorithm selection, which can improve downstream implementation on difficult programming tasks.",
+            "implement_solution": "Use gpt-5.5-cloud for the user-facing final Python solution, prioritizing correctness and robustness where model capability matters most.",
+            "generate_tests": "Use qwen-local for non-user-facing test generation to save cloud cost; no tool use or structured output is required and its 32k context is sufficient for this role.",
+            "review_solution": "Use gpt-4.1-mini-cloud for review/routing because it supports branch-control needs and offers low cloud cost with strong enough judgment, avoiding the expensive model on every review loop."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-10",
+          "description": "Explore a lower-cost/latency front-end and test-generation path while keeping the highest-capability cloud model on implementation and review/routing, which are most directly tied to final solution quality and branch decisions. This complete map is not among the previously excluded assignments.",
+          "assignments": {
+            "generate_tests": "qwen-local",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-5.5-cloud",
+            "understand_and_plan": "qwen-local"
+          },
+          "rationale": {
+            "understand_and_plan": "Use qwen-local for planning to eliminate cloud cost and reduce dependency on cloud latency for a non-user-facing, non-structured, non-tool task; its 32k context is adequate for typical programming prompts.",
+            "implement_solution": "Use gpt-5.5-cloud for final code generation/revision because this user-facing scored output is the highest-impact unit and benefits most from stronger coding capability.",
+            "generate_tests": "Use qwen-local for test generation to save cost on a non-user-facing auxiliary stage; test generation can be imperfect while still catching many issues, and this probes whether cheap local tests are sufficient when implementation/review are strong.",
+            "review_solution": "Use gpt-5.5-cloud for branch-control review to improve correctness of revise-vs-finish decisions and interpretation of test failures, balancing the cheaper qwen-local planning/testing choices."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-11",
+          "description": "Evaluate the effect of upgrading test generation to the strongest cloud model while keeping implementation on gpt-5.5 and retaining lower-cost mini for planning and branch review.",
+          "assignments": {
+            "generate_tests": "gpt-5.5-cloud",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "generate_tests": "Not previously evaluated with gpt-5.5 in the test-generation role. Stronger tests may expose hidden edge cases and improve revision quality, at higher cost/latency but only on a non-user-facing unit.",
+            "implement_solution": "Keep the highest-capability model on the final scored code generation path, where quality impact is likely largest.",
+            "review_solution": "Use gpt-4.1-mini for branch control to balance cost and latency; it supports required capabilities and has been common in prior maps but not with gpt-5.5 test generation.",
+            "understand_and_plan": "Use gpt-4.1-mini for adequate planning at moderate cloud cost, reserving expensive gpt-5.5 budget for code and tests."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-12",
+          "description": "Explore whether using the strongest model specifically for test generation can improve defect discovery while keeping implementation, planning, and routing on the lower-cost cloud model. This complete assignment has not appeared in the excluded prior maps.",
+          "assignments": {
+            "generate_tests": "gpt-5.5-cloud",
+            "implement_solution": "gpt-4.1-mini-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "generate_tests": "Assigning gpt-5.5-cloud to test generation probes a quality trade-off: stronger adversarial/edge-case test creation may catch implementation bugs earlier, though at higher cloud cost for this non-user-facing step.",
+            "implement_solution": "gpt-4.1-mini-cloud is capable of code generation with much lower cost and latency than gpt-5.5-cloud, useful for testing whether better tests can compensate for a cheaper implementer.",
+            "review_solution": "Review/routing requires reliable branch decisions but no special structured output here; gpt-4.1-mini-cloud preserves robustness without the expense of gpt-5.5-cloud.",
+            "understand_and_plan": "Planning stays on gpt-4.1-mini-cloud to maintain good task understanding while avoiding the premium model cost at the entry node."
+          },
+          "source": "candidate"
+        }
+      ],
+      "compiler_attempts": [
+        {
+          "iteration": 1,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.052192999995896,
+          "prompt_tokens": 1163,
+          "completion_tokens": 256,
+          "total_tokens": 1419,
+          "api_cost": 0.013495,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 2,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 3.6716679999954067,
+          "prompt_tokens": 1238,
+          "completion_tokens": 258,
+          "total_tokens": 1496,
+          "api_cost": 0.013929999999999998,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 3,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.146072125004139,
+          "prompt_tokens": 1292,
+          "completion_tokens": 252,
+          "total_tokens": 1544,
+          "api_cost": 0.01402,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 4,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.199709416992846,
+          "prompt_tokens": 1352,
+          "completion_tokens": 234,
+          "total_tokens": 1586,
+          "api_cost": 0.01378,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 5,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.207916833009222,
+          "prompt_tokens": 1401,
+          "completion_tokens": 272,
+          "total_tokens": 1673,
+          "api_cost": 0.015165,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 6,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.598768833995564,
+          "prompt_tokens": 1459,
+          "completion_tokens": 276,
+          "total_tokens": 1735,
+          "api_cost": 0.015574999999999999,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 7,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.2955951250041835,
+          "prompt_tokens": 1513,
+          "completion_tokens": 273,
+          "total_tokens": 1786,
+          "api_cost": 0.015755,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 8,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.267794625004171,
+          "prompt_tokens": 1571,
+          "completion_tokens": 243,
+          "total_tokens": 1814,
+          "api_cost": 0.015144999999999999,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 9,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.130272750000586,
+          "prompt_tokens": 1625,
+          "completion_tokens": 251,
+          "total_tokens": 1876,
+          "api_cost": 0.015655,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 10,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.912177207996137,
+          "prompt_tokens": 1678,
+          "completion_tokens": 286,
+          "total_tokens": 1964,
+          "api_cost": 0.01697,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 11,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.1364884590002475,
+          "prompt_tokens": 1726,
+          "completion_tokens": 255,
+          "total_tokens": 1981,
+          "api_cost": 0.016280000000000003,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 12,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 5.32323558301141,
+          "prompt_tokens": 1784,
+          "completion_tokens": 277,
+          "total_tokens": 2061,
+          "api_cost": 0.017230000000000002,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        }
+      ]
+    },
+    {
+      "sequence": 3,
+      "proposals": [
+        {
+          "id": "sequence-03-proposal-01",
+          "description": "Quality-oriented initial placement: reserve the strongest model for user-facing solution implementation, while using the cheaper cloud model for planning, test generation, and branch-control review.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Planning benefits from reliable reasoning and large context, but is non-user-facing; gpt-4.1-mini-cloud should provide adequate task understanding at much lower cost than gpt-5.5-cloud.",
+            "implement_solution": "Final scored code quality is likely the dominant success factor, so assign the strongest available model despite higher cloud cost.",
+            "generate_tests": "Test generation needs competent code reasoning but is auxiliary and non-user-facing; gpt-4.1-mini-cloud balances quality and cost.",
+            "review_solution": "This unit controls branching, so avoid the small local model; gpt-4.1-mini-cloud supports reliable review/routing with lower latency/cost than gpt-5.5-cloud."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-02",
+          "description": "Cost-reduced variant of the prior unprofiled map: move test generation to local while retaining gpt-5.5 for implementation and gpt-4.1-mini for planning/review.",
+          "assignments": {
+            "generate_tests": "qwen-local",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "generate_tests": "Use the zero-cost local model for non-user-facing test generation to reduce cloud cost; no tool or structured-output requirements constrain this unit, and its 32k context should be adequate for typical generated test prompts.",
+            "implement_solution": "Keep the strongest cloud model on the user-facing final solution implementation, where correctness likely has the highest quality sensitivity.",
+            "review_solution": "Use the cheaper mini cloud model for branch-control review/routing; it supports required capabilities and should be more reliable than the small local model for deciding whether to revise while avoiding gpt-5.5 cost.",
+            "understand_and_plan": "Use the cheaper cloud model for planning to preserve task comprehension quality and long-context capacity without paying premium model cost."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-03",
+          "description": "Use the strongest cloud model for the scored implementation and branch-control review, while keeping planning and test generation on the cheaper mini model. This is distinct from the two earlier unprofiled maps by upgrading review_solution to gpt-5.5-cloud.",
+          "assignments": {
+            "understand_and_plan": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-5.5-cloud",
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "review_solution": "gpt-5.5-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Planning benefits from capable reasoning but is not user-facing or branch-control; gpt-4.1-mini-cloud offers low cost and large context sufficient for task understanding.",
+            "implement_solution": "The final scored Python solution is user-facing and quality-critical, so assign the highest-capability endpoint despite higher cost.",
+            "generate_tests": "Test generation is auxiliary and non-user-facing; gpt-4.1-mini-cloud should provide adequate test quality at much lower cost than gpt-5.5-cloud and likely better reliability than the small local model.",
+            "review_solution": "Review controls whether to revise or terminate; using gpt-5.5-cloud here may improve detection of flawed implementations and routing decisions, trading higher cost/latency for quality."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-04",
+          "description": "Shift only the initial planning stage to the free local model while keeping implementation on the strongest cloud model and retaining mini for test generation/review to control cloud spend and latency. This map is not among the previously disallowed unprofiled placements.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "qwen-local"
+          },
+          "rationale": {
+            "understand_and_plan": "Planning is non-user-facing, no tool/structured-output requirement, and can be attempted by the free local model to reduce cloud cost on the entry step; 32k context is likely sufficient for typical coding tasks.",
+            "implement_solution": "Keep the final scored solution implementation on gpt-5.5-cloud because it is the most quality-critical, user-facing stage and likely drives pass rate.",
+            "generate_tests": "Use gpt-4.1-mini-cloud for test generation to maintain reasonable test quality at much lower cost/latency than gpt-5.5-cloud.",
+            "review_solution": "Use gpt-4.1-mini-cloud for branch-control review/routing since it supports the needed capabilities and is cheaper/faster than gpt-5.5-cloud while more reliable than the small local model."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-05",
+          "description": "Probe whether moving test generation to the zero-cost local model preserves coverage while pairing the strongest implementation and review/routing models for maximum correctness on revision decisions.",
+          "assignments": {
+            "generate_tests": "qwen-local",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-5.5-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Use gpt-4.1-mini-cloud for planning as a low-cost cloud model with ample context; this keeps initial task understanding more reliable than the local 2B model without paying gpt-5.5 rates.",
+            "implement_solution": "Use gpt-5.5-cloud for the final user-facing code implementation, where model quality is most likely to affect pass rate.",
+            "generate_tests": "Use qwen-local for non-user-facing test generation to reduce cloud cost; tool/structured output is not required and the local context window is sufficient.",
+            "review_solution": "Use gpt-5.5-cloud for branch-control review/routing to improve the decision to revise or finish and better interpret failed tests."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-06",
+          "description": "Cost/latency-oriented all-mini cloud placement, preserving strong context and routing capability while avoiding the high-cost gpt-5.5 implementation path evaluated in earlier unprofiled maps.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-4.1-mini-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "gpt-4.1-mini-cloud has ample context and enough reasoning quality for planning at much lower cloud cost than gpt-5.5, and is likely more reliable than the small local model for task decomposition.",
+            "implement_solution": "Switches implementation to gpt-4.1-mini-cloud to explore a lower-cost and likely lower-latency alternative to the previously repeated gpt-5.5 implementation choice; this is the key unevaluated trade-off axis.",
+            "generate_tests": "Uses gpt-4.1-mini-cloud for robust test generation with low marginal cost, avoiding possible quality issues from qwen-local tests while still much cheaper than gpt-5.5.",
+            "review_solution": "Uses gpt-4.1-mini-cloud for branch-control review because it supports required capabilities and should provide adequate routing decisions without the premium gpt-5.5 cost."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-07",
+          "description": "Cost-reduced exploration using mini for planning, implementation, and branch-control review while offloading non-user-facing test generation to the free local model.",
+          "assignments": {
+            "generate_tests": "qwen-local",
+            "implement_solution": "gpt-4.1-mini-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "gpt-4.1-mini-cloud has ample context and stronger planning reliability than the small local model at modest cost; this keeps task interpretation stable.",
+            "implement_solution": "gpt-4.1-mini-cloud is a lower-cost implementation alternative to the previously favored gpt-5.5-cloud placements, useful for measuring quality/cost trade-off without repeating the all-mini map.",
+            "generate_tests": "qwen-local is free and supports the required capabilities; test generation is non-user-facing and does not require structured output or tool use, making it a good latency/cost-saving candidate.",
+            "review_solution": "gpt-4.1-mini-cloud supports branch-control decisions and should be more reliable than local for deciding revise vs finish, while avoiding expensive gpt-5.5-cloud review."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-08",
+          "description": "Previously unevaluated placement that keeps most inexpensive cloud stages on gpt-4.1-mini while upgrading only the branch-control review/routing step to gpt-5.5 to explore whether stronger revision decisions improve quality without paying gpt-5.5 implementation cost.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-4.1-mini-cloud",
+            "review_solution": "gpt-5.5-cloud",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Use gpt-4.1-mini-cloud for reliable task planning with low cloud cost and large context, matching capability needs without using the expensive model.",
+            "implement_solution": "Use gpt-4.1-mini-cloud to test a lower-cost implementation path; earlier excluded maps included all-mini and mini implementation with mini review, but not stronger review with mini implementation.",
+            "generate_tests": "Use gpt-4.1-mini-cloud for test generation to maintain competent tests and avoid possible qwen-local quality/latency variability while keeping cost moderate.",
+            "review_solution": "Use gpt-5.5-cloud for the conditional branch-control review step, where better judgment may be valuable for deciding whether to revise or terminate."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-09",
+          "description": "Try preserving the strongest implementation and reliable cloud planning/test generation while offloading the branch-control review step to the zero-cost local model for a cost/latency trade-off not yet evaluated.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "qwen-local",
+            "understand_and_plan": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "understand_and_plan": "Use gpt-4.1-mini-cloud for task understanding to maintain robust planning at low cloud cost; this matches many prior unprofiled candidates but remains paired here with a new review assignment.",
+            "implement_solution": "Use gpt-5.5-cloud for the user-facing final solution implementation, the most quality-critical unit where the premium model is most likely to improve correctness.",
+            "generate_tests": "Use gpt-4.1-mini-cloud for test generation because it should provide stronger and more diverse tests than the small local model at modest cost, helping catch implementation issues before review.",
+            "review_solution": "Use qwen-local for review/routing to explore savings on a non-user-facing branch-control step; it supports required capabilities and has adequate context, though quality risk is higher than cloud reviewers."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-10",
+          "description": "Previously unevaluated cost/latency-saving variant that keeps the strongest model on the final solution implementation while moving both non-user-facing planning and test generation to the free local endpoint, with lightweight cloud review for routing reliability.",
+          "assignments": {
+            "generate_tests": "qwen-local",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "qwen-local"
+          },
+          "rationale": {
+            "understand_and_plan": "Use qwen-local to reduce cloud cost and latency for the initial planning step; it requires no tool use or structured output and has adequate context for typical programming task prompts.",
+            "implement_solution": "Keep gpt-5.5-cloud on the user-facing final implementation role, where code quality has the largest direct impact on score.",
+            "generate_tests": "Use qwen-local for non-user-facing test generation to avoid cloud cost; test generation is advisory and can tolerate lower model capability while still catching simple issues.",
+            "review_solution": "Use gpt-4.1-mini-cloud for branch-control review/routing to maintain reliable decisions at lower cost than gpt-5.5-cloud; endpoint supports required capabilities."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-11",
+          "description": "Explore whether keeping the strongest model on implementation and branch-control review while moving the initial planning step to the free local model improves cost/latency trade-offs without weakening the core solution/revision loop. Tests remain on gpt-4.1-mini-cloud for reliable test generation at modest cloud cost.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-5.5-cloud",
+            "review_solution": "gpt-5.5-cloud",
+            "understand_and_plan": "qwen-local"
+          },
+          "rationale": {
+            "understand_and_plan": "Use qwen-local for the non-user-facing planning stage to reduce cloud cost; this placement has not been evaluated in combination with gpt-5.5 review and mini test generation.",
+            "implement_solution": "Keep gpt-5.5-cloud on the final scored solution implementation, the highest-impact user-facing code generation role.",
+            "generate_tests": "Use gpt-4.1-mini-cloud for test generation because it is inexpensive but likely more dependable than the 2B local model for constructing relevant Python tests.",
+            "review_solution": "Use gpt-5.5-cloud for solution review/routing, a branch-control role where stronger reasoning may improve decisions about revising versus finishing."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-12",
+          "description": "Cost-focused hybrid placement that keeps implementation, testing, and branch-control review on gpt-4.1-mini while moving only the non-branching planning step to the zero-cost local model. This map is not among the previously rejected unprofiled assignments.",
+          "assignments": {
+            "generate_tests": "gpt-4.1-mini-cloud",
+            "implement_solution": "gpt-4.1-mini-cloud",
+            "review_solution": "gpt-4.1-mini-cloud",
+            "understand_and_plan": "qwen-local"
+          },
+          "rationale": {
+            "understand_and_plan": "Planning is non-user-facing, does not require tool use or structured output, and can often tolerate a smaller local model; using qwen-local reduces cloud cost and likely latency/cost for this initial step while respecting its 32k context window.",
+            "implement_solution": "The final user-facing code generation step benefits from gpt-4.1-mini's stronger coding ability than the 2B local model at much lower cost than gpt-5.5.",
+            "generate_tests": "Test generation benefits from gpt-4.1-mini for reasonable coverage and reliability, while avoiding the high cost of gpt-5.5.",
+            "review_solution": "Review_solution controls branching, so keeping it on gpt-4.1-mini provides reliable routing decisions with tool/structured capabilities available if needed, without paying gpt-5.5 rates."
+          },
+          "source": "candidate"
+        }
+      ],
+      "compiler_attempts": [
+        {
+          "iteration": 1,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 3.747283000004245,
+          "prompt_tokens": 1163,
+          "completion_tokens": 248,
+          "total_tokens": 1411,
+          "api_cost": 0.013255,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 2,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 3.574666915999842,
+          "prompt_tokens": 1238,
+          "completion_tokens": 251,
+          "total_tokens": 1489,
+          "api_cost": 0.01372,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 3,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 3.690476834002766,
+          "prompt_tokens": 1292,
+          "completion_tokens": 272,
+          "total_tokens": 1564,
+          "api_cost": 0.014620000000000001,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 4,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.325654999993276,
+          "prompt_tokens": 1350,
+          "completion_tokens": 280,
+          "total_tokens": 1630,
+          "api_cost": 0.01515,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 5,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.1012975000048755,
+          "prompt_tokens": 1404,
+          "completion_tokens": 241,
+          "total_tokens": 1645,
+          "api_cost": 0.01425,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 6,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.798639333006577,
+          "prompt_tokens": 1457,
+          "completion_tokens": 291,
+          "total_tokens": 1748,
+          "api_cost": 0.016015,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 7,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.523151916000643,
+          "prompt_tokens": 1517,
+          "completion_tokens": 258,
+          "total_tokens": 1775,
+          "api_cost": 0.015324999999999998,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 8,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.012154083000496,
+          "prompt_tokens": 1572,
+          "completion_tokens": 272,
+          "total_tokens": 1844,
+          "api_cost": 0.01602,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 9,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.487813291998464,
+          "prompt_tokens": 1631,
+          "completion_tokens": 265,
+          "total_tokens": 1896,
+          "api_cost": 0.016105,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 10,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 3.987200584000675,
+          "prompt_tokens": 1685,
+          "completion_tokens": 249,
+          "total_tokens": 1934,
+          "api_cost": 0.015895,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 11,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 3.794619917011005,
+          "prompt_tokens": 1734,
+          "completion_tokens": 264,
+          "total_tokens": 1998,
+          "api_cost": 0.01659,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 12,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.324725625003339,
+          "prompt_tokens": 1787,
+          "completion_tokens": 292,
+          "total_tokens": 2079,
+          "api_cost": 0.017695000000000002,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        }
+      ]
+    }
+  ],
+  "compiler_metrics": {
+    "proposal_count": 36,
+    "attempt_count": 40,
+    "duplicate_proposal_count": 4,
+    "validation_error_count": 4,
+    "prompt_tokens": 57850,
+    "completion_tokens": 10645,
+    "total_tokens": 68495,
+    "api_cost": 0.6086,
+    "api_cost_unknown": false,
+    "proposal_latency_seconds": 175.74597808504768,
+    "workflow_execution_count": 0
+  }
+}

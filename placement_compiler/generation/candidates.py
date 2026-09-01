@@ -74,12 +74,14 @@ class CandidateGenerator:
         model_endpoints: list[ModelEndpoint],
         iteration: int,
         evaluated_results: Sequence[Mapping[str, Any]],
+        excluded_assignments: Sequence[Mapping[str, str]] = (),
     ) -> PlacementPlan:
         return self.propose_with_metrics(
             workflow=workflow,
             model_endpoints=model_endpoints,
             iteration=iteration,
             evaluated_results=evaluated_results,
+            excluded_assignments=excluded_assignments,
         ).plan
 
     def propose_with_metrics(
@@ -89,13 +91,22 @@ class CandidateGenerator:
         model_endpoints: list[ModelEndpoint],
         iteration: int,
         evaluated_results: Sequence[Mapping[str, Any]],
+        excluded_assignments: Sequence[Mapping[str, str]] = (),
     ) -> CandidateGenerationResult:
         if not workflow.placement_units:
             raise ValueError("workflow has no declared LLM placement units")
         if not model_endpoints:
             raise ValueError("model endpoint catalogue must not be empty")
 
-        previous_errors: list[str] = []
+        exclusion_context = (
+            [
+                "Do not repeat these excluded assignment maps: "
+                + json.dumps(list(excluded_assignments), sort_keys=True)
+            ]
+            if excluded_assignments
+            else []
+        )
+        previous_errors: list[str] = list(exclusion_context)
         attempts: list[CompilerAttempt] = []
         for attempt_number in range(1, self.max_attempts + 1):
             started = time.perf_counter()
@@ -127,7 +138,7 @@ class CandidateGenerator:
 
             latency = time.perf_counter() - started
             if generation.error is not None:
-                previous_errors = [generation.error]
+                previous_errors = [*exclusion_context, generation.error]
                 attempts.append(
                     _attempt_record(
                         generation,
@@ -142,7 +153,7 @@ class CandidateGenerator:
             try:
                 proposal = _coerce_proposal(generation.output)
             except CandidateGenerationError as exc:
-                previous_errors = [str(exc)]
+                previous_errors = [*exclusion_context, str(exc)]
                 attempts.append(
                     _attempt_record(
                         generation,
@@ -165,8 +176,9 @@ class CandidateGenerator:
                 workflow=workflow,
                 model_endpoints=model_endpoints,
                 evaluated_results=evaluated_results,
+                excluded_assignments=excluded_assignments,
             )
-            duplicate = "duplicates an evaluated placement" in errors
+            duplicate = any(error.startswith("duplicates ") for error in errors)
             attempts.append(
                 _attempt_record(
                     generation,
@@ -180,7 +192,7 @@ class CandidateGenerator:
             )
             if not errors:
                 return CandidateGenerationResult(plan=candidate, attempts=attempts)
-            previous_errors = errors
+            previous_errors = [*exclusion_context, *errors]
 
         raise CandidateGenerationError(
             "compiler LLM did not produce a valid new placement: "
@@ -237,6 +249,7 @@ def _candidate_errors(
     workflow: WorkflowMetadata,
     model_endpoints: list[ModelEndpoint],
     evaluated_results: Sequence[Mapping[str, Any]],
+    excluded_assignments: Sequence[Mapping[str, str]] = (),
 ) -> list[str]:
     errors: list[str] = []
     try:
@@ -251,6 +264,11 @@ def _candidate_errors(
     }
     if signature in evaluated_signatures:
         errors.append("duplicates an evaluated placement")
+    excluded_signatures = {
+        tuple(sorted(assignments.items())) for assignments in excluded_assignments
+    }
+    if signature in excluded_signatures:
+        errors.append("duplicates an excluded placement")
     return errors
 
 

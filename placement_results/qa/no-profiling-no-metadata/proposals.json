@@ -1,0 +1,1381 @@
+{
+  "schema_version": "1.0",
+  "kind": "unprofiled_compiler_proposals",
+  "workflow": "qa",
+  "metadata_mode": "none",
+  "sequence_count": 3,
+  "proposal_count": 12,
+  "compiler": {
+    "provider": "openai",
+    "model": "gpt-5.5",
+    "temperature": 0.0,
+    "structured_output_method": "function_calling",
+    "model_kwargs": {}
+  },
+  "prompt_context": {
+    "workflow": {
+      "workflow_id": "qa-workflow",
+      "placement_units": [
+        {
+          "user_facing_output": false,
+          "tool_use": false,
+          "structured_output_required": false,
+          "branch_control": false,
+          "id": "decide_after_retrieval",
+          "structural": false
+        },
+        {
+          "user_facing_output": false,
+          "tool_use": false,
+          "structured_output_required": false,
+          "branch_control": false,
+          "id": "generate_answer",
+          "structural": false
+        },
+        {
+          "user_facing_output": false,
+          "tool_use": false,
+          "structured_output_required": false,
+          "branch_control": false,
+          "id": "generate_query_or_respond",
+          "structural": false
+        },
+        {
+          "user_facing_output": false,
+          "tool_use": false,
+          "structured_output_required": false,
+          "branch_control": false,
+          "id": "rewrite_question",
+          "structural": false
+        }
+      ],
+      "edges": [],
+      "entry_nodes": [],
+      "terminal_nodes": [],
+      "conditional_edges": []
+    },
+    "model_endpoints": [
+      {
+        "id": "qwen-local",
+        "model": "qwen3.5:2b",
+        "location": "local",
+        "provider": "ollama",
+        "context_window": 32768,
+        "tool_calling": true,
+        "structured_output": true,
+        "input_cost_per_million_tokens": 0.0,
+        "output_cost_per_million_tokens": 0.0,
+        "model_kwargs": {
+          "temperature": 0,
+          "thinking": false,
+          "reasoning": false,
+          "num_predict": 768
+        }
+      },
+      {
+        "id": "gpt-4.1-mini-cloud",
+        "model": "gpt-4.1-mini",
+        "location": "cloud",
+        "provider": "openai",
+        "context_window": 1047576,
+        "tool_calling": true,
+        "structured_output": true,
+        "input_cost_per_million_tokens": 0.4,
+        "output_cost_per_million_tokens": 1.6,
+        "model_kwargs": {}
+      },
+      {
+        "id": "gpt-5.5-cloud",
+        "model": "gpt-5.5",
+        "location": "cloud",
+        "provider": "openai",
+        "context_window": 400000,
+        "tool_calling": true,
+        "structured_output": true,
+        "input_cost_per_million_tokens": 5.0,
+        "output_cost_per_million_tokens": 30.0,
+        "model_kwargs": {}
+      }
+    ],
+    "unit_identifier_map": {
+      "decide_after_retrieval": "decide_after_retrieval",
+      "generate_answer": "generate_answer",
+      "generate_query_or_respond": "generate_query_or_respond",
+      "rewrite_question": "rewrite_question"
+    },
+    "endpoint_identifier_map": {
+      "qwen-local": "qwen-local",
+      "gpt-4.1-mini-cloud": "gpt-4.1-mini-cloud",
+      "gpt-5.5-cloud": "gpt-5.5-cloud"
+    }
+  },
+  "baseline_supplied": false,
+  "evaluated_results_supplied": false,
+  "prompt_builder": "placement_compiler.generation.candidates.CandidateGenerator._build_messages",
+  "sequences": [
+    {
+      "sequence": 1,
+      "proposals": [
+        {
+          "id": "sequence-01-proposal-01",
+          "description": "Cost-lean hybrid placement for initial exploration: reserve cloud quality for final answer generation while keeping routing/query/rewrite steps local to minimize cloud spend and latency exposure.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "qwen-local",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Non-user-facing, no tool or structured-output requirement; local model capabilities are sufficient and zero cloud cost.",
+            "generate_answer": "Most quality-sensitive step in QA workflow; gpt-4.1-mini offers stronger answer synthesis than the 2B local model at much lower cost than gpt-5.5.",
+            "generate_query_or_respond": "Early query/response decision is non-structural and non-user-facing; local endpoint supports required capabilities and avoids cloud tokens.",
+            "rewrite_question": "Question rewriting is a lightweight transformation suitable for the local model, keeping preprocessing free of cloud cost."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-02",
+          "description": "Hybrid cost-conscious placement: use local model for query/rewrite preprocessing and cloud mini model for retrieval decision and answer synthesis.",
+          "assignments": {
+            "decide_after_retrieval": "gpt-4.1-mini-cloud",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "qwen-local",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Branch/decision-adjacent retrieval judgment benefits from stronger cloud reasoning while retaining moderate cost and latency versus the larger cloud model.",
+            "generate_answer": "Answer generation is the main quality-sensitive stage; gpt-4.1-mini offers substantially stronger generation than the small local model at much lower cost than gpt-5.5.",
+            "generate_query_or_respond": "Initial query-or-response generation is not marked tool-using or structured and can be handled locally to eliminate cloud cost for this step.",
+            "rewrite_question": "Question rewriting is a lightweight transformation suitable for the zero-cost local endpoint with adequate context window."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-03",
+          "description": "Mixed placement emphasizing strong cloud reasoning for query generation/routing response and low-cost local handling for rewriting and post-retrieval decision, with mid-tier cloud answer generation to balance quality, cost, and latency.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "gpt-5.5-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Use qwen-local for a short non-structured, non-tool branch-like decision step to avoid cloud cost and keep latency/cost low.",
+            "generate_answer": "Use gpt-4.1-mini-cloud for user-facing quality-sensitive answer synthesis at much lower cost than gpt-5.5 while retaining a large context window.",
+            "generate_query_or_respond": "Use gpt-5.5-cloud on the potentially most reasoning-sensitive step deciding whether/how to query or respond, where higher quality may improve retrieval trajectory.",
+            "rewrite_question": "Use qwen-local for inexpensive deterministic rewriting; no special endpoint capabilities required and local cost is zero."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-04",
+          "description": "Hybrid low-cost placement using local model for lightweight rewrite/decision steps and GPT-4.1-mini for query generation and final answer synthesis.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Non-user-facing decision step with no tool/structured-output requirement; local endpoint should minimize cloud cost while retaining sufficient capability.",
+            "generate_answer": "Answer synthesis is most quality-sensitive, so use GPT-4.1-mini for better factuality and fluency at much lower cost/latency than GPT-5.5.",
+            "generate_query_or_respond": "Query generation/initial response benefits from GPT-4.1-mini reliability while keeping cloud spend moderate.",
+            "rewrite_question": "Question rewriting is a bounded transformation suitable for the free local model, reducing cloud calls and expected latency/cost."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-05",
+          "description": "Hybrid placement emphasizing answer quality only at final answer synthesis, with low/no-cost local routing for query generation and rewriting and a cheaper cloud model for post-retrieval decisioning.",
+          "assignments": {
+            "decide_after_retrieval": "gpt-4.1-mini-cloud",
+            "generate_answer": "gpt-5.5-cloud",
+            "generate_query_or_respond": "qwen-local",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Use gpt-4.1-mini-cloud for a moderate-quality, low-latency cloud decision after retrieval without incurring the high cost of gpt-5.5 on this non-user-facing step.",
+            "generate_answer": "Use gpt-5.5-cloud on the final answer generation unit where quality is likely most visible and valuable.",
+            "generate_query_or_respond": "Use qwen-local to reduce cloud cost on the initial query/response generation step; endpoint supports required capabilities and has sufficient context.",
+            "rewrite_question": "Use qwen-local for rewriting because it is non-user-facing, requires no tools or structured output, and avoids cloud spend."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-06",
+          "description": "Use gpt-4.1-mini-cloud for all workflow units as a balanced cloud-only placement, distinct from likely local-only or mixed exploratory proposals and leveraging strong capability at much lower cost/latency than gpt-5.5.",
+          "assignments": {
+            "decide_after_retrieval": "gpt-4.1-mini-cloud",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Branch-like decision quality may benefit from a stronger cloud model; gpt-4.1-mini has ample context and low cloud cost.",
+            "generate_answer": "User-facing answer generation generally drives quality; gpt-4.1-mini offers a good quality/cost trade-off versus gpt-5.5.",
+            "generate_query_or_respond": "Query generation/response routing benefits from reliable instruction following and context handling at moderate cost.",
+            "rewrite_question": "Question rewriting is inexpensive on gpt-4.1-mini and may improve downstream retrieval consistency over the small local model."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-07",
+          "description": "Hybrid cost-conscious placement: use gpt-4.1-mini-cloud for the main routing/answer/query-generation steps while keeping question rewriting local to reduce cloud cost and latency where risk is lower.",
+          "assignments": {
+            "decide_after_retrieval": "gpt-4.1-mini-cloud",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "This branch-like decision after retrieval can affect answer quality; gpt-4.1-mini-cloud provides stronger judgment than the small local model at much lower cost than gpt-5.5-cloud.",
+            "generate_answer": "Primary answer synthesis is most quality-sensitive and user-facing downstream, so assign to gpt-4.1-mini-cloud for reliable generation without incurring premium gpt-5.5 cost.",
+            "generate_query_or_respond": "Query generation/response selection benefits from robust instruction following and context handling; gpt-4.1-mini-cloud is a balanced choice.",
+            "rewrite_question": "Question rewriting is typically short, non-user-facing, and low-risk; qwen-local avoids cloud spend and may reduce latency while meeting all capability requirements."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-08",
+          "description": "Mixed cost-conscious placement: use local model for lightweight routing/query-generation decisions, and gpt-4.1-mini for answer generation and question rewriting to preserve QA quality without using the highest-cost cloud model.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "qwen-local",
+            "rewrite_question": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Non-user-facing decision step with no tool/structured-output requirement; local zero-cost endpoint should be adequate and minimizes cloud cost/latency exposure.",
+            "generate_answer": "Core answer synthesis likely has the largest quality impact; gpt-4.1-mini provides stronger generation quality than the small local model at much lower cost than gpt-5.5.",
+            "generate_query_or_respond": "Branch/query-or-response choice is non-structural and non-user-facing; qwen-local supports needed capabilities and avoids cloud cost.",
+            "rewrite_question": "Question rewriting benefits retrieval quality, so assign a mid-tier cloud model for more reliable semantic preservation than the 2B local model while avoiding premium gpt-5.5 cost."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-09",
+          "description": "Shift only the answer generation unit to the highest-quality cloud model while keeping routing/query/rewrite decisions on the free local endpoint. This explores whether premium generation materially improves QA quality without adding cloud cost or latency to the auxiliary units.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-5.5-cloud",
+            "generate_query_or_respond": "qwen-local",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "No structured output or tool use is required; keep this lightweight branch-like decision on qwen-local to minimize cloud cost and avoid spending premium tokens on a non-user-facing auxiliary step.",
+            "generate_answer": "Use gpt-5.5-cloud for the final answer-generation step, the most quality-sensitive component. This tests the upper-quality/cost frontier for user-facing answer synthesis compared with prior gpt-4.1-mini answer placements.",
+            "generate_query_or_respond": "Keep on qwen-local because it is a non-user-facing transformation/decision unit with no special capability requirements, preserving low cost while the final answerer handles quality-critical synthesis.",
+            "rewrite_question": "Keep on qwen-local as a simple non-structured rewrite step to avoid unnecessary cloud spend and latency."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-10",
+          "description": "Explore a quality-focused answer generation placement while keeping lightweight routing/rewriting local and using the cheaper cloud model for initial query-or-response generation.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-5.5-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "No tool/structured-output requirement and likely lightweight control/decision text, so qwen-local minimizes cloud cost and latency for this unit.",
+            "generate_answer": "Assigning the final answer generation to gpt-5.5-cloud tests whether the strongest model improves answer quality on the user-visible synthesis step, distinct from prior evaluated and unprofiled maps.",
+            "generate_query_or_respond": "Use gpt-4.1-mini-cloud for the query/response drafting step to improve retrieval/query formulation over local without incurring gpt-5.5 cost here.",
+            "rewrite_question": "Question rewriting is typically short and non-structural; qwen-local keeps this preprocessing step free and fast."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-11",
+          "description": "Unevaluated placement that keeps answer generation on the cost-effective cloud mini model, uses local inference for lightweight decision/query steps, and tests whether premium rewriting improves retrieval quality enough to justify isolated high-cost usage.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "qwen-local",
+            "rewrite_question": "gpt-5.5-cloud"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Use qwen-local for a non-user-facing lightweight decision step to minimize cloud cost and latency exposure.",
+            "generate_answer": "Use gpt-4.1-mini-cloud as a balanced answer generator with strong quality at much lower cost than gpt-5.5-cloud.",
+            "generate_query_or_respond": "Use qwen-local to preserve a low-cost routing/query generation path and avoid repeating prior maps.",
+            "rewrite_question": "Use gpt-5.5-cloud to explore whether the premium model improves question rewriting/retrieval inputs while limiting expensive usage to one upstream unit."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-01-proposal-12",
+          "description": "Previously unevaluated mixed placement: keep the final answer generation on the strong low-cost cloud model, use cloud mini for decision and rewrite steps to improve routing/query normalization reliability, and keep initial query-or-response on local to contain cost and latency.",
+          "assignments": {
+            "decide_after_retrieval": "gpt-4.1-mini-cloud",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "qwen-local",
+            "rewrite_question": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Use gpt-4.1-mini-cloud for more reliable post-retrieval judgment than the local 2B model while avoiding the high cost of gpt-5.5.",
+            "generate_answer": "Use gpt-4.1-mini-cloud as a cost-effective cloud model for answer synthesis; it has ample context and strong generation quality without gpt-5.5 expense.",
+            "generate_query_or_respond": "Use qwen-local to minimize cloud spend on this non-user-facing step; no tool or structured-output constraint forces a cloud model.",
+            "rewrite_question": "Use gpt-4.1-mini-cloud to improve rewritten query quality over local while keeping substantially lower cost than gpt-5.5."
+          },
+          "source": "candidate"
+        }
+      ],
+      "compiler_attempts": [
+        {
+          "iteration": 1,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 8.192409249997581,
+          "prompt_tokens": 891,
+          "completion_tokens": 218,
+          "total_tokens": 1109,
+          "api_cost": 0.010995000000000001,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 2,
+          "attempt": 1,
+          "accepted": false,
+          "proposal_latency_seconds": 4.264482625003438,
+          "prompt_tokens": 891,
+          "completion_tokens": 230,
+          "total_tokens": 1121,
+          "api_cost": 0.011355,
+          "cost_known": true,
+          "validation_errors": [
+            "duplicates an earlier unprofiled proposal"
+          ],
+          "duplicate_proposal": true
+        },
+        {
+          "iteration": 2,
+          "attempt": 2,
+          "accepted": false,
+          "proposal_latency_seconds": 3.8023933340009535,
+          "prompt_tokens": 903,
+          "completion_tokens": 241,
+          "total_tokens": 1144,
+          "api_cost": 0.011745,
+          "cost_known": true,
+          "validation_errors": [
+            "duplicates an earlier unprofiled proposal"
+          ],
+          "duplicate_proposal": true
+        },
+        {
+          "iteration": 2,
+          "attempt": 3,
+          "accepted": true,
+          "proposal_latency_seconds": 3.486977874999866,
+          "prompt_tokens": 903,
+          "completion_tokens": 218,
+          "total_tokens": 1121,
+          "api_cost": 0.011055,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 3,
+          "attempt": 1,
+          "accepted": false,
+          "proposal_latency_seconds": 3.6507757090002997,
+          "prompt_tokens": 891,
+          "completion_tokens": 249,
+          "total_tokens": 1140,
+          "api_cost": 0.011924999999999998,
+          "cost_known": true,
+          "validation_errors": [
+            "duplicates an earlier unprofiled proposal"
+          ],
+          "duplicate_proposal": true
+        },
+        {
+          "iteration": 3,
+          "attempt": 2,
+          "accepted": true,
+          "proposal_latency_seconds": 5.524243082996691,
+          "prompt_tokens": 903,
+          "completion_tokens": 344,
+          "total_tokens": 1247,
+          "api_cost": 0.014835000000000001,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 4,
+          "attempt": 1,
+          "accepted": false,
+          "proposal_latency_seconds": 3.7267950829991605,
+          "prompt_tokens": 891,
+          "completion_tokens": 233,
+          "total_tokens": 1124,
+          "api_cost": 0.011445,
+          "cost_known": true,
+          "validation_errors": [
+            "duplicates an earlier unprofiled proposal"
+          ],
+          "duplicate_proposal": true
+        },
+        {
+          "iteration": 4,
+          "attempt": 2,
+          "accepted": true,
+          "proposal_latency_seconds": 3.6608755000052042,
+          "prompt_tokens": 903,
+          "completion_tokens": 218,
+          "total_tokens": 1121,
+          "api_cost": 0.011055,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 5,
+          "attempt": 1,
+          "accepted": false,
+          "proposal_latency_seconds": 3.8044090830080677,
+          "prompt_tokens": 891,
+          "completion_tokens": 239,
+          "total_tokens": 1130,
+          "api_cost": 0.011625,
+          "cost_known": true,
+          "validation_errors": [
+            "duplicates an earlier unprofiled proposal"
+          ],
+          "duplicate_proposal": true
+        },
+        {
+          "iteration": 5,
+          "attempt": 2,
+          "accepted": true,
+          "proposal_latency_seconds": 3.5802002499985974,
+          "prompt_tokens": 903,
+          "completion_tokens": 238,
+          "total_tokens": 1141,
+          "api_cost": 0.011655,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 6,
+          "attempt": 1,
+          "accepted": false,
+          "proposal_latency_seconds": 5.37022741700639,
+          "prompt_tokens": 891,
+          "completion_tokens": 261,
+          "total_tokens": 1152,
+          "api_cost": 0.012285,
+          "cost_known": true,
+          "validation_errors": [
+            "duplicates an earlier unprofiled proposal"
+          ],
+          "duplicate_proposal": true
+        },
+        {
+          "iteration": 6,
+          "attempt": 2,
+          "accepted": true,
+          "proposal_latency_seconds": 3.68037825000647,
+          "prompt_tokens": 903,
+          "completion_tokens": 245,
+          "total_tokens": 1148,
+          "api_cost": 0.011865,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 7,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.650267999997595,
+          "prompt_tokens": 891,
+          "completion_tokens": 267,
+          "total_tokens": 1158,
+          "api_cost": 0.012465,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 8,
+          "attempt": 1,
+          "accepted": false,
+          "proposal_latency_seconds": 3.9085990419989685,
+          "prompt_tokens": 891,
+          "completion_tokens": 226,
+          "total_tokens": 1117,
+          "api_cost": 0.011234999999999998,
+          "cost_known": true,
+          "validation_errors": [
+            "duplicates an earlier unprofiled proposal"
+          ],
+          "duplicate_proposal": true
+        },
+        {
+          "iteration": 8,
+          "attempt": 2,
+          "accepted": true,
+          "proposal_latency_seconds": 4.7126378750108415,
+          "prompt_tokens": 903,
+          "completion_tokens": 258,
+          "total_tokens": 1161,
+          "api_cost": 0.012254999999999999,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 9,
+          "attempt": 1,
+          "accepted": false,
+          "proposal_latency_seconds": 3.899183333007386,
+          "prompt_tokens": 891,
+          "completion_tokens": 241,
+          "total_tokens": 1132,
+          "api_cost": 0.011685000000000001,
+          "cost_known": true,
+          "validation_errors": [
+            "duplicates an earlier unprofiled proposal"
+          ],
+          "duplicate_proposal": true
+        },
+        {
+          "iteration": 9,
+          "attempt": 2,
+          "accepted": false,
+          "proposal_latency_seconds": 4.2235456250054995,
+          "prompt_tokens": 903,
+          "completion_tokens": 251,
+          "total_tokens": 1154,
+          "api_cost": 0.012045,
+          "cost_known": true,
+          "validation_errors": [
+            "duplicates an earlier unprofiled proposal"
+          ],
+          "duplicate_proposal": true
+        },
+        {
+          "iteration": 9,
+          "attempt": 3,
+          "accepted": false,
+          "proposal_latency_seconds": 3.753980583001976,
+          "prompt_tokens": 903,
+          "completion_tokens": 258,
+          "total_tokens": 1161,
+          "api_cost": 0.012254999999999999,
+          "cost_known": true,
+          "validation_errors": [
+            "duplicates an earlier unprofiled proposal"
+          ],
+          "duplicate_proposal": true
+        },
+        {
+          "iteration": 9,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.5412049159931485,
+          "prompt_tokens": 1355,
+          "completion_tokens": 266,
+          "total_tokens": 1621,
+          "api_cost": 0.014755,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 10,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 3.877987416999531,
+          "prompt_tokens": 1404,
+          "completion_tokens": 238,
+          "total_tokens": 1642,
+          "api_cost": 0.01416,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 11,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 3.6873923339881003,
+          "prompt_tokens": 1458,
+          "completion_tokens": 227,
+          "total_tokens": 1685,
+          "api_cost": 0.014100000000000001,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 12,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 3.9620183749939315,
+          "prompt_tokens": 1512,
+          "completion_tokens": 270,
+          "total_tokens": 1782,
+          "api_cost": 0.01566,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        }
+      ]
+    },
+    {
+      "sequence": 2,
+      "proposals": [
+        {
+          "id": "sequence-02-proposal-01",
+          "description": "Hybrid cost-conscious placement: use gpt-4.1-mini-cloud for the main decision, query/response, and answer-generation steps while keeping question rewriting local to reduce cloud token cost and latency exposure. This is previously unevaluated because no prior evaluated assignments were provided.",
+          "assignments": {
+            "decide_after_retrieval": "gpt-4.1-mini-cloud",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Decision after retrieval can affect downstream answer quality; gpt-4.1-mini offers stronger reasoning than the small local model at far lower cost than gpt-5.5.",
+            "generate_answer": "Final answer synthesis is quality-sensitive, so assign to gpt-4.1-mini for a balanced quality/cost trade-off.",
+            "generate_query_or_respond": "Routing between retrieval query generation and direct response benefits from reliable instruction following; gpt-4.1-mini provides robust capability without premium gpt-5.5 cost.",
+            "rewrite_question": "Question rewriting is usually simpler and not user-facing; qwen-local has sufficient context and no cloud cost, making it a good candidate for savings."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-02",
+          "description": "Hybrid low-cost placement keeping answer and initial query/response generation on the stronger low-cost cloud model while moving post-retrieval decisioning and question rewriting to the free local model. This differs from the previously rejected unprofiled map by assigning decide_after_retrieval to qwen-local.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Non-user-facing, no tool or structured-output requirement; local model is capability-compatible and eliminates cloud cost for a likely lightweight decision step.",
+            "generate_answer": "Most quality-sensitive generation unit for QA; gpt-4.1-mini-cloud offers strong quality with much lower cost than gpt-5.5-cloud and ample context window.",
+            "generate_query_or_respond": "Potentially important for retrieval/query formulation or direct response; gpt-4.1-mini-cloud balances quality and cloud cost better than expensive gpt-5.5-cloud.",
+            "rewrite_question": "Rewriting is non-user-facing and typically tolerant of a smaller local model; qwen-local has adequate context and zero marginal cloud cost."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-03",
+          "description": "Quality-focused hybrid placement not previously evaluated/unprofiled: keep lightweight routing/rewrite local, use mini for query/response branching, and reserve the strongest cloud model for final answer synthesis.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-5.5-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Lightweight non-user-facing decision step with no tool or structured-output constraints; local model avoids cloud cost and should be adequate for simple post-retrieval control.",
+            "generate_answer": "Final answer generation is typically the highest quality-sensitive unit; assigning gpt-5.5-cloud explores an upper-quality trade-off despite higher cost/latency.",
+            "generate_query_or_respond": "This unit may require nuanced decision/query formulation; gpt-4.1-mini-cloud provides stronger reliability than the small local model at moderate cost.",
+            "rewrite_question": "Rewrite is a bounded preprocessing task; qwen-local has sufficient context/capability and zero cloud token cost."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-04",
+          "description": "Cost-focused previously unevaluated placement that keeps answer synthesis on the stronger low-cost cloud model while moving query/response routing to local.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "qwen-local",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Local model is likely sufficient for this non-structured, non-tool decision step and avoids cloud cost/latency.",
+            "generate_answer": "Use gpt-4.1-mini-cloud for final answer generation to preserve response quality at modest cloud cost; reserve expensive gpt-5.5 for later exploration since no measured results are available.",
+            "generate_query_or_respond": "Try local model for the initial query-or-response generation/routing step to reduce cost versus prior cloud assignments; capabilities are compatible because no tool calling or structured output is required by the placement unit.",
+            "rewrite_question": "Keep rewrite on qwen-local, matching earlier candidate preference for a low-risk transformation step at zero cloud cost."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-05",
+          "description": "Quality-focused hybrid placement: use the strongest model only for answer synthesis, keep routing/query generation on mini cloud, and retain local rewrite to control cost/latency. This map is not among the previously disallowed unprofiled assignments.",
+          "assignments": {
+            "decide_after_retrieval": "gpt-4.1-mini-cloud",
+            "generate_answer": "gpt-5.5-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Use gpt-4.1-mini-cloud for the post-retrieval decision because it is likely more reliable than the small local model for judging retrieved context while remaining much cheaper and lower-latency than gpt-5.5.",
+            "generate_answer": "Assign gpt-5.5-cloud to the final answer generation unit, where user-visible quality and faithfulness benefit most from the strongest model despite higher cloud cost.",
+            "generate_query_or_respond": "Use gpt-4.1-mini-cloud for query generation/direct response gating to improve retrieval intent formation over the local 2B model without incurring gpt-5.5 cost on an intermediate step.",
+            "rewrite_question": "Keep rewrite_question on qwen-local because it is a simpler transformation step, has no tool/structured-output constraints beyond supported capabilities, and avoids additional cloud spend."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-06",
+          "description": "Previously unevaluated low-cloud-cost placement that keeps query generation on a stronger cloud model while testing whether local generation can handle final answer synthesis.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "qwen-local",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Local qwen is capability-compatible and cost-free for this non-structured, non-tool branch/decision-like unit; using it continues minimizing cloud cost/latency pressure without violating requirements.",
+            "generate_answer": "Assigning final answer generation to qwen-local explores the quality/cost frontier by moving the main generation stage off cloud; this exact map has not appeared in prior unprofiled assignments.",
+            "generate_query_or_respond": "Keep gpt-4.1-mini-cloud on the query-or-respond stage because it likely benefits retrieval routing/query formulation quality at much lower cost than gpt-5.5 while retaining tool/structured/context capabilities if needed.",
+            "rewrite_question": "Use qwen-local for rewrite since prior proposals consistently chose it as the cheap adequate option and the unit has no special capability requirements."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-07",
+          "description": "Previously unevaluated placement that keeps low-cost local models for lightweight rewrite/decision steps, uses the economical cloud mini model for answer generation, and explores whether the stronger cloud model improves the query-or-respond routing/generation stage.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "gpt-5.5-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Lightweight non-structured, non-tool control/decision-adjacent step; qwen-local minimizes cloud cost and latency where prior unevaluated maps already explored both local and mini alternatives but not this combination with gpt-5.5 on query generation.",
+            "generate_answer": "User-facing flag is false and no structured/tool requirement is present; gpt-4.1-mini-cloud offers a balanced quality/cost option versus expensive gpt-5.5 while avoiding all-local quality risk.",
+            "generate_query_or_respond": "Assign gpt-5.5-cloud to probe quality gains on the query/response generation step, a plausible high-leverage stage for retrieval QA, while keeping other stages cost-contained.",
+            "rewrite_question": "Question rewriting is typically short and local-capable; qwen-local has zero cloud token cost and sufficient capabilities for this non-structured, non-tool step."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-08",
+          "description": "Hybrid cost/latency exploration: keep answer synthesis and post-retrieval decisioning on gpt-4.1-mini-cloud while moving initial query/response generation and question rewriting to the free local model.",
+          "assignments": {
+            "decide_after_retrieval": "gpt-4.1-mini-cloud",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "qwen-local",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Use gpt-4.1-mini-cloud for this decision-like step to preserve reliability versus fully local routing, while still avoiding the higher cost of gpt-5.5-cloud.",
+            "generate_answer": "Keep the user-impacting answer generation quality on gpt-4.1-mini-cloud, which is much cheaper than gpt-5.5-cloud and likely stronger than the 2B local model.",
+            "generate_query_or_respond": "Evaluate qwen-local here to reduce cloud cost and latency for an upstream non-structured, non-tool step; this specific combination has not appeared in the excluded maps.",
+            "rewrite_question": "Use qwen-local for inexpensive rewriting, consistent with many prior attempted maps and adequate capability for this non-structured step."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-09",
+          "description": "Explore a low-cost routing configuration that keeps all non-answer orchestration/query-rewrite steps local while allocating the strongest cloud model only to final answer synthesis.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-5.5-cloud",
+            "generate_query_or_respond": "qwen-local",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Local qwen is zero cloud cost and supports required capabilities; this non-user-facing decision step is likely tolerant of a smaller model and was used successfully in several prior proposed configurations, but not with this full assignment map.",
+            "generate_answer": "Use gpt-5.5 for the answer-generation step to test whether highest-quality synthesis improves end-to-end QA while limiting expensive usage to the most quality-critical unit.",
+            "generate_query_or_respond": "Move query/response generation to qwen-local to reduce cloud cost and latency exposure; no tool or structured-output constraint prevents this, and this exact combination has not been evaluated/proposed before.",
+            "rewrite_question": "Keep rewrite_question on qwen-local because it is non-user-facing, zero-cost, and all prior explored maps kept this local, making it a reasonable constant while testing the new trade-off."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-10",
+          "description": "Probe whether upgrading only the post-retrieval decision step improves routing/answerability judgments while keeping answer generation and initial query/response on lower-cost gpt-4.1-mini and rewrite local. This complete assignment is not in the prior unprofiled maps.",
+          "assignments": {
+            "decide_after_retrieval": "gpt-5.5-cloud",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Use the strongest cloud model for the decision point to test quality sensitivity in retrieval gating/decision making; capability constraints are satisfied.",
+            "generate_answer": "Keep gpt-4.1-mini-cloud for the main answer step as a cost/latency-conscious baseline-quality choice rather than expensive gpt-5.5.",
+            "generate_query_or_respond": "Keep gpt-4.1-mini-cloud for robust query generation/direct response at moderate cloud cost.",
+            "rewrite_question": "Use qwen-local for zero cloud cost on the likely simpler rewrite task; endpoint supports required capabilities and context."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-11",
+          "description": "Probe moving rewrite_question from the usual local placement to gpt-4.1-mini while keeping core query generation and answer generation on the low-cost cloud model and decision routing local. This is a previously unevaluated map relative to the listed exclusions.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Use qwen-local for the non-user-facing lightweight post-retrieval decision step to minimize cloud cost and latency where possible.",
+            "generate_answer": "Keep gpt-4.1-mini-cloud on answer generation as a balanced quality/cost choice for the main synthesis step, avoiding the high cost of gpt-5.5.",
+            "generate_query_or_respond": "Keep gpt-4.1-mini-cloud for query-or-response generation to preserve robust behavior in an upstream semantic task without incurring gpt-5.5 cost.",
+            "rewrite_question": "Test gpt-4.1-mini-cloud for question rewriting to evaluate whether improved rewrite quality over local can boost retrieval/answer outcomes at moderate additional cost."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-02-proposal-12",
+          "description": "All-local low-cost/low-cloud-dependency placement to establish a zero cloud-cost latency/quality comparison point; this complete assignment map is not among the previously rejected/evaluated maps.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "qwen-local",
+            "generate_query_or_respond": "qwen-local",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Simple non-structured, non-tool decision step can be handled locally at zero token cost.",
+            "generate_answer": "Tests whether the local model is sufficient for final answer generation in this QA workflow, trading likely quality risk for zero cloud cost.",
+            "generate_query_or_respond": "Keeps query/response routing local to evaluate the fully local path end-to-end.",
+            "rewrite_question": "Question rewriting is a lightweight transformation suitable for qwen-local and avoids cloud cost."
+          },
+          "source": "candidate"
+        }
+      ],
+      "compiler_attempts": [
+        {
+          "iteration": 1,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.32534070800466,
+          "prompt_tokens": 891,
+          "completion_tokens": 273,
+          "total_tokens": 1164,
+          "api_cost": 0.012645,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 2,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.101153708994389,
+          "prompt_tokens": 967,
+          "completion_tokens": 271,
+          "total_tokens": 1238,
+          "api_cost": 0.012964999999999997,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 3,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.049230375007028,
+          "prompt_tokens": 1022,
+          "completion_tokens": 239,
+          "total_tokens": 1261,
+          "api_cost": 0.01228,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 4,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 3.9738049159932416,
+          "prompt_tokens": 1076,
+          "completion_tokens": 233,
+          "total_tokens": 1309,
+          "api_cost": 0.012369999999999999,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 5,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.592157582999789,
+          "prompt_tokens": 1126,
+          "completion_tokens": 294,
+          "total_tokens": 1420,
+          "api_cost": 0.014450000000000001,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 6,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.228740375008783,
+          "prompt_tokens": 1185,
+          "completion_tokens": 257,
+          "total_tokens": 1442,
+          "api_cost": 0.013635000000000001,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 7,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.9304531249945285,
+          "prompt_tokens": 1235,
+          "completion_tokens": 296,
+          "total_tokens": 1531,
+          "api_cost": 0.015054999999999999,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 8,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.6354966669896385,
+          "prompt_tokens": 1289,
+          "completion_tokens": 265,
+          "total_tokens": 1554,
+          "api_cost": 0.014395000000000002,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 9,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.707514999987325,
+          "prompt_tokens": 1344,
+          "completion_tokens": 265,
+          "total_tokens": 1609,
+          "api_cost": 0.014669999999999999,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 10,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.299296000011964,
+          "prompt_tokens": 1393,
+          "completion_tokens": 246,
+          "total_tokens": 1639,
+          "api_cost": 0.014345,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 11,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.185971291997703,
+          "prompt_tokens": 1452,
+          "completion_tokens": 270,
+          "total_tokens": 1722,
+          "api_cost": 0.015359999999999999,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 12,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 5.018828333995771,
+          "prompt_tokens": 1512,
+          "completion_tokens": 298,
+          "total_tokens": 1810,
+          "api_cost": 0.0165,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        }
+      ]
+    },
+    {
+      "sequence": 3,
+      "proposals": [
+        {
+          "id": "sequence-03-proposal-01",
+          "description": "Hybrid placement using the stronger low-cost cloud model for main QA, routing/decision, and query/response generation, while keeping question rewriting on the zero-cost local model to reduce cloud cost. This is previously unevaluated because no prior evaluated placements are listed.",
+          "assignments": {
+            "decide_after_retrieval": "gpt-4.1-mini-cloud",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Branch-control is not marked required, but retrieval decisions can affect final answer quality; gpt-4.1-mini-cloud offers stronger reasoning than the 2B local model at much lower cost than gpt-5.5.",
+            "generate_answer": "Primary quality-sensitive answer generation benefits from gpt-4.1-mini-cloud's larger capability and context window while avoiding the high gpt-5.5 cost.",
+            "generate_query_or_respond": "This unit likely determines whether to query or answer and benefits from robust instruction following; gpt-4.1-mini-cloud is a cost-quality compromise.",
+            "rewrite_question": "Question rewriting is usually shorter and less user-facing; qwen-local is compatible and zero cloud cost, making it a useful cost-saving substitution."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-02",
+          "description": "Hybrid cost-conscious placement using local model for lightweight rewriting/decision steps and gpt-4.1-mini for answer/query generation; distinct from the prior unprofiled map.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "rewrite_question": "Non-user-facing rewrite step can be handled locally at zero cloud cost; endpoint supports required capabilities and context is sufficient.",
+            "decide_after_retrieval": "Likely lightweight post-retrieval decision/routing step with no tool/structured requirements, so local execution reduces cloud cost and latency-to-cloud dependence.",
+            "generate_query_or_respond": "Keeps stronger cloud mini model for query generation or direct response where instruction following and retrieval-query quality affect downstream QA success.",
+            "generate_answer": "Keeps stronger cloud mini model for answer synthesis, preserving user-answer quality at much lower cost than gpt-5.5."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-03",
+          "description": "Previously unevaluated placement emphasizing answer quality by upgrading only the final answer generation step to the strongest cloud model, while keeping rewrite and post-retrieval decision local for zero-cost support tasks and using gpt-4.1-mini for query-or-respond routing/generation.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-5.5-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Use qwen-local to minimize cost on a non-user-facing decision step; no structured output/tool constraints require a stronger endpoint.",
+            "generate_answer": "Use gpt-5.5-cloud for the core answer synthesis step where quality is most likely to affect end-user outcome, accepting higher cost/latency for this isolated unit.",
+            "generate_query_or_respond": "Use gpt-4.1-mini-cloud as a balanced low-cost cloud model for initial query/response generation, avoiding all-local risk while not spending gpt-5.5 on routing/query formulation.",
+            "rewrite_question": "Use qwen-local for inexpensive question rewriting with adequate context and no cloud cost."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-04",
+          "description": "Cost- and latency-oriented unevaluated placement: keep the final answer on the stronger low-cost cloud model while moving query/response generation and routing-style stages to the free local model.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "qwen-local",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "No structured output or tool-use requirement; use qwen-local to minimize cloud spend and likely reduce network latency for a lightweight decision step.",
+            "generate_answer": "Keep user-critical answer generation on gpt-4.1-mini-cloud as a balanced quality/cost choice, avoiding the much higher cost of gpt-5.5-cloud in absence of evaluation evidence.",
+            "generate_query_or_respond": "Previously validated maps kept this on gpt-4.1-mini-cloud; this proposal explores whether qwen-local is sufficient for this non-structured, non-tool step and reduces cloud calls.",
+            "rewrite_question": "Use qwen-local as in prior attempted maps; rewriting is non-user-facing and compatible with the local endpoint."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-05",
+          "description": "Unevaluated placement emphasizing high-quality initial query/response routing with moderate cloud cost by using gpt-5.5 only for generate_query_or_respond, retaining gpt-4.1-mini for answer synthesis and local model for lighter rewrite/decision steps.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "gpt-5.5-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "generate_query_or_respond": "Assign to gpt-5.5-cloud to test whether the strongest model improves the early query-vs-response generation step, which can affect downstream retrieval quality and final answer accuracy.",
+            "generate_answer": "Keep on gpt-4.1-mini-cloud as a cost/latency-conscious synthesis model with large context and strong capability, avoiding the high output cost of gpt-5.5 for the likely most verbose step.",
+            "decide_after_retrieval": "Use qwen-local for this non-structured, non-tool decision step to minimize cloud cost and latency where possible.",
+            "rewrite_question": "Use qwen-local for inexpensive local rewriting, matching prior explored low-cost choices while changing the upstream generation placement to avoid repeating earlier assignment maps."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-06",
+          "description": "New unevaluated cost-minimizing variant that keeps the initial query/response decision on gpt-4.1-mini-cloud while moving answer synthesis to the free local endpoint.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "qwen-local",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Use qwen-local for the lightweight post-retrieval decision to reduce cloud cost and latency; no special capability constraints beyond standard generation are required.",
+            "generate_answer": "Test whether the local 2B model can handle final answer synthesis from retrieved context at zero cloud cost, exploring the low-cost/possibly lower-quality frontier not covered by prior maps.",
+            "generate_query_or_respond": "Keep gpt-4.1-mini-cloud on query-or-response generation because this early routing/query formulation step can strongly affect retrieval quality while remaining much cheaper than gpt-5.5-cloud.",
+            "rewrite_question": "Keep qwen-local for question rewriting as in all prior attempted maps, since this appears suitable for a simple transformation task and minimizes cost."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-07",
+          "description": "Evaluate a cost-minimal local routing for all preprocessing/decision steps while assigning only the final answer generation to the highest-quality cloud model.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-5.5-cloud",
+            "generate_query_or_respond": "qwen-local",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Non-user-facing decision step without tool or structured-output requirements; keep local to minimize cloud cost and latency versus cloud alternatives already explored.",
+            "generate_answer": "Most quality-sensitive synthesis step; use gpt-5.5-cloud to test whether premium final-answer generation improves quality when paired with local query/rewrite/decision stages. This exact assignment is not in the prior unprofiled maps.",
+            "generate_query_or_respond": "Try qwen-local here to reduce cloud spend and latency, distinct from prior maps that paired gpt-5.5 answer generation with mini for this unit.",
+            "rewrite_question": "Rewrite is a lightweight internal step; qwen-local is zero-cost and has adequate capabilities/context for this workflow."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-08",
+          "description": "Shift rewrite_question from local to gpt-4.1-mini while keeping the core query/answer generation on gpt-4.1-mini and the lightweight post-retrieval decision on qwen-local. This is a previously unevaluated map distinct from the listed prior attempts.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Use qwen-local for this non-user-facing, non-structured lightweight decision step to minimize cloud cost and preserve low marginal cost.",
+            "generate_answer": "Keep gpt-4.1-mini-cloud on the main answer generation path for stronger QA quality than the small local model at much lower cost than gpt-5.5.",
+            "generate_query_or_respond": "Keep gpt-4.1-mini-cloud for query/response routing and generation to maintain robust behavior without the expense of gpt-5.5.",
+            "rewrite_question": "Test whether moving rewrite quality from qwen-local to gpt-4.1-mini-cloud improves retrieval inputs and downstream answer quality while avoiding the high cost of gpt-5.5."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-09",
+          "description": "Quality-focused unevaluated placement: keep low-cost local rewriting, use mini for query/decision orchestration, and reserve the strongest cloud model for final answer generation.",
+          "assignments": {
+            "decide_after_retrieval": "gpt-4.1-mini-cloud",
+            "generate_answer": "gpt-5.5-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Use gpt-4.1-mini-cloud for the post-retrieval decision step to improve control quality over local while avoiding the high cost of gpt-5.5-cloud for a non-user-facing control-like unit.",
+            "generate_answer": "Assign gpt-5.5-cloud to the final answer generation unit where quality is likely to have the highest impact on QA outcomes.",
+            "generate_query_or_respond": "Use gpt-4.1-mini-cloud for query generation/response routing as a balanced cloud option with strong capability and much lower cost than gpt-5.5-cloud.",
+            "rewrite_question": "Use qwen-local for question rewriting to minimize cloud cost and latency for a preparatory transformation; capabilities are sufficient and no structured/tool requirement constrains this unit."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-10",
+          "description": "Explore a targeted high-capability model only for post-retrieval decisioning while keeping answer generation and initial query/response routing on the cheaper cloud mini model and rewrite on free local.",
+          "assignments": {
+            "decide_after_retrieval": "gpt-5.5-cloud",
+            "generate_answer": "gpt-4.1-mini-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Previously tested variants mostly used qwen-local or gpt-4.1-mini-cloud here; assigning gpt-5.5-cloud isolates whether stronger post-retrieval judgment improves branch/answer readiness without upgrading other stages.",
+            "generate_answer": "Keep gpt-4.1-mini-cloud for cost-efficient, capable final answer drafting rather than expensive gpt-5.5-cloud or lower-quality local generation.",
+            "generate_query_or_respond": "Use gpt-4.1-mini-cloud for robust query/response formulation with moderate cloud cost; prior explored qwen-local and gpt-5.5-cloud here, but not with gpt-5.5-cloud decisioning.",
+            "rewrite_question": "Use qwen-local for the low-risk rewrite step to minimize cloud spend and latency/cost exposure."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-11",
+          "description": "Previously unevaluated placement that concentrates the strongest model on final answer generation while using mini for query/response and rewrite quality, with local handling the post-retrieval decision to limit cost.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-5.5-cloud",
+            "generate_query_or_respond": "gpt-4.1-mini-cloud",
+            "rewrite_question": "gpt-4.1-mini-cloud"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Use qwen-local for this non-user-facing decision step to minimize cloud cost and latency where possible; it supports required capabilities and has sufficient context.",
+            "generate_answer": "Use gpt-5.5-cloud for the final answer generation path to explore maximum answer quality despite higher cloud cost.",
+            "generate_query_or_respond": "Use gpt-4.1-mini-cloud as a balanced model for query generation/initial response, retaining strong instruction following at much lower cost than gpt-5.5.",
+            "rewrite_question": "Use gpt-4.1-mini-cloud for rewriting rather than qwen-local to test whether higher-quality question normalization improves downstream retrieval/answer quality without paying gpt-5.5 rates."
+          },
+          "source": "candidate"
+        },
+        {
+          "id": "sequence-03-proposal-12",
+          "description": "Explore a higher-quality cloud configuration by assigning both answer generation and initial query/response generation to gpt-5.5 while keeping lightweight rewrite and post-retrieval decision steps local to control cost and latency.",
+          "assignments": {
+            "decide_after_retrieval": "qwen-local",
+            "generate_answer": "gpt-5.5-cloud",
+            "generate_query_or_respond": "gpt-5.5-cloud",
+            "rewrite_question": "qwen-local"
+          },
+          "rationale": {
+            "decide_after_retrieval": "Kept on qwen-local because it is a lightweight non-structured, non-tool branch/decision-style step and local inference avoids cloud cost.",
+            "generate_answer": "Moved to gpt-5.5-cloud to test quality gains on the final answer synthesis stage, likely the most user-visible quality-critical unit despite higher cost.",
+            "generate_query_or_respond": "Moved to gpt-5.5-cloud to explore whether stronger reasoning/query formulation improves retrieval path quality or direct response quality upstream.",
+            "rewrite_question": "Kept on qwen-local because rewriting is typically short and bounded, with no special capability requirements; local placement minimizes cost."
+          },
+          "source": "candidate"
+        }
+      ],
+      "compiler_attempts": [
+        {
+          "iteration": 1,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.2409796670108335,
+          "prompt_tokens": 891,
+          "completion_tokens": 282,
+          "total_tokens": 1173,
+          "api_cost": 0.012915,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 2,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.6796187919972,
+          "prompt_tokens": 967,
+          "completion_tokens": 226,
+          "total_tokens": 1193,
+          "api_cost": 0.011615,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 3,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 3.783314625005005,
+          "prompt_tokens": 1022,
+          "completion_tokens": 260,
+          "total_tokens": 1282,
+          "api_cost": 0.01291,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 4,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.837165874996572,
+          "prompt_tokens": 1076,
+          "completion_tokens": 248,
+          "total_tokens": 1324,
+          "api_cost": 0.01282,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 5,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 5.092231708011241,
+          "prompt_tokens": 1126,
+          "completion_tokens": 272,
+          "total_tokens": 1398,
+          "api_cost": 0.01379,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 6,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.407091458997456,
+          "prompt_tokens": 1180,
+          "completion_tokens": 250,
+          "total_tokens": 1430,
+          "api_cost": 0.0134,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 7,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.103755125004682,
+          "prompt_tokens": 1230,
+          "completion_tokens": 236,
+          "total_tokens": 1466,
+          "api_cost": 0.013229999999999999,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 8,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.490572874987265,
+          "prompt_tokens": 1279,
+          "completion_tokens": 281,
+          "total_tokens": 1560,
+          "api_cost": 0.014825,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 9,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 3.695718624992878,
+          "prompt_tokens": 1339,
+          "completion_tokens": 265,
+          "total_tokens": 1604,
+          "api_cost": 0.014645,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 10,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 4.490915917005623,
+          "prompt_tokens": 1398,
+          "completion_tokens": 275,
+          "total_tokens": 1673,
+          "api_cost": 0.01524,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 11,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 3.6897446250077337,
+          "prompt_tokens": 1457,
+          "completion_tokens": 258,
+          "total_tokens": 1715,
+          "api_cost": 0.015025,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        },
+        {
+          "iteration": 12,
+          "attempt": 1,
+          "accepted": true,
+          "proposal_latency_seconds": 3.8865981669950997,
+          "prompt_tokens": 1516,
+          "completion_tokens": 240,
+          "total_tokens": 1756,
+          "api_cost": 0.01478,
+          "cost_known": true,
+          "validation_errors": [],
+          "duplicate_proposal": false
+        }
+      ]
+    }
+  ],
+  "compiler_metrics": {
+    "proposal_count": 36,
+    "attempt_count": 46,
+    "duplicate_proposal_count": 10,
+    "validation_error_count": 10,
+    "prompt_tokens": 50848,
+    "completion_tokens": 11736,
+    "total_tokens": 62584,
+    "api_cost": 0.60632,
+    "api_cost_unknown": false,
+    "proposal_latency_seconds": 198.4066805030161,
+    "workflow_execution_count": 0
+  }
+}
