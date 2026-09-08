@@ -1,0 +1,36 @@
+{
+  "config_id": "v2-tests-qwen3.5-2b-opus-4-7",
+  "run_count": 50,
+  "eval_count": 50,
+  "trace_count": 50,
+  "component_count": 1036,
+  "latency_s": {
+    "mean": 6.03602518,
+    "median": 5.7940535,
+    "min": 3.044278,
+    "max": 13.96435,
+    "p90": 9.1668584,
+    "p95": 9.920417999999998
+  },
+  "correctness": {
+    "exact_match": 0.7,
+    "contains_gold_answer": 0.74,
+    "contains_partial_gold_answer": 0.82,
+    "supporting_title_hit": 0.98,
+    "supporting_title_recall": 0.82
+  },
+  "root_status_counts": {
+    "success": 50
+  },
+  "component_run_type_counts": {
+    "chain": 551,
+    "llm": 211,
+    "tool": 99,
+    "retriever": 99,
+    "parser": 76
+  },
+  "model_config_counts": {
+    "{\"decide_after_retrieval\": {\"model\": \"qwen3.5:2b\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"generate_answer\": {\"model\": \"claude-opus-4-7\", \"provider\": \"anthropic\"}, \"generate_query_or_respond\": {\"model\": \"qwen3.5:2b\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}, \"rewrite_question\": {\"model\": \"qwen3.5:2b\", \"provider\": \"ollama\", \"reasoning\": false, \"temperature\": 0, \"thinking\": false}}": 50
+  },
+  "warnings": []
+}

@@ -7,6 +7,7 @@ wheels/
 *.egg-info
 .pytest_cache/
 workflow_runs/
+*.html
 
 # Environments
 .env
@@ -21,3 +22,5 @@ workflow_runs/
 **/analysis/**/analysis/*.png
 **/analysis/**/config
 archive/
+!/workflows/qa/archive/
+!/workflows/code/archive/

@@ -2,7 +2,6 @@ import json
 
 from workflows.code.paths import WORKFLOW_ROOT
 
-
 MBPP_PLUS_DATA_PATH = WORKFLOW_ROOT / "data" / "mbpp_plus_valid.jsonl"
 MBPP_PLUS_MANIFEST_PATH = MBPP_PLUS_DATA_PATH.with_suffix(".manifest.json")
 MBPP_PLUS_DOWNLOAD_COMMAND = "python -m workflows.code.download_data"
@@ -76,11 +75,3 @@ def make_problem_prompt(example):
         f"Entry point: {example['entry_point']}\n\n"
         f"{example['prompt']}"
     )
-
-
-def compact_example(example):
-    return {
-        "task_id": example["task_id"],
-        "entry_point": example["entry_point"],
-        "prompt": example["prompt"],
-    }

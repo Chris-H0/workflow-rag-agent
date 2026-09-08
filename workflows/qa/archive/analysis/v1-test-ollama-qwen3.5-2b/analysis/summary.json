@@ -1,0 +1,36 @@
+{
+  "config_id": "v1-test-ollama-qwen3.5-2b",
+  "run_count": 50,
+  "eval_count": 50,
+  "trace_count": 50,
+  "component_count": 1318,
+  "latency_s": {
+    "mean": 4.8361614,
+    "median": 3.606338,
+    "min": 0.888503,
+    "max": 18.844207,
+    "p90": 9.020089200000001,
+    "p95": 9.2710811
+  },
+  "correctness": {
+    "exact_match": 0.34,
+    "contains_gold_answer": 0.44,
+    "contains_partial_gold_answer": 0.5,
+    "supporting_title_hit": 0.76,
+    "supporting_title_recall": 0.64
+  },
+  "root_status_counts": {
+    "success": 50
+  },
+  "component_run_type_counts": {
+    "chain": 909,
+    "llm": 181,
+    "tool": 84,
+    "retriever": 84,
+    "parser": 60
+  },
+  "model_config_counts": {
+    "{\"decide_after_retrieval\": {\"model\": \"qwen3.5:2b\", \"provider\": \"ollama\"}, \"generate_answer\": {\"model\": \"qwen3.5:2b\", \"provider\": \"ollama\"}, \"generate_query_or_respond\": {\"model\": \"qwen3.5:2b\", \"provider\": \"ollama\"}, \"rewrite_question\": {\"model\": \"qwen3.5:2b\", \"provider\": \"ollama\"}}": 50
+  },
+  "warnings": []
+}
