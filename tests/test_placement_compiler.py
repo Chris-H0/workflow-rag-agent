@@ -17,7 +17,7 @@ from placement_compiler.generation.candidates import (
     CandidateGenerator,
 )
 from placement_compiler.pipeline.config import load_pipeline_config
-from workflows.code.main import NODE_MODEL_CONFIG
+from workflows.code.main import ASSIGNMENTS
 
 
 class FakeCompilerLLM:
@@ -200,15 +200,8 @@ class PlacementCompilerTests(unittest.TestCase):
         qwen = next(endpoint for endpoint in endpoints if endpoint.id == "qwen-local")
         self.assertTrue(qwen.structured_output)
         self.assertEqual(qwen.model_kwargs["num_predict"], 768)
-        qwen_configs = [
-            config
-            for config in NODE_MODEL_CONFIG.values()
-            if config["model"] == "qwen3.5:2b"
-        ]
-        self.assertTrue(qwen_configs)
-        self.assertTrue(
-            all(config["num_predict"] == 768 for config in qwen_configs)
-        )
+        self.assertIn(qwen.id, ASSIGNMENTS.values())
+        self.assertTrue(set(ASSIGNMENTS.values()) <= {endpoint.id for endpoint in endpoints})
 
     def test_initial_code_config_matches_initial_qa_search_scale(self):
         config = load_pipeline_config(
